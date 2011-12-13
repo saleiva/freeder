@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-	$('.scroll-pane').jScrollPane();
 
 //http://code.google.com/p/pyrfeed/wiki/GoogleReaderAPI
 
@@ -29,8 +28,9 @@ $(document).ready(function() {
 		   			});
 			    }
 			});
-		$('.sources div.wrap').addClass("scroll-pane");
-	    }
+			$('.sources div.wrap').addClass("scroll-pane");
+			$('.scroll-pane').jScrollPane();
+		}
 	});
 });
 
