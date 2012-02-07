@@ -6,7 +6,8 @@ $(document).ready(function() {
 	});
 
 	$('.sources_area').bind("mouseenter", function(event){
-		$('.sources').fadeIn(250);
+		$('.sources').fadeIn(150);
+		$('.sources_area').css('width','300px');
 		//JSCROLLPANE 
 		var api = $('.scroll-pane').data('jsp');
 		api.reinitialise();
@@ -27,9 +28,10 @@ $(document).ready(function() {
 			}
 	    });
 	});
-	
+
 	$('.sources').bind("mouseleave", function(event){
-		$(this).fadeOut(250);
+		$(this).fadeOut(150);
+		$('.sources_area').css('width','170px');
 	});
 
 });
