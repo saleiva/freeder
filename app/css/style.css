@@ -57,13 +57,14 @@ div.article div.title h2{
 }
 div.article p{
 	line-height: 31px;
-	padding: 0 0 0 2px;
+	padding: 0 0 30px 2px;
 }
 
 div.menu{
 	margin: 87px 0 85px 0;
 	width: 100%;
 	text-align: center;
+	float: left;
 }
 
 div.menu a{
@@ -82,7 +83,18 @@ div.content img{
 	padding: 4px;
 	background-color: white;
 	border: #ccc 1px solid;
-	margin: 30px 0 30px 0;
+	margin: 0 0 30px 0;
+	display: block;
+	width: 590px;
+
+}
+
+div.content ul{
+	margin: 0 0 40px 0;
+}
+
+div.content ul li{
+	margin: 0 0 20px 0;
 }
 
 div.menu a.skip{
