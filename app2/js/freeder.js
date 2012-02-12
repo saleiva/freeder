@@ -1,6 +1,5 @@
 //http://code.google.com/p/pyrfeed/wiki/GoogleReaderAPI
-	//http://blog.martindoms.com/2009/10/16/using-the-google-reader-api-part-2/
-
+//http://blog.martindoms.com/2009/10/16/using-the-google-reader-api-part-2/
 
 var arrPosts = new Array();
 var currentArticle = 0;
@@ -13,7 +12,8 @@ $(document).ready(function() {
 	$.ajax({
 
 	    //url: 'http://www.google.com/reader/api/0/subscription/list?output=json',
-	    url: 'http://localhost:8888/data/subscription-list.json',
+	    url: 'http://localhost:8080/data/subscription-list.json',
+	    //url: "http://localhost:8080/http://www.google.com/reader/api/0/subscription/list?output=json"
 	    type: 'GET',
 	    success: function(res) {
 	        jQuery.each(res.subscriptions, function(i,obj){
@@ -49,7 +49,7 @@ $(document).ready(function() {
 			f_url = "http://www.google.com/reader/api/0/stream/contents/"+arrSources["feed-_actualidadipad_com-feed-"]+"?&r=n&n=20"
 			console.log(f_url);
 			$.ajax({
-				url: 'http://localhost:8888/data/feed_actualidadipad.json',
+				url: 'http://localhost:8888/data/feed_yorokobu.json',
 				type: 'GET',
 				success: function(resc) {
 					jQuery.each(resc.items, function(i,obj){

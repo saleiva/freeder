@@ -86,6 +86,11 @@ div.content img{
 	margin: 0 0 30px 0;
 	display: block;
 	width: 590px;
+}
+
+div.content iframe{
+	display: block;
+	width: 590px;
 
 }
 

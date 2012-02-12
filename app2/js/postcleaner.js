@@ -43,5 +43,6 @@ function cleanpost(){
 		$(this).removeAttr('style');
 	});
 
+	//TODO: Fix scroll on videos (yorokobu art.18)
 
 }
