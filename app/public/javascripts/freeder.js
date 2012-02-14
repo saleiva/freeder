@@ -3,17 +3,15 @@
 
 var arrPosts = new Array();
 var currentArticle = 0;
+var arrSources = new Array();
 
 $(document).ready(function() {
 
-	var arrSources = new Array();
 
 	//Ask for all the blogs where the user is subscripted
 	$.ajax({
 
-	    //url: 'http://www.google.com/reader/api/0/subscription/list?output=json',
-	    url: 'http://localhost:8080/data/subscription-list.json',
-	    //url: "http://localhost:8080/http://www.google.com/reader/api/0/subscription/list?output=json"
+	    url: "http://localhost:3000/get/subscription-list",
 	    type: 'GET',
 	    success: function(res) {
 	        jQuery.each(res.subscriptions, function(i,obj){
@@ -26,8 +24,7 @@ $(document).ready(function() {
 
    			//Get the counters for the unread articles
    			$.ajax({
-			    //url: 'http://www.google.com/reader/api/0/unread-count?output=json',
-			    url: 'http://localhost:8888/data/unread-count.json',
+			    url: 'http://localhost:3000/get/unread-count',
 			    type: 'GET',
 			    success: function(resc) {
 			    	total_count = 0;
@@ -37,27 +34,27 @@ $(document).ready(function() {
 		      			total_count += obj.count;
 		   			});
 		   			console.log("total unread items: "+total_count)
+		   			fe = $('.sources ul li').first().attr('id');
+		   			getFirstFeed(encodeURIComponent(arrSources[fe]));
 			    }
 			});
 			$('.sources div.wrap').addClass("scroll-pane");
 			$('.scroll-pane').jScrollPane();
-		
-			//Get items for the first source on the source list
-			first_source = $('.sources ul li').first();
+
 			//THIS EXCLUDES READ ITEMS -- http://www.google.com/reader/api/0/stream/contents/feed/http://astronomycast.com/podcast.xml?&r=n&xt=user/-/state/com.google/read&n=20
-			//http://www.google.com/reader/api/0/stream/contents/feed/http://astronomycast.com/podcast.xml?&r=n&n=20
-			f_url = "http://www.google.com/reader/api/0/stream/contents/"+arrSources["feed-_actualidadipad_com-feed-"]+"?&r=n&n=20"
-			console.log(f_url);
-			$.ajax({
-				url: 'http://localhost:8888/data/feed_yorokobu.json',
-				type: 'GET',
-				success: function(resc) {
-					jQuery.each(resc.items, function(i,obj){
-		      			arrPosts[i] = obj;
-		   			});
-		   			showArticle(0);
-				}
-			});
+			function getFirstFeed(f){
+				console.log('GET FIRST FEED FROM: http://localhost:3000/get/feed/'+f+'?&r=n&n=20');
+				$.ajax({
+					url: 'http://localhost:3000/get/feed/'+f+'?&r=n&n=20',
+					type: 'GET',
+					success: function(resc) {
+						jQuery.each(resc.items, function(i,obj){
+			      			arrPosts[i] = obj;
+			   			});
+			   			showArticle(0);
+					}
+				});
+			}
 		}
 	});
 
