@@ -5,6 +5,10 @@ $(document).ready(function() {
 		$(this).find('div a').toggleClass("over");
 	});
 
+	$('.sources ul').on("click", 'li', function(event){
+		setFeed($(this).attr('id'));
+	});
+
 	$('.sources_area').bind("mouseenter", function(event){
 		$('.sources').fadeIn(150);
 		$('.sources_area').css('width','300px');

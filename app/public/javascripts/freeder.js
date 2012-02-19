@@ -18,7 +18,7 @@ $(document).ready(function() {
 	        	var url = obj.htmlUrl;
 	        	var name = obj.title;
 	        	arrSources[sanitize(obj.id)] = obj.id;
-      			$('.sources ul').append('<li id="'+sanitize(obj.id)+'"><div><a href="'+url+'">'+name+'</a><span>0</span></div></li>');
+      			$('.sources ul').append('<li id="'+sanitize(obj.id)+'"><div><a href="#">'+name+'</a><span>0</span></div></li>');
       			$('li#'+sanitize(obj.id)+' div a').truncate({width:200});
    			});
 
@@ -28,6 +28,7 @@ $(document).ready(function() {
 			    type: 'GET',
 			    success: function(resc) {
 			    	total_count = 0;
+			    	console.log(resc.unreadcounts);
 			        jQuery.each(resc.unreadcounts, function(i,obj){
 		      			$('li#'+sanitize(obj.id)+' div span').text(obj.count);
 		      			$('li#'+sanitize(obj.id)+' div span').show();
@@ -41,13 +42,12 @@ $(document).ready(function() {
 			$('.sources div.wrap').addClass("scroll-pane");
 			$('.scroll-pane').jScrollPane();
 
-			//THIS EXCLUDES READ ITEMS -- http://www.google.com/reader/api/0/stream/contents/feed/http://astronomycast.com/podcast.xml?&r=n&xt=user/-/state/com.google/read&n=20
 			function getFirstFeed(f){
-				console.log('GET FIRST FEED FROM: http://localhost:3000/get/feed/'+f+'?&r=n&n=20');
 				$.ajax({
-					url: 'http://localhost:3000/get/feed/'+f+'?&r=n&n=20',
+					url: 'http://localhost:3000/get/feed/'+f,
 					type: 'GET',
 					success: function(resc) {
+						arrPosts = new Array();
 						jQuery.each(resc.items, function(i,obj){
 			      			arrPosts[i] = obj;
 			   			});
@@ -67,6 +67,23 @@ $(document).ready(function() {
 	});
 
 });
+
+//Function for changing the source that we are viewing
+function setFeed(f){
+	arrPosts = new Array();
+	f = encodeURIComponent(arrSources[f]);
+	$.ajax({
+		url: 'http://localhost:3000/get/feed/'+f,
+		type: 'GET',
+		success: function(resc) {
+			jQuery.each(resc.items, function(i,obj){
+      			arrPosts[i] = obj;
+   			});
+   			console.log(arrPosts.length);
+   			showArticle(0);
+		}
+	});
+}
 
 //Function for showing the information of an article on the UI
 function showArticle(i){

@@ -1,3 +1,15 @@
+jQuery.expr[':'].regex = function(elem, index, match) {
+    var matchParams = match[3].split(','),
+        validLabels = /^(data|css):/,
+        attr = {
+            method: matchParams[0].match(validLabels) ? 
+                        matchParams[0].split(':')[0] : 'attr',
+            property: matchParams.shift().replace(validLabels,'')
+        },
+        regexFlags = 'ig',
+        regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+    return regex.test(jQuery(elem)[attr.method](attr.property));
+}
 
 function cleanpost(){
 	
@@ -28,11 +40,9 @@ function cleanpost(){
 
 	//Clean inline styles on images and 1x1 images
 	$('.content').find('img').each(function() {	
-
 		if($(this).attr('height') == '1' && $(this).attr('width') == '1'){
 			$(this).remove();
 		}
-
 		$(this).removeAttr('style');
 		$(this).removeAttr('width');
 		$(this).removeAttr('height');
@@ -41,6 +51,13 @@ function cleanpost(){
 	//Clean inline styles on paraghraphs
 	$('.content').find('p').each(function() {	
 		$(this).removeAttr('style');
+	});
+
+	//Remove feedburner buttons for mail, digg and delicious
+	//Fixes Axis Maps,
+	$('.content').find('a:regex(href,feedburner)').each(function() {
+		console.log("feedburner removed");
+		$(this).remove();
 	});
 
 	//TODO: Fix scroll on videos (yorokobu art.18)
