@@ -28,14 +28,22 @@ $(document).ready(function() {
 			    type: 'GET',
 			    success: function(resc) {
 			    	total_count = 0;
-			    	console.log(resc.unreadcounts);
+			    	var fe = null;
 			        jQuery.each(resc.unreadcounts, function(i,obj){
 		      			$('li#'+sanitize(obj.id)+' div span').text(obj.count);
 		      			$('li#'+sanitize(obj.id)+' div span').show();
 		      			total_count += obj.count;
 		   			});
-		   			console.log("total unread items: "+total_count)
-		   			fe = $('.sources ul li').first().attr('id');
+		   			
+		   			//SET TOP COUNTER
+		   			$('.header span').text("("+total_count+")");
+		   			
+		   			//SHOW BY DEFAULT THE FIRST SOURCE WITH UNREAD ITEMS
+		   			$('.sources ul li').each(function() {
+						if(($(this).find('div span').text()!='0') && (fe == null)){
+							fe = $(this).attr('id');
+						}
+					});
 		   			getFirstFeed(encodeURIComponent(arrSources[fe]));
 			    }
 			});
@@ -70,6 +78,7 @@ $(document).ready(function() {
 
 //Function for changing the source that we are viewing
 function setFeed(f){
+	console.log(f);
 	arrPosts = new Array();
 	f = encodeURIComponent(arrSources[f]);
 	$.ajax({
@@ -79,7 +88,7 @@ function setFeed(f){
 			jQuery.each(resc.items, function(i,obj){
       			arrPosts[i] = obj;
    			});
-   			console.log(arrPosts.length);
+   			console.log("Total articles received: "+arrPosts.length);
    			showArticle(0);
 		}
 	});
