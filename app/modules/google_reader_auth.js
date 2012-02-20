@@ -10,6 +10,7 @@ function GoogleAuthorizer() {
 	this.oa = new OAuth("https://www.google.com/accounts/OAuthGetRequestToken",
 		"https://www.google.com/accounts/OAuthGetAccessToken", 
 		"anonymous", "anonymous", "1.0A", undefined, "HMAC-SHA1");
+	
 }
 util.inherits(GoogleAuthorizer, EventEmitter);
 
