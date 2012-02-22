@@ -1,10 +1,8 @@
 //http://blog.martindoms.com/2010/01/20/using-the-google-reader-api-part-3/#comment-105
 //http://blog.martindoms.com/2009/08/15/using-the-google-reader-api-part-1/
 //http://timbroder.com/2007/08/google-reader-api-functions.html
-//http://blog.martindoms.com/2010/01/20/using-the-google-reader-api-part-3/#comment-105
 //http://groups.google.com/group/fougrapi
 //http://code.google.com/p/google-reader-api/wiki/Authentication
-
 /**
 * Module dependencies.
 */
@@ -47,15 +45,13 @@ app.configure('production', function(){
 });
 
 var Auth ="";
-var user_email = "your_username";
-var user_pwd = "your_pwd";
-
-
+var token ="";
+var user_email = "";
+var user_pwd = "";
 
 function getAuth(){
-    _url = "https://www.google.com/accounts/ClientLogin?service=reader&Email="+user_email+"&Passwd="+user_pwd;
-    
-    var options = {host: 'www.google.com', port: 80, path: _url, method: 'GET'};
+    _urlAuth = "https://www.google.com/accounts/ClientLogin?service=reader&Email="+user_email+"&Passwd="+user_pwd;
+    var options = {host: 'www.google.com', port: 80, path: _urlAuth, method: 'GET'};
 
     http.get(options, function(resp) {
         data = "";
@@ -64,11 +60,29 @@ function getAuth(){
         });
         resp.on('end', function () {
             Auth = data.substring(data.indexOf("Auth=")+5).replace('\n','');
+
+            _urlToken = "http://www.google.com/reader/api/0/token";
+            var options = {host: 'www.google.com', port: 80, path: _urlToken, method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ Auth}};
+
+            http.get(options, function(resp) {
+                data = "";
+                resp.on('data', function (chunk) {
+                    data +=chunk;
+                });
+                resp.on('end', function () {
+                    token = data.substring(data.indexOf("Auth=")+5).replace('\n','');
+                });
+                resp.on('error', function(e) {
+                    console.log("Got error: " + e.message);
+                });
+            });
+
         });
         resp.on('error', function(e) {
             console.log("Got error: " + e.message);
         });
     });
+
 }
 
 // Routes
@@ -143,6 +157,38 @@ app.get('/get/feed/:url', function(req, res){
             console.log("Got error: " + e.message);
         });
     });
+});
+
+//MARK AS READ SERVICE
+app.get('/markasread/:url/:pid', function(req, res){
+    _url = "/reader/api/0/edit-tag?client=freeder";
+    
+    var post_data = "a="+"user/-/state/com.google/read"+"&async=true&s="+req.params.url+"&i="+req.params.pid+"&T="+token;
+    console.log(post_data);
+    var post_options = {
+        host: 'www.google.com',
+        port: 80,
+        path: _url,
+        method: 'POST',
+        headers: {
+            'Authorization': 'GoogleLogin auth='+ Auth
+        }
+    };
+    console.log(post_options);
+    //TODO: IS THERE ANY RESPONSE???
+    var post_req = http.request(post_options, function(res) {
+        data = "";
+        //res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+            data += chunk;
+        });
+        res.on('end', function (){
+            console.log(data);
+        });
+    });
+    post_req.write(post_data);
+    post_req.end();
+
 
 });
 

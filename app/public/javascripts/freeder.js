@@ -3,6 +3,7 @@
 
 var arrPosts = new Array();
 var currentArticle = 0;
+var currentSource = 0;
 var arrSources = new Array();
 
 $(document).ready(function() {
@@ -44,6 +45,7 @@ $(document).ready(function() {
 							fe = $(this).attr('id');
 						}
 					});
+					currentSource = fe;
 		   			getFirstFeed(encodeURIComponent(arrSources[fe]));
 			    }
 			});
@@ -114,6 +116,16 @@ function showArticle(i){
 //Function for going to the next article
 function nextArticle(){
 	//TODO: Mark actual article as read
+	f = encodeURIComponent(arrSources[currentSource]);
+	p = encodeURIComponent(arrPosts[currentArticle].id);
+	console.log("SOURCE: "+f+ "// ARTICLE: "+p);
+	$.ajax({
+		url: 'http://localhost:3000/markasread/'+f+'/'+p,
+		type: 'GET',
+		success: function(resc) {
+   			console.log("MARK AS READ");
+		}
+	});
 	showArticle(currentArticle+1);
 }
 

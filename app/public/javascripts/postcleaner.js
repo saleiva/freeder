@@ -14,7 +14,6 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 function cleanpost(){
 	
 	//Add float to links containning images
-	//Fixes Yorokobu
 	$('.content').find('a').each(function() {
 			if ($(this).has('img').length){
 				$(this).css('float','left');	
@@ -22,7 +21,6 @@ function cleanpost(){
 	});
 
 	//Remove empty pharagraphs
-	//Fixes Yorokobu
 	$('.content').find('p').each(function() {
 			if ($(this).html() == "&nbsp;"){
 				$(this).remove();
@@ -33,7 +31,6 @@ function cleanpost(){
 	});
 
 	//Remove tables
-	//Fixes actualidadIpad,
 	$('.content').find('table').each(function() {	
 		$(this).remove();
 	});
@@ -54,9 +51,14 @@ function cleanpost(){
 	});
 
 	//Remove feedburner buttons for mail, digg and delicious
-	//Fixes Axis Maps,
 	$('.content').find('a:regex(href,feedburner)').each(function() {
-		console.log("feedburner removed");
+		$(this).remove();
+	});
+
+
+	//Remove Google ads
+	$('.content').find('iframe:regex(src,feedads)').each(function() {
+		console.log("Google ads removed");
 		$(this).remove();
 	});
 
