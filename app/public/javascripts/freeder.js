@@ -1,5 +1,3 @@
-//http://code.google.com/p/pyrfeed/wiki/GoogleReaderAPI
-//http://blog.martindoms.com/2009/10/16/using-the-google-reader-api-part-2/
 
 var arrPosts = new Array();
 var currentArticle = 0;
@@ -108,7 +106,11 @@ function showArticle(i){
 
 	//TODO. Restyle the content. Now it's ugly
 	$('.content').text("");
-	$('.content').append(post.content.content);
+	if(post.content){
+		$('.content').append(post.content.content);
+	}else{
+		$('.content').append('<p>'+post.summary.content+'</p>');
+	}
 	cleanpost();
 
 }

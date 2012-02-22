@@ -55,37 +55,42 @@ var user_email = "";
 var user_pwd = "";
 
 function getAuth(){
-    _urlAuth = "https://www.google.com/accounts/ClientLogin?service=reader&Email="+user_email+"&Passwd="+user_pwd;
-    var options = {host: 'www.google.com', port: 80, path: _urlAuth, method: 'GET'};
 
-    http.get(options, function(resp) {
-        data = "";
-        resp.on('data', function (chunk) {
-            data +=chunk;
-        });
-        resp.on('end', function () {
-            Auth = data.substring(data.indexOf("Auth=")+5).replace('\n','');      
-            
-            _urlToken = "http://www.google.com/reader/api/0/token";
-            var options = {host: 'www.google.com', port: 80, path: _urlToken, method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ Auth}};
+    if(user_email != "" && user_pwd !=""){
 
-            http.get(options, function(resp) {
-                data = "";
-                resp.on('data', function (chunk) {
-                    data +=chunk;
-                });
-                resp.on('end', function () {
-                    token = data;
-                });
-                resp.on('error', function(e) {
-                    console.log("Got error: " + e.message);
+        _urlAuth = "https://www.google.com/accounts/ClientLogin?service=reader&Email="+user_email+"&Passwd="+user_pwd;
+        var options = {host: 'www.google.com', port: 80, path: _urlAuth, method: 'GET'};
+
+        http.get(options, function(resp) {
+            data = "";
+            resp.on('data', function (chunk) {
+                data +=chunk;
+            });
+            resp.on('end', function () {
+                Auth = data.substring(data.indexOf("Auth=")+5).replace('\n','');      
+                _urlToken = "http://www.google.com/reader/api/0/token";
+                var options = {host: 'www.google.com', port: 80, path: _urlToken, method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ Auth}};
+
+                http.get(options, function(resp) {
+                    data = "";
+                    resp.on('data', function (chunk) {
+                        data +=chunk;
+                    });
+                    resp.on('end', function () {
+                        token = data;
+                    });
+                    resp.on('error', function(e) {
+                        console.log("Got error: " + e.message);
+                    });
                 });
             });
+            resp.on('error', function(e) {
+                console.log("Got error: " + e.message);
+            });
         });
-        resp.on('error', function(e) {
-            console.log("Got error: " + e.message);
-        });
-    });
+    }else{
+        console.log("Google username / password are empty");
+    }
 }
 
 // Routes
@@ -168,7 +173,6 @@ app.get('/markasread/:url/:pid', function(req, res){
     _url = "/reader/api/0/edit-tag?client=freeder";
 
     var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url+"&i="+req.params.pid+"&T="+token.substring(2);
-    console.log(post_data);
     var post_options = {
         host: 'www.google.com',
         port: 80,
@@ -187,6 +191,7 @@ app.get('/markasread/:url/:pid', function(req, res){
         });
         res.on('end', function (){
             if (data == "OK"){
+                //TODO: PROPAGATE CONSEQUENCES TO THE UI
                 console.log("Marked as read");
             }
         });

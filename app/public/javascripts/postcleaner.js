@@ -49,9 +49,18 @@ function cleanpost(){
 	$('.content').find('p').each(function() {	
 		$(this).removeAttr('style');
 	});
+	$('.content').find('span').each(function() {	
+		$(this).removeAttr('style');
+	});
 
 	//Remove feedburner buttons for mail, digg and delicious
 	$('.content').find('a:regex(href,feedburner)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a').find('img:regex(src,feedburner)').each(function() {
+		$(this).parent().remove();
+	});
+	$('.content').find('a:regex(href,tweetmeme)').each(function() {
 		$(this).remove();
 	});
 
