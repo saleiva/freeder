@@ -3,6 +3,10 @@
 //http://timbroder.com/2007/08/google-reader-api-functions.html
 //http://groups.google.com/group/fougrapi
 //http://code.google.com/p/google-reader-api/wiki/Authentication
+//http://code.google.com/p/google-reader-gadget/source/browse/trunk/edit.js
+//http://undoc.in/googlereader.html
+
+
 /**
 * Module dependencies.
 */
@@ -60,26 +64,18 @@ function getAuth(){
             data +=chunk;
         });
         resp.on('end', function () {
-            Auth = data.substring(data.indexOf("Auth=")+5).replace('\n','');
-
-            _urlID = "http://www.google.com/reader/api/0/user-info";
-            var options = {
-                host: 'www.google.com',
-                port: 80,
-                path: _urlID,
-                method: 'GET',
-                headers: {
-                    'Authorization': 'GoogleLogin auth='+ Auth
-                }
-            };
+            Auth = data.substring(data.indexOf("Auth=")+5).replace('\n','');      
+            
+            _urlToken = "http://www.google.com/reader/api/0/token";
+            var options = {host: 'www.google.com', port: 80, path: _urlToken, method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ Auth}};
 
             http.get(options, function(resp) {
                 data = "";
                 resp.on('data', function (chunk) {
                     data +=chunk;
-                }); 
+                });
                 resp.on('end', function () {
-                    userID = JSON.parse(data).userId;
+                    token = data;
                 });
                 resp.on('error', function(e) {
                     console.log("Got error: " + e.message);
@@ -90,7 +86,6 @@ function getAuth(){
             console.log("Got error: " + e.message);
         });
     });
-
 }
 
 // Routes
@@ -169,50 +164,35 @@ app.get('/get/feed/:url', function(req, res){
 
 //MARK AS READ SERVICE
 app.get('/markasread/:url/:pid', function(req, res){
+   
+    _url = "/reader/api/0/edit-tag?client=freeder";
 
-    _urlToken = "http://www.google.com/reader/api/0/token?client=freeder";
-    var options = {host: 'www.google.com', port: 80, path: _urlToken, method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ Auth}};
-
-    http.get(options, function(resp) {
+    var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url+"&i="+req.params.pid+"&T="+token.substring(2);
+    console.log(post_data);
+    var post_options = {
+        host: 'www.google.com',
+        port: 80,
+        path: _url,
+        method: 'POST',
+        headers: {
+            'Authorization': 'GoogleLogin auth='+ Auth
+        }
+    };
+    //TODO: IS THERE ANY RESPONSE???
+    var post_req = http.request(post_options, function(res) {
         data = "";
-        resp.on('data', function (chunk) {
-            data +=chunk;
+        //res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+            data += chunk;
         });
-        resp.on('end', function () {
-            token = data.substring(2);
-
-            _url = "/reader/api/0/edit-tag?client=freeder";
-            
-            var post_data = "a="+"user/-/state/com.google/read"+"&async=true&s="+req.params.url+"&i="+req.params.pid+"&T="+token;
-            console.log(post_data);
-            var post_options = {
-                host: 'www.google.com',
-                port: 80,
-                path: _url,
-                method: 'POST',
-                headers: {
-                    'Authorization': 'GoogleLogin auth='+ Auth
-                }
-            };
-            //TODO: IS THERE ANY RESPONSE???
-            var post_req = http.request(post_options, function(res) {
-                data = "";
-                //res.setEncoding('utf8');
-                res.on('data', function (chunk) {
-                    data += chunk;
-                });
-                res.on('end', function (){
-                    //console.log(data);
-                    console.log(res.headers);
-                });
-            });
-            post_req.write(post_data);
-            post_req.end();
-        });
-        resp.on('error', function(e) {
-            console.log("Got error: " + e.message);
+        res.on('end', function (){
+            //console.log(data);
+            console.log(res.headers);
         });
     });
+    post_req.write(post_data);
+    post_req.end();
+
 });
 
 app.listen(3000);
