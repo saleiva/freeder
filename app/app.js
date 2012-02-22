@@ -175,19 +175,20 @@ app.get('/markasread/:url/:pid', function(req, res){
         path: _url,
         method: 'POST',
         headers: {
-            'Authorization': 'GoogleLogin auth='+ Auth
+            'Authorization': 'GoogleLogin auth='+ Auth,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': post_data.length
         }
     };
-    //TODO: IS THERE ANY RESPONSE???
     var post_req = http.request(post_options, function(res) {
         data = "";
-        //res.setEncoding('utf8');
         res.on('data', function (chunk) {
             data += chunk;
         });
         res.on('end', function (){
-            //console.log(data);
-            console.log(res.headers);
+            if (data == "OK"){
+                console.log("Marked as read");
+            }
         });
     });
     post_req.write(post_data);
