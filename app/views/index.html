@@ -7,11 +7,18 @@
     <title>Freeder article example</title>
     <link href="/stylesheets/reset.css" rel="stylesheet" type="text/css" />
     <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/javascripts/jquery-1.7.1.min.js" ></script>
+    <script type="text/javascript" src="/javascripts/index.js" ></script>
   </head>
 
   <body>
     <div class="header">
       <h1>FREEDER HOMEPAGE </h1>
+      <form >
+        <input type="text" id="email_input" placeholder="Google email">
+        <input type="password" id="pwd_input" placeholder="Password">
+        <a href="#" onClick="doLogin()" type="submit" class="btn">Submit</a>
+      </form>
     </div>
   </body>
 

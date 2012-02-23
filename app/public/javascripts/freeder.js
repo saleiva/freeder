@@ -6,7 +6,6 @@ var arrSources = new Array();
 
 $(document).ready(function() {
 
-
 	//Ask for all the blogs where the user is subscripted
 	$.ajax({
 
@@ -80,9 +79,9 @@ $(document).ready(function() {
 function setFeed(f){
 	console.log(f);
 	arrPosts = new Array();
-	f = encodeURIComponent(arrSources[f]);
+	_f = encodeURIComponent(arrSources[f]);
 	$.ajax({
-		url: 'http://localhost:3000/get/feed/'+f,
+		url: 'http://localhost:3000/get/feed/'+_f,
 		type: 'GET',
 		success: function(resc) {
 			jQuery.each(resc.items, function(i,obj){
@@ -90,6 +89,7 @@ function setFeed(f){
    			});
    			console.log("Total articles received: "+arrPosts.length);
    			showArticle(0);
+   			currentSource = f;
 		}
 	});
 }
@@ -103,8 +103,6 @@ function showArticle(i){
 	$('.title h1').text(post.title);
 	$('.title h2 a').attr('href',post.origin.htmlUrl);
 	$('.title h2 a').text(post.origin.title);
-
-	//TODO. Restyle the content. Now it's ugly
 	$('.content').text("");
 	if(post.content){
 		$('.content').append(post.content.content);
@@ -117,18 +115,24 @@ function showArticle(i){
 
 //Function for going to the next article
 function nextArticle(){
-	//TODO: Mark actual article as read
 	f = encodeURIComponent(arrSources[currentSource]);
 	p = encodeURIComponent(arrPosts[currentArticle].id);
-	console.log("SOURCE: "+f+ "// ARTICLE: "+p);
 	$.ajax({
 		url: 'http://localhost:3000/markasread/'+f+'/'+p,
 		type: 'GET',
 		success: function(resc) {
-   			console.log("MARK AS READ");
+			_id = sanitize(arrSources[currentSource]);
+			_c = parseInt($('li#'+_id+' div span').text()) -1;
+			$('li#'+_id+' div span').text(_c)
+			console.log(_c);
+   			if (_c != 0){
+   				showArticle(currentArticle+1);
+   			}else{
+   				$('li#'+_id+' div span').hide();
+   				//TODO: SHOW UI OPTION TO READ READ ITEMS
+   			}
 		}
 	});
-	showArticle(currentArticle+1);
 }
 
 //Function for removing shitty characters from the id property

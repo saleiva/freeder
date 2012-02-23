@@ -51,13 +51,22 @@ app.configure('production', function(){
 var Auth ="";
 var token ="";
 var userID ="";
-var user_email = "";
-var user_pwd = "";
 
-function getAuth(){
+// Routes
+app.get('/', function(req, res){
+    res.render('index');
+});
 
+app.get('/articles', function(req, res){
+    res.render('articles');
+});
+
+app.get('/login/:email/:pwd', function(req, res){
+
+    user_email = req.params.email;
+    user_pwd = req.params.pwd;
+    res.writeHead(200, { 'Content-Type': 'text/plain' });    
     if(user_email != "" && user_pwd !=""){
-
         _urlAuth = "https://www.google.com/accounts/ClientLogin?service=reader&Email="+user_email+"&Passwd="+user_pwd;
         var options = {host: 'www.google.com', port: 80, path: _urlAuth, method: 'GET'};
 
@@ -70,7 +79,6 @@ function getAuth(){
                 Auth = data.substring(data.indexOf("Auth=")+5).replace('\n','');      
                 _urlToken = "http://www.google.com/reader/api/0/token";
                 var options = {host: 'www.google.com', port: 80, path: _urlToken, method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ Auth}};
-
                 http.get(options, function(resp) {
                     data = "";
                     resp.on('data', function (chunk) {
@@ -78,29 +86,27 @@ function getAuth(){
                     });
                     resp.on('end', function () {
                         token = data;
+                        res.write("OK");
+                        res.end();
                     });
                     resp.on('error', function(e) {
                         console.log("Got error: " + e.message);
+                        res.write("KO");
+                        res.end();
                     });
                 });
             });
             resp.on('error', function(e) {
                 console.log("Got error: " + e.message);
+                res.write("KO");
+                res.end();
             });
         });
     }else{
         console.log("Google username / password are empty");
+        res.write("KO");
+        res.end();
     }
-}
-
-// Routes
-app.get('/', function(req, res){
-    res.render('index');
-    getAuth();
-});
-
-app.get('/articles', function(req, res){
-    res.render('articles');
 });
 
 app.get('/get/:query', function(req, res){
@@ -184,15 +190,16 @@ app.get('/markasread/:url/:pid', function(req, res){
             'Content-Length': post_data.length
         }
     };
-    var post_req = http.request(post_options, function(res) {
+    var post_req = http.request(post_options, function(resp) {
         data = "";
-        res.on('data', function (chunk) {
+        resp.on('data', function (chunk) {
             data += chunk;
         });
-        res.on('end', function (){
+        resp.on('end', function (){
             if (data == "OK"){
-                //TODO: PROPAGATE CONSEQUENCES TO THE UI
-                console.log("Marked as read");
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write(data);
+                res.end();
             }
         });
     });
