@@ -57,7 +57,7 @@ $(document).ready(function() {
 
 			function getFirstFeed(f){
 				$.ajax({
-					url: 'http://localhost:3000/get/feed/'+f,
+					url: 'http://localhost:3000/get/feed/'+f+'/t',
 					type: 'GET',
 					beforeSend: function(r) {
 	    				r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -84,13 +84,17 @@ $(document).ready(function() {
 
 });
 
-//Function for changing the source that we are viewing
+//Function for changing the source for viewing
 function setFeed(f){
-	console.log(f);
 	arrPosts = new Array();
 	_f = encodeURIComponent(arrSources[f]);
+	_id = sanitize(arrSources[f]);
+	_u = "f";	
+	if(parseInt($('li#'+_id+' div span').text())>0){
+		_u = "t";
+	}
 	$.ajax({
-		url: 'http://localhost:3000/get/feed/'+_f,
+		url: 'http://localhost:3000/get/feed/'+_f+"/"+_u,
 		type: 'GET',
 		beforeSend: function(r) {
 	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -109,7 +113,6 @@ function setFeed(f){
 //Function for showing the information of an article on the UI
 function showArticle(i){
 	currentArticle = i;
-	console.log("showing article: "+ currentArticle)
 
 	post = arrPosts[i];
 	$('.title h1').text(post.title);
@@ -140,7 +143,6 @@ function nextArticle(){
 			_id = sanitize(arrSources[currentSource]);
 			_c = parseInt($('li#'+_id+' div span').text()) -1;
 			$('li#'+_id+' div span').text(_c)
-			console.log(_c);
    			if (_c != 0){
    				showArticle(currentArticle+1);
    			}else{

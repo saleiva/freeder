@@ -144,8 +144,11 @@ app.get('/get/:query', function(req, res){
 
 });
 
-app.get('/get/feed/:url', function(req, res){
-    _url = "http://www.google.com/reader/api/0/stream/contents/"+decodeURIComponent(req.params.url)+"?&r=n&xt=user/-/state/com.google/read&n=100";
+app.get('/get/feed/:url/:unread', function(req, res){
+    _url = "http://www.google.com/reader/api/0/stream/contents/"+decodeURIComponent(req.params.url)+"?&r=n&n=100";
+    if(req.params.unread=="t"){
+        _url += "&xt=user/-/state/com.google/read";
+    }
     var options = {
         host: 'www.google.com',
         port: 80,
