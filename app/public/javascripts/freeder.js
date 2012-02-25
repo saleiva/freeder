@@ -7,10 +7,13 @@ var arrSources = new Array();
 $(document).ready(function() {
 
 	//Ask for all the blogs where the user is subscripted
-	$.ajax({
+	var sreq = $.ajax({
 
 	    url: "http://localhost:3000/get/subscription-list",
 	    type: 'GET',
+	    beforeSend: function(r) {
+    		r.setRequestHeader("Auth_token", sessvars.Auth_token);
+  		},
 	    success: function(res) {
 	        jQuery.each(res.subscriptions, function(i,obj){
 	        	var url = obj.htmlUrl;
@@ -24,6 +27,9 @@ $(document).ready(function() {
    			$.ajax({
 			    url: 'http://localhost:3000/get/unread-count',
 			    type: 'GET',
+				beforeSend: function(r) {
+    				r.setRequestHeader("Auth_token", sessvars.Auth_token);
+				},
 			    success: function(resc) {
 			    	total_count = 0;
 			    	var fe = null;
@@ -53,6 +59,9 @@ $(document).ready(function() {
 				$.ajax({
 					url: 'http://localhost:3000/get/feed/'+f,
 					type: 'GET',
+					beforeSend: function(r) {
+	    				r.setRequestHeader("Auth_token", sessvars.Auth_token);
+					},
 					success: function(resc) {
 						arrPosts = new Array();
 						jQuery.each(resc.items, function(i,obj){
@@ -83,6 +92,9 @@ function setFeed(f){
 	$.ajax({
 		url: 'http://localhost:3000/get/feed/'+_f,
 		type: 'GET',
+		beforeSend: function(r) {
+	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
+		},
 		success: function(resc) {
 			jQuery.each(resc.items, function(i,obj){
       			arrPosts[i] = obj;
@@ -120,6 +132,10 @@ function nextArticle(){
 	$.ajax({
 		url: 'http://localhost:3000/markasread/'+f+'/'+p,
 		type: 'GET',
+		beforeSend: function(r) {
+	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
+	    	r.setRequestHeader("Action_token", sessvars.Action_token);
+		},
 		success: function(resc) {
 			_id = sanitize(arrSources[currentSource]);
 			_c = parseInt($('li#'+_id+' div span').text()) -1;

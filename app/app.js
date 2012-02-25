@@ -48,10 +48,6 @@ app.configure('production', function(){
     app.use(express.errorHandler());
 });
 
-var Auth ="";
-var token ="";
-var userID ="";
-
 // Routes
 app.get('/', function(req, res){
     res.render('index');
@@ -61,13 +57,10 @@ app.get('/articles', function(req, res){
     res.render('articles');
 });
 
-app.get('/login/:email/:pwd', function(req, res){
-
-    user_email = req.params.email;
-    user_pwd = req.params.pwd;
-    res.writeHead(200, { 'Content-Type': 'text/plain' });    
-    if(user_email != "" && user_pwd !=""){
-        _urlAuth = "https://www.google.com/accounts/ClientLogin?service=reader&Email="+user_email+"&Passwd="+user_pwd;
+app.get('/login/:email/:pwd', function(req, res){   
+    
+    if(req.params.email != "" && req.params.pwd !=""){
+        _urlAuth = "https://www.google.com/accounts/ClientLogin?service=reader&Email="+req.params.email+"&Passwd="+req.params.pwd;
         var options = {host: 'www.google.com', port: 80, path: _urlAuth, method: 'GET'};
 
         http.get(options, function(resp) {
@@ -86,24 +79,30 @@ app.get('/login/:email/:pwd', function(req, res){
                     });
                     resp.on('end', function () {
                         token = data;
+                        res.setHeader("Auth_token", Auth);
+                        res.setHeader("Action_token", token);
+                        res.writeHead(200, { 'Content-Type': 'text/plain' });   
                         res.write("OK");
                         res.end();
+                        Auth ="";
+                        token ="";
                     });
                     resp.on('error', function(e) {
-                        console.log("Got error: " + e.message);
+                        res.writeHead(200, { 'Content-Type': 'text/plain' });   
                         res.write("KO");
                         res.end();
                     });
                 });
             });
             resp.on('error', function(e) {
-                console.log("Got error: " + e.message);
+                res.writeHead(200, { 'Content-Type': 'text/plain' });   
                 res.write("KO");
                 res.end();
             });
         });
     }else{
         console.log("Google username / password are empty");
+        res.writeHead(200, { 'Content-Type': 'text/plain' });   
         res.write("KO");
         res.end();
     }
@@ -123,7 +122,7 @@ app.get('/get/:query', function(req, res){
         path: _url,
         method: 'GET',
         headers: {
-            'Authorization': 'GoogleLogin auth='+ Auth
+            'Authorization': 'GoogleLogin auth='+ req.headers['auth_token']
         }
     };
 
@@ -153,7 +152,7 @@ app.get('/get/feed/:url', function(req, res){
         path: _url,
         method: 'GET',
         headers: {
-            'Authorization': 'GoogleLogin auth='+ Auth
+            'Authorization': 'GoogleLogin auth='+ req.headers['auth_token']
         }
     };
 
@@ -178,14 +177,14 @@ app.get('/markasread/:url/:pid', function(req, res){
    
     _url = "/reader/api/0/edit-tag?client=freeder";
 
-    var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url+"&i="+req.params.pid+"&T="+token.substring(2);
+    var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url+"&i="+req.params.pid+"&T="+req.headers['action_token'].substring(2);
     var post_options = {
         host: 'www.google.com',
         port: 80,
         path: _url,
         method: 'POST',
         headers: {
-            'Authorization': 'GoogleLogin auth='+ Auth,
+            'Authorization': 'GoogleLogin auth='+ req.headers['auth_token'],
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': post_data.length
         }

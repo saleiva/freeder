@@ -67,7 +67,9 @@ function cleanpost(){
 
 	//Remove Google ads
 	$('.content').find('iframe:regex(src,feedads)').each(function() {
-		console.log("Google ads removed");
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,feedads)').each(function() {
 		$(this).remove();
 	});
 
