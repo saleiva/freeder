@@ -63,6 +63,30 @@ function cleanpost(){
 	$('.content').find('a:regex(href,tweetmeme)').each(function() {
 		$(this).remove();
 	});
+	$('.content').find('a:regex(href,comments)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,comments)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,twitter)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,digg)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,delicious)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,facebook)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,tumbl)').each(function() {
+		$(this).remove();
+	});
+	$('.content').find('a:regex(href,reddit)').each(function() {
+		$(this).remove();
+	});
 
 
 	//Remove Google ads

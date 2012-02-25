@@ -6,7 +6,6 @@
 //http://code.google.com/p/google-reader-gadget/source/browse/trunk/edit.js
 //http://undoc.in/googlereader.html
 
-
 /**
 * Module dependencies.
 */
