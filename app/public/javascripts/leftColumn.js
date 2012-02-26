@@ -1,14 +1,20 @@
 $(document).ready(function() {
 
+	var _selectedSource;
+
 	$('.sources ul').on("mouseenter mouseleave", 'li', function(event){
-		$(this).toggleClass("over");
-		$(this).find('div a').toggleClass("over");
+		if($(this) != _selectedSource){
+			$(this).toggleClass("over");
+		}
 	});
 
 	$('.sources ul').on("click", 'li', function(event){
 		setFeed($(this).attr('id'));
-		//$(this).addClass("over");
-		//$(this).find('div a').addClass("over");
+		if(_selectedSource){
+			_selectedSource.removeClass("selected");
+		}
+		_selectedSource = $(this);
+		_selectedSource.addClass("selected");
 	});
 
 	$('.sources_area').bind("mouseenter", function(event){

@@ -170,12 +170,14 @@ function nextArticle(){
 			_c -= 1;
 			$('li#'+_id+' div span').text(_c)
 			hideminispinner();
+			if(_c==0){
+				$('li#'+_id+' div span').fadeOut();
+			}
 		}
 	});
-	if (_c != 0){
+	if (currentArticle < arrPosts.length){
 		showArticle(currentArticle+1);
 	}else{
-		$('li#'+_id+' div span').hide();
 		//TODO: SHOW UI OPTION TO READ READ ITEMS
 	}
 }

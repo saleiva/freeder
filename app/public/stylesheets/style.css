@@ -208,6 +208,10 @@ div.sources ul li.over{
 	background-color: #414141;
 }
 
+div.sources ul li.selected{
+	background-color: #414141;
+}
+
 div.sources ul li div{
 	width: 290px;
 }
