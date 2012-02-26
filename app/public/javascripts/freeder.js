@@ -106,6 +106,7 @@ $(document).ready(function() {
 
 //Function for changing the source for viewing
 function setFeed(f){
+	spinner.stop();
 	$('.article').hide();
 	spinner = new Spinner(opts).spin(target);
 	arrPosts = new Array();
@@ -167,11 +168,13 @@ function nextArticle(){
 	    	r.setRequestHeader("Action_token", sessvars.Action_token);
 		},
 		success: function(resc) {
+			console.log(_c);
 			_c -= 1;
 			$('li#'+_id+' div span').text(_c)
 			hideminispinner();
+			console.log(_c);
 			if(_c==0){
-				$('li#'+_id+' div span').fadeOut();
+				$('li#'+_id+' div span').hide();
 			}
 		}
 	});
