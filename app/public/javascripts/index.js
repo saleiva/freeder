@@ -6,6 +6,7 @@ function doLogin(){
 		url: 'http://localhost:3000/login/'+_u+'/'+_p,
 		type: 'GET',
 		success: function(resc) {
+			console.log(resc);
    			if (resc == "KO"){
    				console.log("ERROR ON LOGIN");
    			}else{

@@ -4,7 +4,25 @@ var currentArticle = 0;
 var currentSource = 0;
 var arrSources = new Array();
 
+var opts = {
+		lines: 12, // The number of lines to draw
+		length: 5, // The length of each line
+		width: 4, // The line thickness
+		radius: 21, // The radius of the inner circle
+		color: '#000', // #rgb or #rrggbb
+		speed: 1, // Rounds per second
+		trail: 64, // Afterglow percentage
+		shadow: false, // Whether to render a shadow
+		hwaccel: false // Whether to use hardware acceleration
+	};
+var spinner, target;
+
 $(document).ready(function() {
+
+	target = document.getElementById('spinner');
+	spinner = new Spinner(opts).spin(target);
+	
+	$('.article').hide();
 
 	//Ask for all the blogs where the user is subscripted
 	var sreq = $.ajax({
@@ -67,6 +85,8 @@ $(document).ready(function() {
 						jQuery.each(resc.items, function(i,obj){
 			      			arrPosts[i] = obj;
 			   			});
+			   			spinner.stop();
+			   			$('.article').fadeIn();
 			   			showArticle(0);
 					}
 				});
@@ -86,6 +106,8 @@ $(document).ready(function() {
 
 //Function for changing the source for viewing
 function setFeed(f){
+	$('.article').hide();
+	spinner = new Spinner(opts).spin(target);
 	arrPosts = new Array();
 	_f = encodeURIComponent(arrSources[f]);
 	_id = sanitize(arrSources[f]);
@@ -104,8 +126,10 @@ function setFeed(f){
       			arrPosts[i] = obj;
    			});
    			console.log("Total articles received: "+arrPosts.length);
-   			showArticle(0);
    			currentSource = f;
+   			showArticle(0);
+   			$('.article').fadeIn();
+   			spinner.stop();
 		}
 	});
 }
@@ -132,6 +156,9 @@ function showArticle(i){
 function nextArticle(){
 	f = encodeURIComponent(arrSources[currentSource]);
 	p = encodeURIComponent(arrPosts[currentArticle].id);
+	_id = sanitize(arrSources[currentSource]);
+	_c = parseInt($('li#'+_id+' div span').text())
+	viewminispinner();
 	$.ajax({
 		url: 'http://localhost:3000/markasread/'+f+'/'+p,
 		type: 'GET',
@@ -140,17 +167,17 @@ function nextArticle(){
 	    	r.setRequestHeader("Action_token", sessvars.Action_token);
 		},
 		success: function(resc) {
-			_id = sanitize(arrSources[currentSource]);
-			_c = parseInt($('li#'+_id+' div span').text()) -1;
+			_c -= 1;
 			$('li#'+_id+' div span').text(_c)
-   			if (_c != 0){
-   				showArticle(currentArticle+1);
-   			}else{
-   				$('li#'+_id+' div span').hide();
-   				//TODO: SHOW UI OPTION TO READ READ ITEMS
-   			}
+			hideminispinner();
 		}
 	});
+	if (_c != 0){
+		showArticle(currentArticle+1);
+	}else{
+		$('li#'+_id+' div span').hide();
+		//TODO: SHOW UI OPTION TO READ READ ITEMS
+	}
 }
 
 //Function for removing shitty characters from the id property

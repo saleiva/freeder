@@ -66,9 +66,6 @@ function cleanpost(){
 	$('.content').find('a:regex(href,comments)').each(function() {
 		$(this).remove();
 	});
-	$('.content').find('a:regex(href,comments)').each(function() {
-		$(this).remove();
-	});
 	$('.content').find('a:regex(href,twitter)').each(function() {
 		$(this).remove();
 	});

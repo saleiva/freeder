@@ -1,5 +1,17 @@
 body{ background:url('/images/bkg_w.png'); padding:0px;}
 
+div#spinner{
+	position: absolute;
+	z-index: 20;
+	top: 50%;
+	left: 50%;
+}
+div#minispinner{
+	position: absolute;
+	right: 20px;
+	top: 20px;
+}
+
 a{
 	color: #FF3333;
 	text-decoration: none;

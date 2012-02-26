@@ -7,6 +7,8 @@ $(document).ready(function() {
 
 	$('.sources ul').on("click", 'li', function(event){
 		setFeed($(this).attr('id'));
+		//$(this).addClass("over");
+		//$(this).find('div a').addClass("over");
 	});
 
 	$('.sources_area').bind("mouseenter", function(event){
