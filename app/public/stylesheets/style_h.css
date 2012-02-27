@@ -1,0 +1,133 @@
+body{background-color: white;}
+
+p{
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 15px;
+	color: #666;
+}
+
+a{
+	color: #FF3333;
+	text-decoration: none;
+}
+
+div.top{
+	height: 536px;
+	text-align: center;
+}
+
+div.wrap{
+	width: 950px;
+	margin: 0 auto 0 auto;
+	text-align: left;
+
+}
+
+div.top div.wrap{
+	background:url('/images/home_computer.png');
+	height: 500px;
+}
+
+p.logo{
+	font-family: Fjord;
+	color: #333;
+	font-size: 19px;
+	font-weight: normal;
+	margin: 40px 0 0 0;
+}
+
+p.logo span{
+	color: #FF3333;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 11px;
+	margin: 0 0 0 6px;
+}
+
+div.text{
+	width: 305px;
+	margin: 159px 0 0 0;
+}
+
+div.text h1{
+	font-family: Fjord;
+	font-weight: normal;	
+	color: #333;
+	font-size: 29px;
+	margin: 0 0 20px 0;
+	width: 296px;
+}
+
+div.text h2{
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: normal;	
+	color: #666;
+	font-size: 15px;
+	margin: 0 0 45px 0;
+	width: 280px;
+	line-height: 19px;
+}
+
+div.text a.bigButton{
+	background:url('/images/home_button.png');
+	padding: 15px 28px 14px 28px;
+	color: transparent;
+}
+
+div.text a.bigButton:hover{
+	background:url('/images/home_button.png') 0 -47px no-repeat;
+}
+
+div.bottom{ 
+	background:url('/images/bkg_w.png');
+	border-top: 1px solid #CCC;
+	text-align: center;
+	height: 300px;
+}
+
+div.bottom div.wrap ul{
+	float:left;
+	margin: 53px 0 0 0;
+}
+
+div.bottom div.wrap ul li{
+	display:inline;
+	float: left;
+	width: 280px;
+	margin: 0 50px 0 0;
+}
+
+div.bottom div.wrap ul li.last{
+	margin: 0;
+}
+
+div.bottom div.wrap ul li.first{
+	margin: 0 58px 0 0;
+}
+
+div.bottom div.wrap ul li p.title{
+	font-family: Fjord;
+	font-weight: normal;	
+	color: #333;
+	font-size: 19px;
+	margin: 0 0 20px 0;
+}
+
+div.bottom div.wrap ul li p{
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: normal;	
+	color: #666;
+	font-size: 15px;
+	line-height: 21px;
+}
+
+div.bottom div.wrap div.footer{
+	border-top: 1px solid #CCC;
+	float:right;
+	width: 100%;
+	margin: 50px 0 0 0;
+}
+
+div.bottom div.wrap div.footer p{
+	margin: 45px 0 0 668px;
+	font-size: 13px;
+}

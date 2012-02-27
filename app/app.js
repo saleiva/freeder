@@ -56,7 +56,7 @@ app.configure('production', function(){
 
 // Routes
 app.get('/', function(req, res){
-    res.render('index');
+    res.render('home');
 });
 
 app.get('/articles', function(req, res){
