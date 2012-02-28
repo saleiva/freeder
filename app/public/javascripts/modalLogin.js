@@ -4,7 +4,7 @@ $(document).ready(function(){
         var contenidoHTML = '<p class="modalTitle">Sign-in on Freeder with your Google account.</p><form><input type="text" id="email_input" placeholder="Google email"><input type="password" id="pwd_input" placeholder="Password"><a href="#" onClick="doLogin()" type="submit" class="btn">Sign in</a></form><div class="footer">Don’t remember your account data? <a href="#">Ask Google for them</a><div>';
         
         var ancho = 600; 
-        var alto = 250;
+        var alto = 260;
 
         $('.bigButton').bind('click', function(){
                 // fondo transparente
