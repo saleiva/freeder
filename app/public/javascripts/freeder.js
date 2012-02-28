@@ -108,13 +108,14 @@ $(document).ready(function() {
 
 //Function for changing the source for viewing
 function setFeed(f,u){
+	console.log(arrPosts);
 	spinner.stop();
 	$('.article').hide();
 	spinner = new Spinner(opts).spin(target);
 	arrPosts = new Array();
 	_f = encodeURIComponent(arrSources[f]);
 	_id = sanitize(arrSources[f]);
-	if((parseInt($('li#'+_id+' div span').text())>0) || (u == undefined)){
+	if((parseInt($('li#'+_id+' div span').text())>0) || (u == 'undefined')){
 		_u = "t";
 	}else{
 		_u = "f";
