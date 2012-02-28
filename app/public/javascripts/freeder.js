@@ -3,6 +3,7 @@ var arrPosts = new Array();
 var currentArticle = 0;
 var currentSource = 0;
 var arrSources = new Array();
+var unreadFlag = "f";
 
 var opts = {
 		lines: 12, // The number of lines to draw
@@ -23,6 +24,7 @@ $(document).ready(function() {
 	spinner = new Spinner(opts).spin(target);
 	
 	$('.article').hide();
+	$('.noUnread').hide();
 
 	//Ask for all the blogs where the user is subscripted
 	var sreq = $.ajax({
@@ -105,16 +107,20 @@ $(document).ready(function() {
 });
 
 //Function for changing the source for viewing
-function setFeed(f){
+function setFeed(f,u){
 	spinner.stop();
 	$('.article').hide();
 	spinner = new Spinner(opts).spin(target);
 	arrPosts = new Array();
 	_f = encodeURIComponent(arrSources[f]);
 	_id = sanitize(arrSources[f]);
-	_u = "f";	
-	if(parseInt($('li#'+_id+' div span').text())>0){
+	if((parseInt($('li#'+_id+' div span').text())>0) || (u == undefined)){
 		_u = "t";
+	}else{
+		_u = "f";
+		if($('.noUnread').is(':visible')){
+			$('.noUnread').hide();
+		}
 	}
 	$.ajax({
 		url: 'http://localhost:3000/get/feed/'+_f+"/"+_u,
@@ -168,21 +174,25 @@ function nextArticle(){
 	    	r.setRequestHeader("Action_token", sessvars.Action_token);
 		},
 		success: function(resc) {
-			console.log(_c);
-			_c -= 1;
+			if(_c>0){
+				_c -= 1;
+			}
 			$('li#'+_id+' div span').text(_c)
 			hideminispinner();
-			console.log(_c);
+			
 			if(_c==0){
 				$('li#'+_id+' div span').hide();
 			}
 		}
 	});
-	if (currentArticle < arrPosts.length){
+	if (currentArticle < arrPosts.length-1){
 		showArticle(currentArticle+1);
 	}else{
-		//TODO: SHOW UI OPTION TO READ READ ITEMS
+		$('.article').fadeOut('slow', function(){
+			$('.noUnread').fadeIn();
+		});
 	}
+	window.scroll();
 }
 
 //Function for removing shitty characters from the id property

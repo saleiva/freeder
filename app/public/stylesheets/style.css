@@ -152,6 +152,30 @@ div.menu ul li a.facebook:hover{background:url('/images/shareBtns_w.png') -26px 
 div.menu ul li a.twitter{background:url('/images/shareBtns_w.png') -52px 0 no-repeat;}
 div.menu ul li a.twitter:hover{background:url('/images/shareBtns_w.png') -52px -23px no-repeat;}
 
+
+div.noUnread{
+	position: absolute;
+	z-index: 19;
+	top: 50%;
+	left: 50%;
+	text-align:center;
+	width: 460px;
+	margin-left: -230px;
+}
+
+div.noUnread p.title{
+	font-family: Fjord;
+	color:#333;
+	margin: 0 auto 10px auto;
+	font-size:23px;
+}
+
+div.noUnread p{
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	color: #666;
+}
+
 /*SOURCES PANEL*/
 div.sources_area{
 	position: fixed;
@@ -194,9 +218,6 @@ div.sources div.header h3{
 	line-height: 36px;
 	text-align:left;
 	margin: 0 0 0 10px;
-}
-
-div.sources ul{
 }
 
 div.sources ul li{
