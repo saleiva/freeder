@@ -108,7 +108,6 @@ $(document).ready(function() {
 
 //Function for changing the source for viewing
 function setFeed(f,u){
-	console.log(arrPosts);
 	spinner.stop();
 	$('.article').hide();
 	spinner = new Spinner(opts).spin(target);
@@ -145,10 +144,9 @@ function setFeed(f,u){
 //Function for showing the information of an article on the UI
 function showArticle(i){
 	currentArticle = i;
-
 	post = arrPosts[i];
 	$('.title h1').text(post.title);
-	$('.title h2 a').attr('href',post.origin.htmlUrl);
+	$('.title h2 a').attr('href',post.alternate[0].href);
 	$('.title h2 a').text(post.origin.title);
 	$('.content').text("");
 	if(post.content){
@@ -194,6 +192,25 @@ function nextArticle(){
 		});
 	}
 	window.scroll();
+}
+
+function shareOnTwitter(){
+	if ((arrPosts[currentArticle].title).length > 70){
+		_t = (arrPosts[currentArticle].title).substring(0,70)+"..."
+	}else{
+		_t = arrPosts[currentArticle].title
+	}
+	_url = "http://twitter.com/home?status="+_t+ " - " +(arrPosts[currentArticle].alternate[0].href) + " - As read on XXX";
+	window.open(_url);
+}
+
+function shareOnFacebook(){
+	_url = "http://www.facebook.com/sharer.php?t="+arrPosts[currentArticle].title+"&u="+(arrPosts[currentArticle].alternate[0].href);
+	window.open(_url);
+}
+
+function goToPermalink(){
+	window.open(arrPosts[currentArticle].alternate[0].href);
 }
 
 //Function for removing shitty characters from the id property
