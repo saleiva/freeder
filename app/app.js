@@ -59,7 +59,7 @@ app.get('/', function(req, res){
     res.render('index');
 });
 
-app.get('/articles', function(req, res){
+app.get('/read', function(req, res){
     res.render('articles');
 });
 
@@ -67,7 +67,7 @@ app.get('/login/:email/:pwd', function(req, res){
     
     function sendError(r){
         r.writeHead(200, { 'Content-Type': 'text/plain' });   
-        r.write("KO");
+        r.write("ERROR");
         r.end();
     }
 

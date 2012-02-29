@@ -170,8 +170,12 @@ div#bgmodal form input[type=text], div#bgmodal form input[type=password]{
 	font-size: 13px;
 	margin: 0 10px 0 0;
 	width: 171px;
-	height: 42px;
+	height: 41px;
 	border: none;
+}
+
+div#bgmodal form input[type=text].error, div#bgmodal form input[type=password].error{
+	background: url('/images/txtinput.png') 0 -41px no-repeat;
 }
 
 div#bgmodal form a{

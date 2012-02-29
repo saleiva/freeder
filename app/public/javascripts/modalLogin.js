@@ -1,77 +1,78 @@
+//HANDLES LOGIN MODAL WINDOW INTERACTIVITY
+
+
 $(document).ready(function(){
-        //parametros principales
-        
-        var contenidoHTML = '<p class="modalTitle">Sign-in on Freeder with your Google account.</p><form><input type="text" id="email_input" placeholder="Google email"><input type="password" id="pwd_input" placeholder="Password"><a href="#" onClick="doLogin()" type="submit" class="btn">Sign in</a></form><div class="footer">Don’t remember your account data? <a href="#">Ask Google for them</a><div>';
-        
-        var ancho = 600; 
-        var alto = 260;
+    
+    var cHTML = '<p class="modalTitle">Sign-in on Freeder with your Google account.</p><form><input type="text" id="email_input" placeholder="Google email"><input type="password" id="pwd_input" placeholder="Password"><a href="#" onClick="doLogin()" type="submit" class="btn">Sign in</a></form><div class="footer">Don’t remember your account data? <a href="#">Ask Google for them</a><div>';
+    
+    var mwidth = 600; 
+    var mheight = 260;
 
-        $('.bigButton').bind('click', function(){
-                // fondo transparente
-                // creamos un div nuevo, con dos atributos
-                var bgdiv = $('<div onclick=\"closeModal()\">').attr({
-                                        className: 'bgtransparent',
-                                        id: 'bgtransparent'
-                                        });
-                
-                // agregamos nuevo div a la pagina
-                $('body').append(bgdiv);
-                
-                // obtenemos ancho y alto de la ventana del explorer
-                var wscr = $(window).width();
-                var hscr = $(window).height();
-                
-                //establecemos las dimensiones del fondo
-                $('#bgtransparent').css("width", wscr);
-                $('#bgtransparent').css("height", hscr);
-                
-                // ventana modal
-                // creamos otro div para la ventana modal y dos atributos
-                var moddiv = $('<div>').attr({
-                                        className: 'bgmodal',
-                                        id: 'bgmodal'
-                                        });     
-                
-                // agregamos div a la pagina
-                $('body').append(moddiv);
+    $('.bigButton').bind('click', function(){
+        //Create background DIV
+        var bgdiv = $('<div onclick=\"closeModal()\">').attr({
+            className: 'bgtransparent',
+            id: 'bgtransparent'
+        });
+        $('body').append(bgdiv);
+        
+        //Create modal window
+        var moddiv = $('<div>').attr({
+            className: 'bgmodal',
+            id: 'bgmodal'
+        });     
+        $('body').append(moddiv);
+        $('#bgmodal').append(cHTML);
 
-                // agregamos contenido HTML a la ventana modal
-                $('#bgmodal').append(contenidoHTML);
-                
-                // redimensionamos para que se ajuste al centro y mas
-                $(window).resize();
+        $('form > input#email_input').focus();
+
+        $('form > input').focus(function(){
+            $('form > input').removeClass('error');
         });
 
-        $(window).resize(function(){
-                // dimensiones de la ventana del explorer 
-                var wscr = $(window).width();
-                var hscr = $(window).height();
+        $(window).resize();
 
-                // estableciendo dimensiones de fondo
-                $('#bgtransparent').css("width", wscr);
-                $('#bgtransparent').css("height", hscr);
-                
-                // estableciendo tamaño de la ventana modal
-                $('#bgmodal').css("width", ancho+'px');
-                $('#bgmodal').css("height", alto+'px');
-                
-                // obtiendo tamaño de la ventana modal
-                var wcnt = $('#bgmodal').width();
-                var hcnt = $('#bgmodal').height();
-                
-                // obtener posicion central
-                var mleft = ( wscr - wcnt ) / 2;
-                var mtop = ( hscr - hcnt ) / 2;
-                
-                // estableciendo ventana modal en el centro
-                $('#bgmodal').css("left", mleft+'px');
-                $('#bgmodal').css("top", mtop+'px');
-        });
+    });
+
+    $(window).resize(function(){
+        //Get window size and position the bkg and the modal
+        var wscr = $(window).width();
+        var hscr = $(window).height();
+
+        $('#bgtransparent').css("width", wscr);
+        $('#bgtransparent').css("height", hscr);
         
- });
+        $('#bgmodal').css("width", mwidth+'px');
+        $('#bgmodal').css("height", mheight+'px');
         
+        $('#bgmodal').css("left", (wscr - mwidth)/2 +'px');
+        $('#bgmodal').css("top", (hscr - mheight)/2 +'px');
+    });
+
+});
+
+//Sends form contents to the proxy for Authentication
+function doLogin(){
+    var ajxreq = $.ajax({
+        url: 'http://localhost:3000/login/'+$('form > input#email_input').val()+'/'+$('form > input#pwd_input').val(),
+        type: 'GET',
+        success: function(resc) {
+            console.log(resc);
+            if (resc == "ERROR"){
+                console.log("ERROR ON LOGIN");
+                $('form > input').addClass('error');
+            }else{
+                sessvars.Auth_token = ajxreq.getResponseHeader('Auth_token');
+                console.log(sessvars.Auth_token);
+                sessvars.Action_token = ajxreq.getResponseHeader('Action_token');
+                window.location.href='http://localhost:3000/read';
+            }
+        }
+    });
+}
+
+//Closes modal window
 function closeModal(){
-        // removemos divs creados
-        $('#bgmodal').remove();
-        $('#bgtransparent').remove();
+    $('#bgmodal').remove();
+    $('#bgtransparent').remove();
 }

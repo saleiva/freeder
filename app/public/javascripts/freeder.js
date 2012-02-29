@@ -5,18 +5,8 @@ var currentSource = 0;
 var arrSources = new Array();
 var unreadFlag = "f";
 
-var opts = {
-		lines: 12, // The number of lines to draw
-		length: 5, // The length of each line
-		width: 4, // The line thickness
-		radius: 21, // The radius of the inner circle
-		color: '#000', // #rgb or #rrggbb
-		speed: 1, // Rounds per second
-		trail: 64, // Afterglow percentage
-		shadow: false, // Whether to render a shadow
-		hwaccel: false // Whether to use hardware acceleration
-	};
 var spinner, target;
+var opts = {lines: 12, length: 5, width: 4, radius: 21, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
 
 $(document).ready(function() {
 
@@ -49,6 +39,7 @@ $(document).ready(function() {
 			    type: 'GET',
 				beforeSend: function(r) {
     				r.setRequestHeader("Auth_token", sessvars.Auth_token);
+    				viewminispinner();
 				},
 			    success: function(resc) {
 			    	total_count = 0;
@@ -60,7 +51,7 @@ $(document).ready(function() {
 		   			});
 		   			
 		   			//SET TOP COUNTER
-		   			$('.header span').text("("+total_count+")");
+		   			updateTotalCounter(total_count);
 		   			
 		   			//SHOW BY DEFAULT THE FIRST SOURCE WITH UNREAD ITEMS
 		   			$('.sources ul li').each(function() {
@@ -109,12 +100,10 @@ $(document).ready(function() {
 //Function for changing the source for viewing
 function setFeed(f,u){
 	spinner.stop();
-	$('.article').hide();
+	$('.article').fadeOut();
 	spinner = new Spinner(opts).spin(target);
 	arrPosts = new Array();
-	_f = encodeURIComponent(arrSources[f]);
-	_id = sanitize(arrSources[f]);
-	if((parseInt($('li#'+_id+' div span').text())>0) || (u == 'undefined')){
+	if((parseInt($('li#'+sanitize(arrSources[f])+' div span').text())>0) || (u == 'undefined')){
 		_u = "t";
 	}else{
 		_u = "f";
@@ -123,7 +112,7 @@ function setFeed(f,u){
 		}
 	}
 	$.ajax({
-		url: 'http://localhost:3000/get/feed/'+_f+"/"+_u,
+		url: 'http://localhost:3000/get/feed/'+encodeURIComponent(arrSources[f])+"/"+_u,
 		type: 'GET',
 		beforeSend: function(r) {
 	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -132,7 +121,6 @@ function setFeed(f,u){
 			jQuery.each(resc.items, function(i,obj){
       			arrPosts[i] = obj;
    			});
-   			console.log("Total articles received: "+arrPosts.length);
    			currentSource = f;
    			showArticle(0);
    			$('.article').fadeIn();
@@ -141,7 +129,7 @@ function setFeed(f,u){
 	});
 }
 
-//Function for showing the information of an article on the UI
+//Show an item on the UI
 function showArticle(i){
 	currentArticle = i;
 	post = arrPosts[i];
@@ -158,7 +146,7 @@ function showArticle(i){
 
 }
 
-//Function for going to the next article
+//Show the next item and mark this as unread
 function nextArticle(){
 	f = encodeURIComponent(arrSources[currentSource]);
 	p = encodeURIComponent(arrPosts[currentArticle].id);
@@ -179,8 +167,7 @@ function nextArticle(){
 				_t -= 1;
 			}
 			$('li#'+_id+' div span').text(_c);
-			$('.header span').text("("+_t+")");
-			hideminispinner();
+			updateTotalCounter(_t);
 			if(_c==0){
 				$('li#'+_id+' div span').hide();
 			}

@@ -1,21 +1,12 @@
 var minispinner;
-var minispinner_o = {
-	lines: 8, // The number of lines to draw
-	length: 2, // The length of each line
-	width: 2, // The line thickness
-	radius: 4, // The radius of the inner circle
-	color: '#000', // #rgb or #rrggbb
-	speed: 1, // Rounds per second
-	trail: 62, // Afterglow percentage
-	shadow: false, // Whether to render a shadow
-	hwaccel: false // Whether to use hardware acceleration
-};
+var minispinner_o = {lines: 8, length: 2, width: 2, radius: 4, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
 
 function viewminispinner(){
 	minispinner_t = document.getElementById('minispinner');
 	minispinner = new Spinner(minispinner_o).spin(minispinner_t);
 }
 
-function hideminispinner(){
+function updateTotalCounter(n){
+	$('.header span').text("("+n+")");
 	minispinner.stop();
 }
