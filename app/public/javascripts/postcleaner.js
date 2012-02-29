@@ -94,12 +94,16 @@ function cleanpost(){
 		$(this).remove();
 	});
 
+	timer = setTimeout("checkImages()", 1000);
+}
+
+function checkImages(){
+	console.log("CHECKIN IMAGES");
     for (var i = 0; i < document.images.length; i++) {
         if (!isImageOk(document.images[i])) {
             document.images[i].style.display = "none";
         }
     }
-
 }
 
 function isImageOk(img) {
