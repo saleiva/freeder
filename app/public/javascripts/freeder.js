@@ -164,6 +164,7 @@ function nextArticle(){
 	p = encodeURIComponent(arrPosts[currentArticle].id);
 	_id = sanitize(arrSources[currentSource]);
 	_c = parseInt($('li#'+_id+' div span').text())
+	_t = parseInt(($('.header p span').text()).substring(1,($('.header p span').text()).length-1));
 	viewminispinner();
 	$.ajax({
 		url: 'http://localhost:3000/markasread/'+f+'/'+p,
@@ -175,10 +176,11 @@ function nextArticle(){
 		success: function(resc) {
 			if(_c>0){
 				_c -= 1;
+				_t -= 1;
 			}
-			$('li#'+_id+' div span').text(_c)
+			$('li#'+_id+' div span').text(_c);
+			$('.header span').text("("+_t+")");
 			hideminispinner();
-			
 			if(_c==0){
 				$('li#'+_id+' div span').hide();
 			}

@@ -95,7 +95,6 @@ function cleanpost(){
 	});
 
     for (var i = 0; i < document.images.length; i++) {
-    	console.log(document.images[i]);
         if (!isImageOk(document.images[i])) {
             document.images[i].style.display = "none";
         }
