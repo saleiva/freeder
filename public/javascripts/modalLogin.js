@@ -54,7 +54,7 @@ $(document).ready(function(){
 //Sends form contents to the proxy for Authentication
 function doLogin(){
     var ajxreq = $.ajax({
-        url: 'http://localhost:3000/login/'+$('form > input#email_input').val()+'/'+$('form > input#pwd_input').val(),
+        url: '/login/'+$('form > input#email_input').val()+'/'+$('form > input#pwd_input').val(),
         type: 'GET',
         success: function(resc) {
             console.log(resc);
@@ -65,7 +65,7 @@ function doLogin(){
                 sessvars.Auth_token = ajxreq.getResponseHeader('Auth_token');
                 console.log(sessvars.Auth_token);
                 sessvars.Action_token = ajxreq.getResponseHeader('Action_token');
-                window.location.href='http://localhost:3000/read';
+                window.location.href='/read';
             }
         }
     });

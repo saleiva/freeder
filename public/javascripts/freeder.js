@@ -23,7 +23,7 @@ $(document).ready(function() {
 	//Ask for all the blogs where the user is subscripted
 	var sreq = $.ajax({
 
-	    url: "http://localhost:3000/get/subscription-list",
+	    url: "/get/subscription-list",
 	    type: 'GET',
 	    beforeSend: function(r) {
     		r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -39,7 +39,7 @@ $(document).ready(function() {
 
    			//Get the counters for the unread articles
    			$.ajax({
-			    url: 'http://localhost:3000/get/unread-count',
+			    url: '/get/unread-count',
 			    type: 'GET',
 				beforeSend: function(r) {
     				r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -72,7 +72,7 @@ $(document).ready(function() {
 
 			function getFirstFeed(f){
 				$.ajax({
-					url: 'http://localhost:3000/get/feed/'+f+'/t',
+					url: '/get/feed/'+f+'/t',
 					type: 'GET',
 					beforeSend: function(r) {
 	    				r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -116,7 +116,7 @@ function setFeed(f,u){
 		}
 	}
 	$.ajax({
-		url: 'http://localhost:3000/get/feed/'+encodeURIComponent(arrSources[f])+"/"+_u,
+		url: 'get/feed/'+encodeURIComponent(arrSources[f])+"/"+_u,
 		type: 'GET',
 		beforeSend: function(r) {
 	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -160,7 +160,7 @@ function nextArticle(){
 	_t = parseInt(($('.header p span').text()).substring(1,($('.header p span').text()).length-1));
 	viewminispinner();
 	$.ajax({
-		url: 'http://localhost:3000/markasread/'+f+'/'+p,
+		url: '/markasread/'+f+'/'+p,
 		type: 'GET',
 		beforeSend: function(r) {
 	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
