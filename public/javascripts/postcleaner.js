@@ -54,8 +54,11 @@ function cleanpost(){
 	});
 
 	//Handle p with just an image inside
+	//TODO: CHECK! 
 	$('.content').find('p').each(function() {	
-		if(($(this).children().length == 1) && ($(this).find('img').is('img'))){
+		if(($(this).children().length == 1) && ($(this).children('img').length == 1)){
+			console.log($(this).children());
+			console.log("CHECKIN IMAGES");
 			$(this).find('img').css('margin-bottom','0');
 		}
 	});
@@ -104,7 +107,6 @@ function cleanpost(){
 }
 
 function checkImages(){
-	console.log("CHECKIN IMAGES");
     for (var i = 0; i < document.images.length; i++) {
         if (!isImageOk(document.images[i])) {
             //document.images[i].style.display = "none";

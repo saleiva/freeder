@@ -21,6 +21,10 @@ li{
 	list-style-image: url('/images/bullet.png');
 }
 
+h2{
+	margin: 0 0 22px 0;
+}
+
 a:hover{
 	text-decoration: underline;
 }
@@ -74,6 +78,7 @@ div.article div.title h2{
 	font-weight: normal;
 	margin: 7px 0 0 0;
 }
+
 div.article p{
 	line-height: 29px;
 	padding: 0 0 30px 2px;
@@ -112,11 +117,11 @@ div.content iframe{
 	width: 590px;
 }
 
-div.content ul{
+div.content ul, div.content ol{
 	margin: 0 0 40px 0;
 }
 
-div.content ul li{
+div.content ul li,  div.content ol li{
 	margin: 0 0 20px 0;
 }
 

@@ -30,8 +30,11 @@ $(document).ready(function(){
             $('form > input').removeClass('error');
         });
 
-        $(window).resize();
+        $(window).bind('keydown', 'return', function(){
+            doLogin();
+        });
 
+        $(window).resize();
     });
 
     $(window).resize(function(){
