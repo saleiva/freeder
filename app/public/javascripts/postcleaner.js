@@ -53,6 +53,13 @@ function cleanpost(){
 		$(this).removeAttr('style');
 	});
 
+	//Handle p with just an image inside
+	$('.content').find('p').each(function() {	
+		if(($(this).children().length == 1) && ($(this).find('img').is('img'))){
+			$(this).find('img').css('margin-bottom','0');
+		}
+	});
+
 	//Remove feedburner buttons for mail, digg and delicious
 	$('.content').find('a:regex(href,feedburner)').each(function() {
 		$(this).remove();
@@ -85,7 +92,6 @@ function cleanpost(){
 		$(this).remove();
 	});
 
-
 	//Remove Google ads
 	$('.content').find('iframe:regex(src,feedads)').each(function() {
 		$(this).remove();
@@ -94,7 +100,7 @@ function cleanpost(){
 		$(this).remove();
 	});
 
-	timer = setTimeout("checkImages()", 500);
+	timer = setTimeout("checkImages()", 2000);
 }
 
 function checkImages(){

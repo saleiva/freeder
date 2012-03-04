@@ -16,6 +16,10 @@ $(document).ready(function() {
 	$('.article').hide();
 	$('.noUnread').hide();
 
+	$(document).bind('keydown', 'right', function(){
+		nextArticle();
+	});
+
 	//Ask for all the blogs where the user is subscripted
 	var sreq = $.ajax({
 
@@ -133,7 +137,8 @@ function setFeed(f,u){
 function showArticle(i){
 	currentArticle = i;
 	post = arrPosts[i];
-	$('.title h1').text(post.title);
+	$('.title h1 a').text(post.title);
+	$('.title h1 a').attr('href',post.alternate[0].href);
 	$('.title h2 a').attr('href',post.alternate[0].href);
 	$('.title h2 a').text(post.origin.title);
 	$('.content').text("");

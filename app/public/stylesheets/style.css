@@ -60,8 +60,7 @@ div.article div.title{
 	text-align: center;
 }
 
-
-div.article div.title h1{
+div.article div.title h1 a{
 	font-weight: bold;
 	font-size: 33px;
 	color: #333;
