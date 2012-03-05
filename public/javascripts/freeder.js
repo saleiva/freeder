@@ -149,7 +149,6 @@ function showArticle(i){
 		$('.content').append('<p>'+post.summary.content+'</p>');
 	}
 	cleanpost();
-
 }
 
 //Show the next item and mark this as unread
