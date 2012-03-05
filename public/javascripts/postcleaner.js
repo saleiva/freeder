@@ -15,19 +15,19 @@ function cleanpost(){
 	
 	//Add float to links containning images
 	$('.content').find('a').each(function() {
-			if ($(this).has('img').length){
-				$(this).css('float','left');	
-			}
+		if ($(this).has('img').length){
+			$(this).css('float','left');	
+		}
 	});
 
 	//Remove empty pharagraphs
 	$('.content').find('p').each(function() {
-			if ($(this).html() == "&nbsp;"){
-				$(this).remove();
-			}
-			if ($(this).html() == ""){
-				$(this).remove();
-			}
+		if ($(this).html() == "&nbsp;"){
+			$(this).remove();
+		}
+		if ($(this).html() == ""){
+			$(this).remove();
+		}
 	});
 
 	//Remove tables
@@ -54,12 +54,19 @@ function cleanpost(){
 	});
 
 	//Handle p with just an image inside
-	//TODO: CHECK! 
 	$('.content').find('p').each(function() {	
 		if(($(this).children().length == 1) && ($(this).children('img').length == 1)){
 			console.log($(this).children());
 			console.log("CHECKIN IMAGES");
 			$(this).find('img').css('margin-bottom','0');
+		}
+	});
+
+	//Following br's
+	$('.content').find('br').each(function() {
+		el = $(this).next();
+		if(el.is('br')){
+			el.remove();
 		}
 	});
 

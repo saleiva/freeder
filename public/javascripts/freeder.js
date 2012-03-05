@@ -111,9 +111,10 @@ function setFeed(f,u){
 		_u = "t";
 	}else{
 		_u = "f";
-		if($('.noUnread').is(':visible')){
-			$('.noUnread').hide();
-		}
+		
+	}
+	if($('.noUnread').is(':visible')){
+		$('.noUnread').hide();
 	}
 	$.ajax({
 		url: 'get/feed/'+encodeURIComponent(arrSources[f])+"/"+_u,
