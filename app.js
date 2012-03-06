@@ -215,6 +215,31 @@ app.get('/markasread/:url/:pid', function(req, res){
 
 });
 
+//REFRESH ACTION TOKEN
+app.get('/refreshtoken', function(req, res){
+
+    var options = { host: 'www.google.com', port: 80, path: aUrl[1], method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ req.headers['auth_token']}};
+    http.get(options, function(resp) {
+        token = "";
+        resp.on('data', function (chunk) {
+            token +=chunk;
+        });
+        resp.on('end', function () {
+            res.setHeader("Auth_token", auth);
+            res.setHeader("Action_token", token);
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("OK");
+            res.end();
+        });
+        resp.on('error', function(e) {
+            res.setHeader("Auth_token", auth);
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.write("KO");
+            res.end();
+        });
+    });
+});
+
 var port = process.env.PORT || 3000;
 app.listen(port);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
