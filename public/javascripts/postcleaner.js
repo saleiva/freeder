@@ -57,7 +57,6 @@ function cleanpost(){
 	$('.content').find('p').each(function() {	
 		if(($(this).children().length == 1) && ($(this).children('img').length == 1)){
 			console.log($(this).children());
-			console.log("CHECKIN IMAGES");
 			$(this).find('img').css('margin-bottom','0');
 		}
 	});
@@ -66,8 +65,11 @@ function cleanpost(){
 	// $('.content').find('br').each(function() {
 	// 	el = $(this).next();
 	// 	if(el.is('br')){
-	// 		el.remove();
-	// 		console.log("removed");
+	// 		el = $(this).next();
+	// 		if(el.is('br')){
+	// 			el.remove();
+	// 			console.log("removed");
+	// 		}
 	// 	}
 	// });
 

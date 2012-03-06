@@ -141,9 +141,10 @@ function setFeed(f,u){
 function showArticle(i){
 	currentArticle = i;
 	post = arrPosts[i];
+	console.log(post);
 	$('.title h1 a').text(post.title);
 	$('.title h1 a').attr('href',post.alternate[0].href);
-	$('.title h2 a').attr('href',post.alternate[0].href);
+	$('.title h2 a').attr('href',post.origin.htmlUrl);
 	$('.title h2 a').text(post.origin.title);
 	$('.content').text("");
 	if(post.content){
