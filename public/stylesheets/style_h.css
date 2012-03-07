@@ -29,7 +29,7 @@ div.top div.wrap{
 }
 
 p.logo{
-	font-family: Fjord;
+	font-family: 'FjordOne';
 	color: #333;
 	font-size: 19px;
 	font-weight: normal;
@@ -49,7 +49,7 @@ div.text{
 }
 
 div.text h1{
-	font-family: Fjord;
+	font-family: 'FjordOne';
 	font-weight: normal;	
 	color: #333;
 	font-size: 29px;
@@ -105,7 +105,7 @@ div.bottom div.wrap ul li.first{
 }
 
 div.bottom div.wrap ul li p.title{
-	font-family: Fjord;
+	font-family: 'FjordOne';
 	font-weight: normal;	
 	color: #333;
 	font-size: 19px;
@@ -130,74 +130,4 @@ div.bottom div.wrap div.footer{
 div.bottom div.wrap div.footer p{
 	margin: 45px 0 0 668px;
 	font-size: 13px;
-}
-
-div#bgtransparent{
-    position:fixed;
-    left:0;
-    top:0;
-    background-color:#FFF;
-    opacity:0.6;
-    filter:alpha(opacity=60);
-}
-
-div#bgmodal{
-    position:fixed; 
-    font-family:arial;
-    font-size:1em;
-    border:5px solid rgba(0, 0, 0, 0.1);
-    -moz-background-clip: padding; -webkit-background-clip: padding; background-clip: padding-box;
-    -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;
-    overflow:auto;
-	background-color:#fff;
-	text-align: center;
-}
-
-div#bgmodal p.modalTitle{
-	font-family: Fjord;
-	font-weight: normal;	
-	color: #333;
-	font-size: 21px;
-	margin: 50px 0 30px 0;
-}
-
-div#bgmodal form input[type=text], div#bgmodal form input[type=password]{
-	background: url('/images/txtinput.png') 0 0 no-repeat;
-	padding: 0 0 1px 10px;
-	font-family: Helvetica, Arial, sans-serif;
-	font-weight: normal;	
-	color: #666;
-	font-size: 13px;
-	margin: 0 10px 0 0;
-	width: 171px;
-	height: 41px;
-	border: none;
-}
-
-div#bgmodal form input[type=text].error, div#bgmodal form input[type=password].error{
-	background: url('/images/txtinput.png') 0 -41px no-repeat;
-}
-
-div#bgmodal form a{
-	background: url('/images/loginbutton.png') 0 0 no-repeat;
-	font-family: Helvetica, Arial, sans-serif;
-	font-weight: normal;	
-	color: #FFF;
-	font-size: 15px;
-	padding: 11px 23px 13px 23px;
-}
-div#bgmodal form a:hover{
-	background: url('/images/loginbutton.png') 0 -41px no-repeat;
-}
-
-div#bgmodal div.footer{
-	margin: 50px 0 0 0;
-	border-top: 1px solid #DDD;
-	padding: 23px 0 0 0;
-	width: 100%;
-	color: #999;
-}
-
-div#bgmodal div.footer p{
-
 }
