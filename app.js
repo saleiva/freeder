@@ -14,6 +14,7 @@ var express = require('express')
 , routes = require('./routes')
 , querystring = require('querystring')
 , http = require('http')
+, https = require('https')
 , fs = require('fs')
 , everyauth = require('everyauth')
 , connect = require('connect')
@@ -90,6 +91,71 @@ app.configure('production', function(){
     app.use(express.errorHandler());
 });
 
+function getActionToken(req, res, callback) {
+    // TODO: The actionToken lasts 30 min, so we shouldn't hit the url for every mark as read request
+    // http://code.google.com/p/google-reader-api/wiki/ActionToken
+
+    var post_options = {
+        host: 'www.google.com',
+        port: 80,
+        path: "/reader/api/0/token",
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer '+ req.session.accessToken }
+    };
+
+    var post_req = http.request(post_options, function(resp) {
+
+        actionToken = "";
+
+        resp.on('data', function (chunk) {
+            actionToken += chunk;
+        });
+
+        resp.on('end', function () {
+            callback(req, res, actionToken);
+        });
+    });
+
+    post_req.end();
+}
+
+function markAsRead(req, res, actionToken) {
+
+    var post_data = "i="+req.params.pid+"&a=user/-/state/com.google/read&s="+req.params.url+"&T="+actionToken;
+
+    var post_options = { 
+        host: 'www.google.com',
+        port: 443,
+        path: "/reader/api/0/edit-tag?client=freeder",
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': post_data.length,
+            'Authorization': 'Bearer '+ req.session.accessToken }
+    };
+
+    var post_req = https.request(post_options, function(resp) {
+
+        data = "";
+
+        resp.on('data', function (chunk) {
+            data += chunk;
+        });
+
+        resp.on('end', function (){
+
+            if (data == "OK") { // the item has been marked as read
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write(data);
+                res.end();
+            }
+        });
+    });
+
+    post_req.write(post_data);
+    post_req.end();
+}
+
+
 // Makes a request with authorization headers
 function request(res, accessToken, url) {
 
@@ -154,36 +220,9 @@ app.get('/get/feed/:url/:unread', function(req, res){
 
 // Mark as read service
 app.get('/markasread/:url/:pid', function(req, res){
-
-    var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url;
-    var post_options = {
-        host: 'www.google.com',
-    port: 80,
-    path: aUrl[5],
-    method: 'POST',
-    headers: {
-        'Authorization': 'Bearer '+ req.session.accessToken,
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Content-Length': post_data.length
-    }
-    };
-    var post_req = http.request(post_options, function(resp) {
-        data = "";
-        resp.on('data', function (chunk) {
-            data += chunk;
-        });
-        resp.on('end', function (){
-            if (data == "OK"){
-                res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.write(data);
-                res.end();
-            }
-        });
-    });
-    post_req.write(post_data);
-    post_req.end();
-
+    getActionToken(req, res, markAsRead);
 });
+
 
 var port = process.env.PORT || 3000;
 

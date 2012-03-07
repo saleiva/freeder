@@ -170,6 +170,7 @@ function nextArticle(){
 	_c = parseInt($('li#'+_id+' div span').text())
 	_t = parseInt(($('.header p span').text()).substring(1,($('.header p span').text()).length-1));
 	viewminispinner();
+	console.log("Marking as read: ", f, p);
 	$.ajax({
 		url: '/markasread/'+f+'/'+p,
 		type: 'GET',
