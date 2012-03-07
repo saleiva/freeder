@@ -7,44 +7,80 @@
 //http://undoc.in/googlereader.html
 
 /**
-* Module dependencies.
-*/
+ * Module dependencies.
+ */
 
 var express = require('express')
-var routes = require('./routes');
-var querystring = require('querystring');
-var http = require('http');
-var fs = require('fs');
+, routes = require('./routes')
+, querystring = require('querystring')
+, http = require('http')
+, fs = require('fs')
+, everyauth = require('everyauth')
+, connect = require('connect')
+, everyauthRoot = __dirname + '/..';
+
+everyauth.debug = true;
+
+var usersByGoogleId = {};
+
+// everyauth.everymodule.moduleTimeout(-1); // to turn off timeouts
+
+everyauth.everymodule
+.findUserById( function (id, callback) {
+    callback(null, usersById[id]);
+});
+
+everyauth.google
+.myHostname('http://localhost:3000')
+.appId('922312178735.apps.googleusercontent.com')
+.appSecret('QSBzmYitaoUPhr_kOXopjGgA')
+.scope('https://www.googleapis.com/auth/userinfo.email http://www.google.com/reader/api')
+.findOrCreateUser( function (sess, accessToken, extra, googleUser) {
+    googleUser.refreshToken = extra.refresh_token;
+    googleUser.expiresIn = extra.expires_in;
+    sess.accessToken = accessToken;
+    return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
+})
+.redirectPath('/read');
 
 var aUrl = ["https://www.google.com/accounts/ClientLogin?service=reader&",
-            "http://www.google.com/reader/api/0/token",
-            "http://www.google.com/reader/api/0/unread-count?output=json",
-            "http://www.google.com/reader/api/0/subscription/list?output=json",
-            "http://www.google.com/reader/api/0/stream/contents/",
-            "/reader/api/0/edit-tag?client=freeder"]
+"http://www.google.com/reader/api/0/token",
+"http://www.google.com/reader/api/0/unread-count?output=json",
+"http://www.google.com/reader/api/0/subscription/list?output=json",
+"http://www.google.com/reader/api/0/stream/contents/",
+"/reader/api/0/edit-tag?client=freeder"]
 
-var app = module.exports = express.createServer();
-// Configuration
+    var app = module.exports = express.createServer(
+            express.bodyParser()
+            , express.static(__dirname + "/public")
+            , express.favicon()
+            , express.cookieParser()
+            , express.session({ secret: 'htuayreve'})
+            , everyauth.middleware()
+            );
 
-app.configure(function(){
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'html');
-    app.set("view options", {layout: false});
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(express.static(__dirname + '/public'));
+    everyauth.helpExpress(app);
+    // Configuration
 
-    //Make a custom html template
-    //Be able to render HTML files - No templates
-    app.register('.html', {
-        compile: function(str, options){
-            return function(locals){
-                return str;
-            };
-        }
+    app.configure(function(){
+        app.set('views', __dirname + '/views');
+        app.set('view engine', 'html');
+        app.set("view options", {layout: false});
+        app.use(express.bodyParser());
+        app.use(express.methodOverride());
+        app.use(app.router);
+        app.use(express.static(__dirname + '/public'));
+
+        //Make a custom html template
+        //Be able to render HTML files - No templates
+        app.register('.html', {
+            compile: function(str, options){
+                return function(locals){
+                    return str;
+                };
+            }
+        });
     });
-});
 
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -59,61 +95,38 @@ app.get('/', function(req, res){
     res.render('index');
 });
 
+app.get('/login', function(req, res){
+    if (req.session.accessToken) {
+        res.redirect('/read');
+    } else {
+        res.redirect('/auth/google');
+    }
+});
+
 app.get('/read', function(req, res){
     res.render('articles');
 });
 
-app.get('/login/:email/:pwd', function(req, res){   
-    
-    function sendError(r){
-        r.writeHead(200, { 'Content-Type': 'text/plain' });   
-        r.write("ERROR");
-        r.end();
-    }
+function request(res, accessToken, url) {
 
-    if(req.params.email != "" && req.params.pwd !=""){
-        _urlAuth = aUrl[0] +"Email="+req.params.email+"&Passwd="+req.params.pwd;
-        var options = {host: 'www.google.com', port: 80, path: _urlAuth, method: 'GET'};
-
-        http.get(options, function(resp) {
-            data = "";
-            resp.on('data', function (chunk) {
-                data +=chunk;
-            });
-            resp.on('end', function () {
-                if(data.indexOf("Auth=") != -1){
-                    auth = data.substring(data.indexOf("Auth=")+5).replace('\n','');
-                    _urlToken = aUrl[1];
-                    var options = {host: 'www.google.com', port: 80, path: _urlToken, method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ auth}};
-                    http.get(options, function(resp) {
-                        token = "";
-                        resp.on('data', function (chunk) {
-                            token +=chunk;
-                        });
-                        resp.on('end', function () {
-                            res.setHeader("Auth_token", auth);
-                            res.setHeader("Action_token", token);
-                            res.writeHead(200, { 'Content-Type': 'text/plain' });
-                            res.write("OK");
-                            res.end();
-                        });
-                        resp.on('error', function(e) {
-                            sendError(res);
-                        });
-                    });
-                }else{
-                    sendError(res);
-                }
-            });
-            resp.on('error', function(e) {
-                sendError(res);
-            });
+    var options = {host: 'www.google.com', port: 80, path: _url, method: 'GET', headers: {'Authorization': 'Bearer '+ accessToken}};
+    http.get(options, function(resp) {
+        token = "";
+        resp.on('data', function (chunk) {
+            token +=chunk;
         });
-    }else{
-        console.log("Google username / password are empty");
-        sendError(res);
-    }
-});
+        resp.on('end', function () {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(token);
+            res.end();
+        });
+        resp.on('error', function(e) {
+            sendError(res);
+        });
+    });
+
+}
+
 
 app.get('/get/:query', function(req, res){
 
@@ -123,79 +136,32 @@ app.get('/get/:query', function(req, res){
         _url = aUrl[3];
     };
 
-    var options = {
-        host: 'www.google.com',
-        port: 80,
-        path: _url,
-        method: 'GET',
-        headers: {
-            'Authorization': 'GoogleLogin auth='+ req.headers['auth_token']
-        }
-    };
-
-    http.get(options, function(resp) {
-        data = "";
-        resp.on('data', function (chunk) {
-            data +=chunk;
-        }); 
-        resp.on('end', function () {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.write(data);
-            res.end();
-        });
-        resp.on('error', function(e) {
-            console.log("Got error: " + e.message);
-        });
-    });
-
-
+    request(res, req.session.accessToken, _url);
 });
 
 app.get('/get/feed/:url/:unread', function(req, res){
     _url = aUrl[4]+decodeURIComponent(req.params.url)+"?&r=n&n=100";
-    if(req.params.unread=="t"){
+
+    if (req.params.unread=="t"){
         _url += "&xt=user/-/state/com.google/read";
     }
-    var options = {
-        host: 'www.google.com',
-        port: 80,
-        path: _url,
-        method: 'GET',
-        headers: {
-            'Authorization': 'GoogleLogin auth='+ req.headers['auth_token']
-        }
-    };
-
-    http.get(options, function(resp) {
-        data = "";
-        resp.on('data', function (chunk) {
-            data +=chunk;
-        }); 
-        resp.on('end', function () {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.write(data);
-            res.end();
-        });
-        resp.on('error', function(e) {
-            console.log("Got error: " + e.message);
-        });
-    });
+    request(res, req.session.accessToken, _url);
 });
 
 //MARK AS READ SERVICE
 app.get('/markasread/:url/:pid', function(req, res){
 
-    var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url+"&i="+req.params.pid+"&T="+req.headers['action_token'].substring(2);
+    var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url;
     var post_options = {
         host: 'www.google.com',
-        port: 80,
-        path: aUrl[5],
-        method: 'POST',
-        headers: {
-            'Authorization': 'GoogleLogin auth='+ req.headers['auth_token'],
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': post_data.length
-        }
+    port: 80,
+    path: aUrl[5],
+    method: 'POST',
+    headers: {
+        'Authorization': 'Bearer '+ req.session.accessToken,
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Length': post_data.length
+    }
     };
     var post_req = http.request(post_options, function(resp) {
         data = "";
@@ -215,30 +181,6 @@ app.get('/markasread/:url/:pid', function(req, res){
 
 });
 
-//REFRESH ACTION TOKEN
-app.get('/refreshtoken', function(req, res){
-
-    var options = { host: 'www.google.com', port: 80, path: aUrl[1], method: 'GET', headers: {'Authorization': 'GoogleLogin auth='+ req.headers['auth_token']}};
-    http.get(options, function(resp) {
-        token = "";
-        resp.on('data', function (chunk) {
-            token +=chunk;
-        });
-        resp.on('end', function () {
-            res.setHeader("Auth_token", auth);
-            res.setHeader("Action_token", token);
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.write("OK");
-            res.end();
-        });
-        resp.on('error', function(e) {
-            res.setHeader("Auth_token", auth);
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.write("KO");
-            res.end();
-        });
-    });
-});
 
 var port = process.env.PORT || 3000;
 app.listen(port);

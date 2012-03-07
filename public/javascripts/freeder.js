@@ -20,19 +20,23 @@ $(document).ready(function() {
 		nextArticle();
 	});
 
-	window.setInterval(function(){
-		refreshtoken();
-  	}, 1500000);
-
 	//Ask for all the blogs where the user is subscripted
 	var sreq = $.ajax({
+
 	    url: "/get/subscription-list",
 	    type: 'GET',
 	    beforeSend: function(r) {
     		r.setRequestHeader("Auth_token", sessvars.Auth_token);
   		},
+        error: function(e) {
+            spinner.stop();
+            // TODO: implement error messages
+            console.log(e.responseText);
+        },
 	    success: function(res) {
+	            console.log(res);
 	        jQuery.each(res.subscriptions, function(i,obj){
+	            console.log(i, obj);
 	        	var url = obj.htmlUrl;
 	        	var name = obj.title;
 	        	arrSources[sanitize(obj.id)] = obj.id;
@@ -88,7 +92,11 @@ $(document).ready(function() {
 			   			spinner.stop();
 			   			$('.article').fadeIn();
 			   			showArticle(0);
-					}
+					}, error: function(e) {
+					    spinner.stop();
+					    // TODO: implement error messages
+					    console.log(e.responseText);
+                    }
 				});
 			}
 		}
@@ -141,10 +149,9 @@ function setFeed(f,u){
 function showArticle(i){
 	currentArticle = i;
 	post = arrPosts[i];
-	console.log(post);
 	$('.title h1 a').text(post.title);
 	$('.title h1 a').attr('href',post.alternate[0].href);
-	$('.title h2 a').attr('href',post.origin.htmlUrl);
+	$('.title h2 a').attr('href',post.alternate[0].href);
 	$('.title h2 a').text(post.origin.title);
 	$('.content').text("");
 	if(post.content){
@@ -216,16 +223,4 @@ function sanitize(str){
 	return str.replace('http://','').replace('www','').replace(/\//g,'-').replace(/\?/g,'_').replace(/\./g,'_');
 }
 
-//Function for refreshing the action token every 25 minutes
-function refreshtoken(){
-	ajxreq = $.ajax({
-		url: '/refreshtoken',
-		type: 'GET',
-		beforeSend: function(r) {
-	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
-		},
-		success: function(resc) {
-			sessvars.Action_token = ajxreq.getResponseHeader('Action_token');
-		}
-	});
-}
+
