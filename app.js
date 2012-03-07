@@ -90,6 +90,30 @@ app.configure('production', function(){
     app.use(express.errorHandler());
 });
 
+// Makes a request with authorization headers
+function request(res, accessToken, url) {
+
+    var options = { host: 'www.google.com', port: 80, path: _url, method: 'GET', headers: {'Authorization': 'Bearer '+ accessToken}};
+
+    http.get(options, function(resp) {
+        data = "";
+
+        resp.on('data', function (chunk) {
+            data +=chunk;
+        });
+
+        resp.on('end', function () {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(data);
+            res.end();
+        });
+
+        resp.on('error', function(e) {
+            sendError(res);
+        });
+    });
+}
+
 // Routes
 app.get('/', function(req, res){
     res.render('index');
@@ -107,32 +131,11 @@ app.get('/read', function(req, res){
     res.render('articles');
 });
 
-function request(res, accessToken, url) {
-
-    var options = {host: 'www.google.com', port: 80, path: _url, method: 'GET', headers: {'Authorization': 'Bearer '+ accessToken}};
-    http.get(options, function(resp) {
-        token = "";
-        resp.on('data', function (chunk) {
-            token +=chunk;
-        });
-        resp.on('end', function () {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.write(token);
-            res.end();
-        });
-        resp.on('error', function(e) {
-            sendError(res);
-        });
-    });
-
-}
-
-
 app.get('/get/:query', function(req, res){
 
     if (req.params.query === "unread-count"){
         _url = aUrl[2];
-    }else if (req.params.query === "subscription-list"){
+    } else if (req.params.query === "subscription-list"){
         _url = aUrl[3];
     };
 
@@ -145,10 +148,11 @@ app.get('/get/feed/:url/:unread', function(req, res){
     if (req.params.unread=="t"){
         _url += "&xt=user/-/state/com.google/read";
     }
+
     request(res, req.session.accessToken, _url);
 });
 
-//MARK AS READ SERVICE
+// Mark as read service
 app.get('/markasread/:url/:pid', function(req, res){
 
     var post_data = "a=user/-/state/com.google/read&r=user/-/state/com.google/kept-unread&async=true&s="+req.params.url;
@@ -181,7 +185,8 @@ app.get('/markasread/:url/:pid', function(req, res){
 
 });
 
-
 var port = process.env.PORT || 3000;
+
 app.listen(port);
+
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
