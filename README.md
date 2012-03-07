@@ -1,3 +1,5 @@
-# npm install
-# node app.js
-# open localhost:3000
+## Installation 
+
+* npm install
+* node app.js
+* open localhost:3000
