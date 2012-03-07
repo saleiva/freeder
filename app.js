@@ -31,6 +31,7 @@ everyauth.everymodule
     callback(null, usersById[id]);
 });
 
+// TODO: move appID and appSecret to configuration file
 everyauth.google
 .myHostname('http://localhost:3000')
 .appId('922312178735.apps.googleusercontent.com')
@@ -44,6 +45,7 @@ everyauth.google
 })
 .redirectPath('/read');
 
+// TODO: use a hash instead for the urls so we can invoke the URL using an string handler and not a number 
 var aUrl = ["https://www.google.com/accounts/ClientLogin?service=reader&",
 "http://www.google.com/reader/api/0/token",
 "http://www.google.com/reader/api/0/unread-count?output=json",
@@ -61,8 +63,8 @@ var aUrl = ["https://www.google.com/accounts/ClientLogin?service=reader&",
             );
 
     everyauth.helpExpress(app);
-    // Configuration
 
+    // Configuration
     app.configure(function(){
         app.set('views', __dirname + '/views');
         app.set('view engine', 'html');
@@ -119,6 +121,7 @@ function getActionToken(req, res, callback) {
     post_req.end();
 }
 
+// Marks an item as read
 function markAsRead(req, res, actionToken) {
 
     var post_data = "i="+req.params.pid+"&a=user/-/state/com.google/read&s="+req.params.url+"&T="+actionToken;
@@ -154,7 +157,6 @@ function markAsRead(req, res, actionToken) {
     post_req.write(post_data);
     post_req.end();
 }
-
 
 // Makes a request with authorization headers
 function request(res, accessToken, url) {
@@ -222,7 +224,6 @@ app.get('/get/feed/:url/:unread', function(req, res){
 app.get('/markasread/:url/:pid', function(req, res){
     getActionToken(req, res, markAsRead);
 });
-
 
 var port = process.env.PORT || 3000;
 
