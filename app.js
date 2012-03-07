@@ -45,45 +45,45 @@ everyauth.google
 })
 .redirectPath('/read');
 
-// TODO: use a hash instead for the urls so we can invoke the URL using an string handler and not a number 
-var aUrl = ["https://www.google.com/accounts/ClientLogin?service=reader&",
-"http://www.google.com/reader/api/0/token",
-"http://www.google.com/reader/api/0/unread-count?output=json",
-"http://www.google.com/reader/api/0/subscription/list?output=json",
-"http://www.google.com/reader/api/0/stream/contents/",
-"/reader/api/0/edit-tag?client=freeder"]
+var ourl = new Object();
+    ourl.actionToken = '/reader/api/0/token';
+    ourl.unreadCount = '/reader/api/0/unread-count?output=json';
+    ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
+    ourl.feedContents = '/reader/api/0/stream/contents/';
+    ourl.markAsRead =  '/reader/api/0/edit-tag?client=freeder';
 
-    var app = module.exports = express.createServer(
-            express.bodyParser()
-            , express.static(__dirname + "/public")
-            , express.favicon()
-            , express.cookieParser()
-            , express.session({ secret: 'htuayreve'})
-            , everyauth.middleware()
-            );
 
-    everyauth.helpExpress(app);
+var app = module.exports = express.createServer(
+        express.bodyParser()
+        , express.static(__dirname + "/public")
+        , express.favicon()
+        , express.cookieParser()
+        , express.session({ secret: 'htuayreve'})
+        , everyauth.middleware()
+        );
 
-    // Configuration
-    app.configure(function(){
-        app.set('views', __dirname + '/views');
-        app.set('view engine', 'html');
-        app.set("view options", {layout: false});
-        app.use(express.bodyParser());
-        app.use(express.methodOverride());
-        app.use(app.router);
-        app.use(express.static(__dirname + '/public'));
+everyauth.helpExpress(app);
 
-        //Make a custom html template
-        //Be able to render HTML files - No templates
-        app.register('.html', {
-            compile: function(str, options){
-                return function(locals){
-                    return str;
-                };
-            }
-        });
+// Configuration
+app.configure(function(){
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'html');
+    app.set("view options", {layout: false});
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
+    app.use(express.static(__dirname + '/public'));
+
+    //Make a custom html template
+    //Be able to render HTML files - No templates
+    app.register('.html', {
+        compile: function(str, options){
+            return function(locals){
+                return str;
+            };
+        }
     });
+});
 
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -100,7 +100,7 @@ function getActionToken(req, res, callback) {
     var post_options = {
         host: 'www.google.com',
         port: 80,
-        path: "/reader/api/0/token",
+        path: ourl.actionToken,
         method: 'GET',
         headers: { 'Authorization': 'Bearer '+ req.session.accessToken }
     };
@@ -129,7 +129,7 @@ function markAsRead(req, res, actionToken) {
     var post_options = { 
         host: 'www.google.com',
         port: 443,
-        path: "/reader/api/0/edit-tag?client=freeder",
+        path: ourl.markAsRead,
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': post_data.length,
@@ -202,16 +202,16 @@ app.get('/read', function(req, res){
 app.get('/get/:query', function(req, res){
 
     if (req.params.query === "unread-count"){
-        _url = aUrl[2];
+        _url = ourl.unreadCount;
     } else if (req.params.query === "subscription-list"){
-        _url = aUrl[3];
+        _url = ourl.subscriptionList;
     };
 
     request(res, req.session.accessToken, _url);
 });
 
 app.get('/get/feed/:url/:unread', function(req, res){
-    _url = aUrl[4]+decodeURIComponent(req.params.url)+"?&r=n&n=100";
+    _url = ourl.feedContents+decodeURIComponent(req.params.url)+"?&r=n&n=100";
 
     if (req.params.unread=="t"){
         _url += "&xt=user/-/state/com.google/read";
