@@ -18,7 +18,9 @@ var express = require('express')
 , fs = require('fs')
 , everyauth = require('everyauth')
 , connect = require('connect')
-, everyauthRoot = __dirname + '/..';
+, everyauthRoot = __dirname + '/..'
+, conf = require('./conf');
+    
 
 everyauth.debug = true;
 
@@ -34,9 +36,9 @@ everyauth.everymodule
 // TODO: move appID and appSecret to configuration file
 everyauth.google
 .myHostname('http://localhost:3000')
-.appId('922312178735.apps.googleusercontent.com')
-.appSecret('QSBzmYitaoUPhr_kOXopjGgA')
-.scope('https://www.googleapis.com/auth/userinfo.email http://www.google.com/reader/api')
+.appId(config.google.appID)
+.appSecret(config.google.appSecret)
+.scope(config.google.scope)
 .findOrCreateUser( function (sess, accessToken, extra, googleUser) {
     googleUser.refreshToken = extra.refresh_token;
     googleUser.expiresIn = extra.expires_in;
@@ -161,7 +163,7 @@ function markAsRead(req, res, actionToken) {
 // Makes a request with authorization headers
 function request(res, accessToken, url) {
 
-    var options = { host: 'www.google.com', port: 80, path: _url, method: 'GET', headers: {'Authorization': 'Bearer '+ accessToken}};
+    var options = { host: 'www.google.com', port: 80, path: url, method: 'GET', headers: {'Authorization': 'Bearer '+ accessToken}};
 
     http.get(options, function(resp) {
         data = "";
@@ -200,24 +202,25 @@ app.get('/read', function(req, res){
 });
 
 app.get('/get/:query', function(req, res){
+    var url;
 
     if (req.params.query === "unread-count"){
-        _url = ourl.unreadCount;
+        url = ourl.unreadCount;
     } else if (req.params.query === "subscription-list"){
-        _url = ourl.subscriptionList;
+        url = ourl.subscriptionList;
     };
 
-    request(res, req.session.accessToken, _url);
+    request(res, req.session.accessToken, url);
 });
 
 app.get('/get/feed/:url/:unread', function(req, res){
-    _url = ourl.feedContents+decodeURIComponent(req.params.url)+"?&r=n&n=100";
+    var url = ourl.feedContents+decodeURIComponent(req.params.url)+"?&r=n&n=100";
 
     if (req.params.unread=="t"){
-        _url += "&xt=user/-/state/com.google/read";
+        url += "&xt=user/-/state/com.google/read";
     }
 
-    request(res, req.session.accessToken, _url);
+    request(res, req.session.accessToken, url);
 });
 
 // Mark as read service
