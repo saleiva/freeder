@@ -20,6 +20,11 @@ function cleanpost(){
 		}
 	});
 
+	//Add target:_blank to all links
+	$('.content').find('a').each(function() {
+		$(this).attr('target','_blank');	
+	});
+
 	//Remove empty pharagraphs
 	$('.content').find('p').each(function() {
 		if ($(this).html() == "&nbsp;"){
