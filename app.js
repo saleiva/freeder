@@ -32,19 +32,6 @@ everyauth.everymodule
     callback(null, usersById[id]);
 });
 
-// TODO: move appID and appSecret to configuration file
-everyauth.google
-.myHostname(config.development.host)
-.appId(config.google.appID)
-.appSecret(config.google.appSecret)
-.scope(config.google.scope)
-.findOrCreateUser( function (sess, accessToken, extra, googleUser) {
-    googleUser.refreshToken = extra.refresh_token;
-    googleUser.expiresIn = extra.expires_in;
-    sess.accessToken = accessToken;
-    return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
-})
-.redirectPath('/read');
 
 var ourl = new Object();
     ourl.actionToken = '/reader/api/0/token';
@@ -62,6 +49,20 @@ var app = module.exports = express.createServer(
         , express.session({ secret: 'htuayreve'})
         , everyauth.middleware()
         );
+
+// TODO: move appID and appSecret to configuration file
+everyauth.google
+.myHostname(config[app.settings.env].host)
+.appId(config[app.settings.env].google.appID)
+.appSecret(config[app.settings.env].google.appSecret)
+.scope(config[app.settings.env].google.scope)
+.findOrCreateUser( function (sess, accessToken, extra, googleUser) {
+    googleUser.refreshToken = extra.refresh_token;
+    googleUser.expiresIn = extra.expires_in;
+    sess.accessToken = accessToken;
+    return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
+})
+.redirectPath('/read');
 
 everyauth.helpExpress(app);
 
