@@ -20,7 +20,6 @@ var express = require('express')
 , connect = require('connect')
 , everyauthRoot = __dirname + '/..'
 , conf = require('./conf');
-    
 
 everyauth.debug = true;
 
@@ -35,7 +34,7 @@ everyauth.everymodule
 
 // TODO: move appID and appSecret to configuration file
 everyauth.google
-.myHostname('http://localhost:3000')
+.myHostname(config.development.host)
 .appId(config.google.appID)
 .appSecret(config.google.appSecret)
 .scope(config.google.scope)
