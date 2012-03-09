@@ -206,7 +206,7 @@ function shareOnTwitter(){
 	}else{
 		_t = arrPosts[currentArticle].title
 	}
-	_url = "http://twitter.com/home?status="+_t+ " - " +(arrPosts[currentArticle].alternate[0].href) + " - As read on XXX";
+	_url = "http://twitter.com/home?status="+_t+ " - " +(arrPosts[currentArticle].alternate[0].href) + " - As read on @Siropeapp";
 	window.open(_url);
 }
 
