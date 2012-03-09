@@ -33,59 +33,61 @@ everyauth.everymodule
 });
 
 
-var ourl = new Object();
-    ourl.actionToken = '/reader/api/0/token';
-    ourl.unreadCount = '/reader/api/0/unread-count?output=json';
-    ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
-    ourl.feedContents = '/reader/api/0/stream/contents/';
-    ourl.markAsRead =  '/reader/api/0/edit-tag?client=freeder';
-
-
-var app = module.exports = express.createServer(
-        express.bodyParser()
-        , express.static(__dirname + "/public")
-        , express.favicon()
-        , express.cookieParser()
-        , express.session({ secret: 'htuayreve'})
-        , everyauth.middleware()
-        );
+var mode = "development";
 
 // TODO: move appID and appSecret to configuration file
-everyauth.google
-.myHostname(config[app.settings.env].host)
-.appId(config[app.settings.env].google.appID)
-.appSecret(config[app.settings.env].google.appSecret)
-.scope(config[app.settings.env].google.scope)
-.findOrCreateUser( function (sess, accessToken, extra, googleUser) {
-    googleUser.refreshToken = extra.refresh_token;
-    googleUser.expiresIn = extra.expires_in;
-    sess.accessToken = accessToken;
-    return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
-})
+    everyauth.google
+    .myHostname(config[mode].host)
+    .appId(config[mode].google.appID)
+    .appSecret(config[mode].google.appSecret)
+.scope(config[mode].google.scope)
+    .findOrCreateUser( function (sess, accessToken, extra, googleUser) {
+        googleUser.refreshToken = extra.refresh_token;
+        googleUser.expiresIn = extra.expires_in;
+        sess.accessToken = accessToken;
+        return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
+    })
 .redirectPath('/read');
 
-everyauth.helpExpress(app);
+var ourl = new Object();
+ourl.actionToken = '/reader/api/0/token';
+ourl.unreadCount = '/reader/api/0/unread-count?output=json';
+ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
+ourl.feedContents = '/reader/api/0/stream/contents/';
+ourl.markAsRead =  '/reader/api/0/edit-tag?client=freeder';
 
-// Configuration
-app.configure(function(){
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'html');
-    app.set("view options", {layout: false});
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(express.static(__dirname + '/public'));
+    var app = module.exports = express.createServer(
+            express.bodyParser()
+            , express.static(__dirname + "/public")
+            , express.favicon()
+            , express.cookieParser()
+            , express.session({ secret: 'htuayreve'})
+            , everyauth.middleware()
+            );
 
-    //Make a custom html template
-    //Be able to render HTML files - No templates
-    app.register('.html', {
-        compile: function(str, options){
-            return function(locals){
-                return str;
-            };
-        }
+
+    everyauth.helpExpress(app);
+
+    // Configuration
+    app.configure(function(){
+        app.set('views', __dirname + '/views');
+        app.set('view engine', 'html');
+        app.set("view options", {layout: false});
+        app.use(express.bodyParser());
+        app.use(express.methodOverride());
+        app.use(app.router);
+        app.use(express.static(__dirname + '/public'));
+
+        //Make a custom html template
+        //Be able to render HTML files - No templates
+        app.register('.html', {
+            compile: function(str, options){
+                return function(locals){
+                    return str;
+                };
+            }
+        });
     });
-});
 
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -232,4 +234,4 @@ var port = process.env.PORT || 3000;
 
 app.listen(port);
 
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("Express server listening on port %d in %s mode", app.address().port, mode);
