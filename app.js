@@ -24,6 +24,7 @@ var express = require('express')
 everyauth.debug = true;
 
 var usersByGoogleId = {};
+var email = "";
 
 // everyauth.everymodule.moduleTimeout(-1); // to turn off timeouts
 
@@ -44,17 +45,17 @@ var mode = "development";
     .findOrCreateUser( function (sess, accessToken, extra, googleUser) {
         googleUser.refreshToken = extra.refresh_token;
         googleUser.expiresIn = extra.expires_in;
+        email = googleUser.email;
         sess.accessToken = accessToken;
         return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
-    })
-.redirectPath('/read');
+    }).redirectPath('/login');
 
 var ourl = new Object();
 ourl.actionToken = '/reader/api/0/token';
 ourl.unreadCount = '/reader/api/0/unread-count?output=json';
 ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
 ourl.feedContents = '/reader/api/0/stream/contents/';
-ourl.markAsRead =  '/reader/api/0/edit-tag?client=freeder';
+ourl.markAsRead =  '/reader/api/0/edit-tag?client=sirope';
 
     var app = module.exports = express.createServer(
             express.bodyParser()
@@ -193,15 +194,13 @@ app.get('/', function(req, res){
 
 app.get('/login', function(req, res){
     if (req.session.accessToken) {
-        res.redirect('/read');
+        var name = email.split('@')[0].replace(/\./g, '');
+        res.redirect('/' + name);
     } else {
         res.redirect('/auth/google');
     }
 });
 
-app.get('/read', function(req, res){
-    res.render('articles');
-});
 
 app.get('/get/:query', function(req, res){
     var url;
@@ -228,6 +227,11 @@ app.get('/get/feed/:url/:unread', function(req, res){
 // Mark as read service
 app.get('/markasread/:url/:pid', function(req, res){
     getActionToken(req, res, markAsRead);
+});
+
+
+app.get('/:username', function(req, res){
+    res.render('articles');
 });
 
 var port = process.env.PORT || 3000;
