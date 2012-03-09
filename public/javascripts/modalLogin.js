@@ -3,7 +3,7 @@
 
 $(document).ready(function(){
     
-    var cHTML = '<p class="modalTitle">Sign-in on Freeder with your Google account.</p><form><input type="text" id="email_input" placeholder="Google email"><input type="password" id="pwd_input" placeholder="Password"><a href="#" onClick="doLogin()" type="submit" class="btn">Sign in</a></form><div class="footer">Don’t remember your account data? <a href="#">Ask Google for them</a><div>';
+    var cHTML = '<p class="modalTitle">Sign-in on Sirope with your Google account.</p><form><input type="text" id="email_input" placeholder="Google email"><input type="password" id="pwd_input" placeholder="Password"><a href="#" onClick="doLogin()" type="submit" class="btn">Sign in</a></form><div class="footer">Don’t remember your account data? <a href="#">Ask Google for them</a><div>';
     
     var mwidth = 600; 
     var mheight = 260;
