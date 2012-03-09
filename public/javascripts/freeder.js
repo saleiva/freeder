@@ -31,12 +31,12 @@ $(document).ready(function() {
         error: function(e) {
             spinner.stop();
             // TODO: implement error messages
-            console.log(e.responseText);
+            //console.log(e.responseText);
         },
 	    success: function(res) {
-	            console.log(res);
+	            //console.log(res);
 	        jQuery.each(res.subscriptions, function(i,obj){
-	            console.log(i, obj);
+	            //console.log(i, obj);
 	        	var url = obj.htmlUrl;
 	        	var name = obj.title;
 	        	arrSources[sanitize(obj.id)] = obj.id;
@@ -55,14 +55,9 @@ $(document).ready(function() {
 			    success: function(resc) {
 			    	total_count = 0;
 			    	var fe = null;
-			        jQuery.each(resc.unreadcounts, function(i,obj){
-		      			$('li#'+sanitize(obj.id)+' div span').text(obj.count);
-		      			$('li#'+sanitize(obj.id)+' div span').show();
-		      			total_count += obj.count;
-		   			});
 		   			
 		   			//SET TOP COUNTER
-		   			updateTotalCounter(total_count);
+		   			updateTotalCounter(resc.unreadcounts[0].count);
 		   			
 		   			//SHOW BY DEFAULT THE FIRST SOURCE WITH UNREAD ITEMS
 		   			$('.sources ul li').each(function() {
@@ -95,7 +90,7 @@ $(document).ready(function() {
 					}, error: function(e) {
 					    spinner.stop();
 					    // TODO: implement error messages
-					    console.log(e.responseText);
+					    // console.log(e.responseText);
                     }
 				});
 			}
@@ -170,7 +165,7 @@ function nextArticle(){
 	_c = parseInt($('li#'+_id+' div span').text())
 	_t = parseInt(($('.header p span').text()).substring(1,($('.header p span').text()).length-1));
 	viewminispinner();
-	console.log("Marking as read: ", f, p);
+	// console.log("Marking as read: ", f, p);
 	$.ajax({
 		url: '/markasread/'+f+'/'+p,
 		type: 'GET',
