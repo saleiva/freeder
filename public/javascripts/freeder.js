@@ -12,7 +12,7 @@ $(document).ready(function() {
 
 	target = document.getElementById('spinner');
 	spinner = new Spinner(opts).spin(target);
-	
+
 	$('.article').hide();
 	$('.noUnread').hide();
 
