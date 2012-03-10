@@ -55,6 +55,11 @@ $(document).ready(function() {
 			    success: function(resc) {
 			    	total_count = 0;
 			    	var fe = null;
+
+		   			jQuery.each(resc.unreadcounts, function(i,obj){
+		      			$('li#'+sanitize(obj.id)+' div span').text(obj.count);
+		      			$('li#'+sanitize(obj.id)+' div span').show();
+		   			});			    	
 		   			
 		   			//SET TOP COUNTER
 		   			updateTotalCounter(resc.unreadcounts[0].count);
