@@ -77,7 +77,7 @@ div.text a.bigButton{
 }
 
 div.text a.bigButton:hover{
-	background:url('/images/home_button.png') 0 -47px no-repeat;
+	background-position: 0 -47px;
 }
 
 div.bottom{ 

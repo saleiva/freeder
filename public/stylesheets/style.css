@@ -105,7 +105,7 @@ div.menu a.next{
 }
 
 div.menu a.next:hover{
-	background: url('/images/nextBtn_w.png') 0 -61px no-repeat;
+	background-position: 0 -61px;
 	color: #FFF;
 }
 
@@ -142,11 +142,11 @@ div.menu ul{margin:40px 0 0 0;}
 div.menu ul li{display:inline;list-style: none;}
 div.menu ul li a{padding:4px 22px 0 0;}
 div.menu ul li a.web{background:url('/images/shareBtns_w.png') 0 0 no-repeat;}
-div.menu ul li a.web:hover{background:url('/images/shareBtns_w.png') 0 -23px no-repeat;}
+div.menu ul li a.web:hover{background-position:0 -23px;}
 div.menu ul li a.facebook{background:url('/images/shareBtns_w.png') -26px 0 no-repeat;}
-div.menu ul li a.facebook:hover{background:url('/images/shareBtns_w.png') -26px -23px no-repeat;}
+div.menu ul li a.facebook:hover{background-position: -26px -23px;}
 div.menu ul li a.twitter{background:url('/images/shareBtns_w.png') -52px 0 no-repeat;}
-div.menu ul li a.twitter:hover{background:url('/images/shareBtns_w.png') -52px -23px no-repeat;}
+div.menu ul li a.twitter:hover{background-position: -52px -23px;}
 
 
 div.noUnread{
