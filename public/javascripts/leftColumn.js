@@ -18,7 +18,7 @@ $(document).ready(function() {
 	});
 
 	$('.sources_area').bind("mouseenter", function(event){
-		$('.sources').fadeIn(150);
+		showSources();
 		$('.sources_area').css('width','300px');
 		//JSCROLLPANE 
         if ($('.scroll-pane').length > 0) {
@@ -44,8 +44,17 @@ $(document).ready(function() {
 	});
 
 	$('.sources').bind("mouseleave", function(event){
-		$(this).fadeOut(150);
+		hideSources();
 		$('.sources_area').css('width','170px');
 	});
 
 });
+
+
+function hideSources(){
+	$('.sources').fadeOut(150);
+}
+
+function showSources(){
+	$('.sources').fadeIn(150);
+}

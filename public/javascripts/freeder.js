@@ -43,6 +43,7 @@ $(document).ready(function() {
       			$('.sources ul').append('<li id="'+sanitize(obj.id)+'"><div><a href="#">'+name+'</a><span>0</span></div></li>');
       			$('li#'+sanitize(obj.id)+' div a').truncate({width:200});
    			});
+   			showSources();
 
    			//Get the counters for the unread articles
    			$.ajax({
@@ -66,7 +67,7 @@ $(document).ready(function() {
 		      				$('li#'+sanitize(obj.id)+' div span').show();
 		      			}
 		   			});
-		   			
+
 		   			//SHOW BY DEFAULT THE FIRST SOURCE WITH UNREAD ITEMS
 		   			$('.sources ul li').each(function() {
 						if(($(this).find('div span').text()!='0') && (fe == null)){
@@ -95,6 +96,7 @@ $(document).ready(function() {
 			   			spinner.stop();
 			   			$('.article').fadeIn();
 			   			showArticle(0);
+			   			hideSources();
 					}, error: function(e) {
 					    spinner.stop();
 					    // TODO: implement error messages
