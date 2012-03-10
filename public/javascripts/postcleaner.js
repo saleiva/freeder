@@ -57,6 +57,9 @@ function cleanpost(){
 	$('.content').find('span').each(function() {	
 		$(this).removeAttr('style');
 	});
+	$('.content').find('a').each(function() {	
+		$(this).removeAttr('style');
+	});
 
 	//Handle p with just an image inside
 	$('.content').find('p').each(function() {	
