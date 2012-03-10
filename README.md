@@ -10,3 +10,4 @@
 * Review issues when having code on an article
 * Refresh action token before it gets expired
 * Review issues with small images
+* Implement send to readability / instapaper
