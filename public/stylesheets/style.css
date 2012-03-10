@@ -40,10 +40,10 @@ div.header{
 }
 
 div.header p{
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular", sans-serif;
 	font-size:13px;
 	color:#b7b7b7;
-	font-weight:bold;
+	font-weight:normal;
 	line-height: 36px;
 }
 
@@ -65,14 +65,14 @@ div.article div.title{
 }
 
 div.article div.title h1 a{
-	font-weight: bold;
+	font-weight: normal;
 	font-size: 33px;
 	color: #333;
 	letter-spacing: -1px;
 }
 
 div.article div.title h2{
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular", sans-serif;
 	font-size: 13px;
 	color: #999;
 	font-weight: normal;
@@ -80,7 +80,7 @@ div.article div.title h2{
 }
 
 div.article p{
-	line-height: 29px;
+	line-height: 25px;
 	padding: 0 0 30px 2px;
 }
 
@@ -99,8 +99,8 @@ div.menu a{
 }
 
 div.content{
-	font-size: 19px;
-	line-height: 27px;
+	font-family: "ProximaNovaRegular", sans-serif;
+	font-size: 15px;
 }
 
 div.content img{
@@ -175,7 +175,7 @@ div.noUnread p.title{
 }
 
 div.noUnread p{
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular", sans-serif;
 	font-size: 13px;
 	color: #666;
 }
@@ -215,10 +215,10 @@ div.sources div.header{
 }
 
 div.sources div.header h3{
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular", sans-serif;
 	font-size:13px;
 	color:#666666;
-	font-weight:bold;
+	font-weight:normal;
 	line-height: 36px;
 	text-align:left;
 	margin: 0 0 0 10px;
@@ -241,12 +241,12 @@ div.sources ul li div{
 	width: 290px;
 }
 
-div.sources ul li div a{font-family: Helvetica, Arial, sans-serif;color:#B1B1B1;font-size:13px;line-height: 36px;margin: 0 0 0 10px; width: 100%;}
+div.sources ul li div a{font-family: "ProximaNovaRegular", sans-serif;;color:#B1B1B1;font-size:13px;line-height: 36px;margin: 0 0 0 10px; width: 100%;}
 div.sources ul li div a:hover{text-decoration: none; color: #FFF;}
 
 div.sources ul li div span{
 	background-color:#FF3333;
-	font-family: Helvetica, Arial, sans-serif;color:#B1B1B1;font-size:13px;
+	font-family: "ProximaNovaRegular", sans-serif;color:#B1B1B1;font-size:13px;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	border-radius: 2px;
