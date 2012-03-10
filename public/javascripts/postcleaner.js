@@ -65,18 +65,6 @@ function cleanpost(){
 		}
 	});
 
-	//Following br's
-	// $('.content').find('br').each(function() {
-	// 	el = $(this).next();
-	// 	if(el.is('br')){
-	// 		el = $(this).next();
-	// 		if(el.is('br')){
-	// 			el.remove();
-	// 			console.log("removed");
-	// 		}
-	// 	}
-	// });
-
 	//Remove feedburner buttons for mail, digg and delicious
 	$('.content').find('a:regex(href,feedburner)').each(function() {
 		$(this).remove();
