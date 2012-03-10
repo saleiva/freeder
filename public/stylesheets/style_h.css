@@ -68,8 +68,11 @@ div.text h2{
 }
 
 div.text a.bigButton{
-	background:url('/images/home_button.png');
+	display:block;
+	width:214px;
+	height: 18px;
 	padding: 15px 28px 14px 28px;
+	background:url('/images/home_button.png');
 	color: transparent;
 }
 
