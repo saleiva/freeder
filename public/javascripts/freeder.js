@@ -103,9 +103,6 @@ $(document).ready(function() {
 	});
 
 	//Binding buttons events
-	$('.menu .skip').bind("click",function(event){
-		nextArticle();
-	});
 	$('.menu .next').bind("click",function(event){
 		nextArticle();
 	});

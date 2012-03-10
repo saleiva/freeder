@@ -76,7 +76,7 @@ div.article div.title h2{
 	font-size: 13px;
 	color: #999;
 	font-weight: normal;
-	margin: 7px 0 0 0;
+	margin: 12px 0 0 0;
 }
 
 div.article p{
@@ -85,22 +85,33 @@ div.article p{
 }
 
 div.menu{
-	margin: 87px 0 85px 0;
+	margin: 77px 0 73px 0;
 	width: 100%;
 	text-align: center;
 	float: left;
 }
 
 div.menu a{
-	font-size:15px;
-	font-style: italic;
+	font-size:16px;
 	text-decoration: none;
 	color: #333;
 }
 
+div.menu a.next{
+	font-family: "ProximaNovaRegular", sans-serif;
+	font-size: 16px;
+	background: url('/images/nextBtn_w.png') 0 0 no-repeat;
+	padding: 22px 43px 21px 48px;	
+}
+
+div.menu a.next:hover{
+	background: url('/images/nextBtn_w.png') 0 -61px no-repeat;
+	color: #FFF;
+}
+
 div.content{
 	font-family: "ProximaNovaRegular", sans-serif;
-	font-size: 15px;
+	font-size: 16px;
 }
 
 div.content img{
@@ -125,28 +136,8 @@ div.content ul li,  div.content ol li{
 	margin: 0 0 20px 0;
 }
 
-div.menu a.skip{
-	background: url('/images/skipBtn_w.png') 0 0 no-repeat;
-	padding: 37px 44px 35px 27px;	
-}
-
-div.menu a.skip:hover{
-	background: url('/images/skipBtn_w.png') 0 -91px no-repeat;
-	text-decoration: underline;	
-}
-
-div.menu a.next{
-	background: url('/images/nextBtn_w.png') 0 0 no-repeat;
-	padding: 37px 57px 35px 35px;	
-}
-
-div.menu a.next:hover{
-	background: url('/images/nextBtn_w.png') 0 -91px no-repeat;
-	text-decoration: underline;	
-}
-
 /*SHAREBUTTONS*/
-div.menu ul{margin:55px 0 0 0;}
+div.menu ul{margin:40px 0 0 0;}
 div.menu ul li{display:inline;list-style: none;}
 div.menu ul li a{padding:4px 22px 0 0;}
 div.menu ul li a.web{background:url('/images/shareBtns_w.png') 0 0 no-repeat;}
