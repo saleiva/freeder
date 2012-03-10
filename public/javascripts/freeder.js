@@ -55,14 +55,16 @@ $(document).ready(function() {
 			    success: function(resc) {
 			    	total_count = 0;
 			    	var fe = null;
+			    	var re = new RegExp("\/state/com.google/reading-list\+");
 
 		   			jQuery.each(resc.unreadcounts, function(i,obj){
-		      			$('li#'+sanitize(obj.id)+' div span').text(obj.count);
-		      			$('li#'+sanitize(obj.id)+' div span').show();
-		   			});			    	
-		   			
-		   			//SET TOP COUNTER
-		   			updateTotalCounter(resc.unreadcounts[0].count);
+		   				if(obj.id.match(re)){
+		      				updateTotalCounter(obj.count);
+		      			}else{
+							$('li#'+sanitize(obj.id)+' div span').text(obj.count);
+		      				$('li#'+sanitize(obj.id)+' div span').show();
+		      			}
+		   			});
 		   			
 		   			//SHOW BY DEFAULT THE FIRST SOURCE WITH UNREAD ITEMS
 		   			$('.sources ul li').each(function() {

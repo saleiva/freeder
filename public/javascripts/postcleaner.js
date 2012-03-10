@@ -61,7 +61,6 @@ function cleanpost(){
 	//Handle p with just an image inside
 	$('.content').find('p').each(function() {	
 		if(($(this).children().length == 1) && ($(this).children('img').length == 1)){
-			console.log($(this).children());
 			$(this).find('img').css('margin-bottom','0');
 		}
 	});

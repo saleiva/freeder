@@ -7,6 +7,7 @@ function viewminispinner(){
 }
 
 function updateTotalCounter(n){
-	$('.header span').text("("+n+")");
+	p = (n==1000) ? "+" : "";
+	$('.header span').text("("+p+n+")");
 	minispinner.stop();
 }
