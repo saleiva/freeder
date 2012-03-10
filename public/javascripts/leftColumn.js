@@ -21,8 +21,10 @@ $(document).ready(function() {
 		$('.sources').fadeIn(150);
 		$('.sources_area').css('width','300px');
 		//JSCROLLPANE 
-		var api = $('.scroll-pane').data('jsp');
-		api.reinitialise();
+        if ($('.scroll-pane').length > 0) {
+            var api = $('.scroll-pane').data('jsp');
+            api.reinitialise();
+        }
 		var throttleTimeout;
 		$(window).bind('resize',function(){
 			if ($.browser.msie) {
