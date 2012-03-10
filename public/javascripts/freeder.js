@@ -157,7 +157,7 @@ function showArticle(i){
 	if(post.content){
 		$('.content').append(post.content.content);
 	}else{
-		$('.content').append('<p>'+post.summary.content+'</p>');
+		$('.content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
 	}
 	cleanpost();
 }
