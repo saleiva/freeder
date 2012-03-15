@@ -7,6 +7,7 @@
 
 ## TODO's
 
+* Ask for more posts when finishing the ones on memory.
 * Review issues when having code on an article
 * Refresh action token before it gets expired
 * Review issues with small images
