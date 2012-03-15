@@ -127,8 +127,8 @@ function getActionToken(req, res, callback) {
 
 // Subscribes to feed
 function addFeed(req, res, actionToken) {
-
-    var post_data = "s="+req.params.url+"&ac=subscribe&T="+actionToken;
+    var post_data = "s=feed/"+req.params.url+"&ac=subscribe&T="+actionToken;
+    console.log(post_data);
 
     var post_options = { 
         host: 'www.google.com',
@@ -150,6 +150,7 @@ function addFeed(req, res, actionToken) {
 
         resp.on('end', function (){
 
+console.log(data);
             if (data == "OK") { // the item has been marked as read
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
                 res.write(data);
@@ -258,6 +259,11 @@ app.get('/get/feed/:url/:unread', function(req, res){
     }
 
     request(res, req.session.accessToken, url);
+});
+
+// Subscbribe to feed service 
+app.get('/subscribe/:url', function(req, res){
+    getActionToken(req, res, addFeed);
 });
 
 // Mark as read service

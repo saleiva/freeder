@@ -20,7 +20,22 @@ $(document).ready(function() {
 		nextArticle();
 	});
 
-	//Ask for all the blogs where the user is subscripted
+	//Binding buttons events
+	$('.menu .next').bind("click",function(event){
+		nextArticle();
+	});
+
+	// $('.addfeed').bind("click",function(event){
+    //     event.preventDefault();
+    //     subscribeToFeed();
+	// });
+
+    getSubscriptionList();
+});
+
+
+function getSubscriptionList() {
+	//Ask for all the blogs where the user is subscribed
 	var sreq = $.ajax({
 
 	    url: "/get/subscription-list",
@@ -106,13 +121,7 @@ $(document).ready(function() {
 			}
 		}
 	});
-
-	//Binding buttons events
-	$('.menu .next').bind("click",function(event){
-		nextArticle();
-	});
-
-});
+	}
 
 //Function for changing the source for viewing
 function setFeed(f,u){
@@ -162,6 +171,26 @@ function showArticle(i){
 		$('.content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
 	}
 	cleanpost();
+}
+
+function subscribeToFeed() {
+
+    var url = "http://feeds.kottke.org/main";
+
+	$.ajax({
+		url: 'subscribe/'+encodeURIComponent(url),
+		beforeSend: function(r) {
+            r.setRequestHeader("Auth_token", sessvars.Auth_token);
+		},
+		type: 'GET',
+		success: function(resc) {
+            $('.sources ul').empty();
+            getSubscriptionList();
+        },
+		error: function(resc) {
+            console.log(resc);
+        }
+    });
 }
 
 //Show the next item and mark this as unread
