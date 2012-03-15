@@ -22,13 +22,9 @@ $(document).ready(function() {
 
 	//Binding buttons events
 	$('.menu .next').bind("click",function(event){
+        event.preventDefault();
 		nextArticle();
 	});
-
-	// $('.addfeed').bind("click",function(event){
-    //     event.preventDefault();
-    //     subscribeToFeed();
-	// });
 
     getSubscriptionList();
 });
@@ -49,9 +45,7 @@ function getSubscriptionList() {
             //console.log(e.responseText);
         },
 	    success: function(res) {
-	            //console.log(res);
 	        jQuery.each(res.subscriptions, function(i,obj){
-	            //console.log(i, obj);
 	        	var url = obj.htmlUrl;
 	        	var name = obj.title;
 	        	arrSources[sanitize(obj.id)] = obj.id;

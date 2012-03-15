@@ -9,6 +9,7 @@ $(document).ready(function() {
 	});
 
 	$('.sources ul').on("click", 'li', function(event){
+	event.preventDefault();
 		setFeed($(this).attr('id'));
 		if(_selectedSource){
 			_selectedSource.removeClass("selected");
