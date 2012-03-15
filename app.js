@@ -52,6 +52,7 @@ var mode = "development";
 var ourl = new Object();
 ourl.actionToken = '/reader/api/0/token';
 ourl.unreadCount = '/reader/api/0/unread-count?output=json';
+ourl.readingList = '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?';
 ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
 ourl.feedContents = '/reader/api/0/stream/contents/';
 ourl.markAsRead =  '/reader/api/0/edit-tag?client=sirope';
@@ -214,8 +215,12 @@ app.get('/get/:query', function(req, res){
 });
 
 app.get('/get/feed/:url/:unread', function(req, res){
-    var url = ourl.feedContents+decodeURIComponent(req.params.url)+"?&r=n&n=100";
-
+    
+    if(req.params.url == "all"){
+        var url = ourl.readingList+"?&r=n&n=100";
+    }else{
+        var url = ourl.feedContents+decodeURIComponent(req.params.url)+"?&r=n&n=100";
+    }
     if (req.params.unread=="t"){
         url += "&xt=user/-/state/com.google/read";
     }

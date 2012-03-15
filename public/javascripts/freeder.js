@@ -35,6 +35,7 @@ $(document).ready(function() {
         },
 	    success: function(res) {
 	            //console.log(res);
+			$('.sources ul').append('<li id="allfeeds"><div><a href="#">All unread items</a><span>0</span></div></li>');
 	        jQuery.each(res.subscriptions, function(i,obj){
 	            //console.log(i, obj);
 	        	var url = obj.htmlUrl;
@@ -68,42 +69,12 @@ $(document).ready(function() {
 		      			}
 		   			});
 
-		   			//SHOW BY DEFAULT THE FIRST SOURCE WITH UNREAD ITEMS
-		   			$('.sources ul li').each(function() {
-						if(($(this).find('div span').text()!='0') && (fe == null)){
-							fe = $(this).attr('id');
-						}
-					});
-					currentSource = fe;
-		   			getFirstFeed(encodeURIComponent(arrSources[fe]));
+		   			getAllFeeds();
+		   			$('.sources ul li#allfeeds').addClass("selected");
 			    }
 			});
 			$('.sources div.wrap').addClass("scroll-pane");
 			$('.scroll-pane').jScrollPane();
-
-			function getFirstFeed(f){
-				$.ajax({
-					url: '/get/feed/'+f+'/t',
-					type: 'GET',
-					beforeSend: function(r) {
-	    				r.setRequestHeader("Auth_token", sessvars.Auth_token);
-					},
-					success: function(resc) {
-						arrPosts = new Array();
-						jQuery.each(resc.items, function(i,obj){
-			      			arrPosts[i] = obj;
-			   			});
-			   			spinner.stop();
-			   			$('.article').fadeIn();
-			   			showArticle(0);
-			   			hideSources();
-					}, error: function(e) {
-					    spinner.stop();
-					    // TODO: implement error messages
-					    // console.log(e.responseText);
-                    }
-				});
-			}
 		}
 	});
 
@@ -121,16 +92,16 @@ function setFeed(f,u){
 	spinner = new Spinner(opts).spin(target);
 	arrPosts = new Array();
 	if((parseInt($('li#'+sanitize(arrSources[f])+' div span').text())>0) || (u == 'undefined')){
-		_u = "t";
+		unreadFlag = "t";
 	}else{
-		_u = "f";
+		unreadFlag = "f";
 		
 	}
 	if($('.noUnread').is(':visible')){
 		$('.noUnread').hide();
 	}
 	$.ajax({
-		url: 'get/feed/'+encodeURIComponent(arrSources[f])+"/"+_u,
+		url: 'get/feed/'+encodeURIComponent(arrSources[f])+"/"+unreadFlag,
 		type: 'GET',
 		beforeSend: function(r) {
 	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -144,6 +115,34 @@ function setFeed(f,u){
    			$('.article').fadeIn();
    			spinner.stop();
 		}
+	});
+}
+
+function getAllFeeds(){
+	spinner.stop();
+	$('.article').fadeOut();
+	spinner = new Spinner(opts).spin(target);
+	arrPosts = new Array();
+	$.ajax({
+		url: 'get/feed/all/t',
+		type: 'GET',
+		beforeSend: function(r) {
+			r.setRequestHeader("Auth_token", sessvars.Auth_token);
+		},
+		success: function(resc) {
+			arrPosts = new Array();
+			jQuery.each(resc.items, function(i,obj){
+    			arrPosts[i] = obj;
+  			});
+   			spinner.stop();
+   			$('.article').fadeIn();
+   			showArticle(0);
+   			hideSources();
+		}, error: function(e) {
+		    spinner.stop();
+		    // TODO: implement error messages
+		    // console.log(e.responseText);
+        }
 	});
 }
 
@@ -166,32 +165,33 @@ function showArticle(i){
 
 //Show the next item and mark this as unread
 function nextArticle(){
-	f = encodeURIComponent(arrSources[currentSource]);
+	f = encodeURIComponent(arrPosts[currentArticle].origin.streamId);
 	p = encodeURIComponent(arrPosts[currentArticle].id);
-	_id = sanitize(arrSources[currentSource]);
-	_c = parseInt($('li#'+_id+' div span').text())
-	_t = parseInt(($('.header p span').text()).substring(1,($('.header p span').text()).length-1));
-	viewminispinner();
-	// console.log("Marking as read: ", f, p);
-	$.ajax({
-		url: '/markasread/'+f+'/'+p,
-		type: 'GET',
-		beforeSend: function(r) {
-	    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
-	    	r.setRequestHeader("Action_token", sessvars.Action_token);
-		},
-		success: function(resc) {
-			if(_c>0){
-				_c -= 1;
-				_t -= 1;
+	_id = sanitize(arrPosts[currentArticle].origin.streamId);
+	_c = parseInt($('li#'+_id+' div span').text());
+	_t = getTotalCounter();
+	if(unreadFlag=='t'){
+		viewminispinner();
+		$.ajax({
+			url: '/markasread/'+f+'/'+p,
+			type: 'GET',
+			beforeSend: function(r) {
+		    	r.setRequestHeader("Auth_token", sessvars.Auth_token);
+		    	r.setRequestHeader("Action_token", sessvars.Action_token);
+			},
+			success: function(resc) {
+				if(_c>0){
+					_c -= 1;
+					_t -= 1;
+				}
+				$('li#'+_id+' div span').text(_c);
+				updateTotalCounter(_t);
+				if(_c==0){
+					$('li#'+_id+' div span').hide();
+				}
 			}
-			$('li#'+_id+' div span').text(_c);
-			updateTotalCounter(_t);
-			if(_c==0){
-				$('li#'+_id+' div span').hide();
-			}
-		}
-	});
+		});
+	}
 	if (currentArticle < arrPosts.length-1){
 		showArticle(currentArticle+1);
 	}else{

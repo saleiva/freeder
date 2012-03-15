@@ -5,9 +5,3 @@ function viewminispinner(){
 	minispinner_t = document.getElementById('minispinner');
 	minispinner = new Spinner(minispinner_o).spin(minispinner_t);
 }
-
-function updateTotalCounter(n){
-	p = (n==1000) ? "+" : "";
-	$('.header span').text("("+p+n+")");
-	minispinner.stop();
-}

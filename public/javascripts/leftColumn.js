@@ -9,7 +9,11 @@ $(document).ready(function() {
 	});
 
 	$('.sources ul').on("click", 'li', function(event){
-		setFeed($(this).attr('id'));
+		if($(this).attr('id')=='allfeeds'){
+			getAllFeeds();
+		}else{
+			setFeed($(this).attr('id'));
+		}
 		if(_selectedSource){
 			_selectedSource.removeClass("selected");
 		}
@@ -50,6 +54,16 @@ $(document).ready(function() {
 
 });
 
+function updateTotalCounter(n){
+	p = (n==1000) ? "+" : "";
+	$('.sources ul li#allfeeds div span').text(	p+n);
+	$('.sources ul li#allfeeds div span').show();
+	minispinner.stop();
+}
+
+function getTotalCounter(){
+	return parseInt($('.sources ul li#allfeeds div span').text());
+}
 
 function hideSources(){
 	$('.sources').fadeOut(150);
