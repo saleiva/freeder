@@ -55,6 +55,7 @@ ourl.unreadCount = '/reader/api/0/unread-count?output=json';
 ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
 ourl.feedContents = '/reader/api/0/stream/contents/';
 ourl.markAsRead =  '/reader/api/0/edit-tag?client=sirope';
+ourl.addFeed =  '/reader/api/0/subscription/edit';
 
     var app = module.exports = express.createServer(
             express.bodyParser()
@@ -122,6 +123,43 @@ function getActionToken(req, res, callback) {
         });
     });
 
+    post_req.end();
+}
+
+// Add feed
+function addFeed(req, res, actionToken) {
+
+    var post_data = "s=feed/http://www.engadget.com/rss.xml&ac=subscribe&T="+actionToken;
+
+    var post_options = { 
+        host: 'www.google.com',
+        port: 443,
+        path: ourl.addFeed,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': post_data.length,
+            'Authorization': 'Bearer '+ req.session.accessToken }
+    };
+
+    var post_req = https.request(post_options, function(resp) {
+
+        data = "";
+
+        resp.on('data', function (chunk) {
+            data += chunk;
+        });
+
+        resp.on('end', function (){
+
+            if (data == "OK") { // the item has been marked as read
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write(data);
+                res.end();
+            }
+        });
+    });
+
+    post_req.write(post_data);
     post_req.end();
 }
 
