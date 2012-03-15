@@ -20,6 +20,10 @@ $(document).ready(function() {
 		nextArticle();
 	});
 
+	$(document).bind('keydown', 'j', function(){
+		nextArticle();
+	});
+
 	//Binding buttons events
 	$('.menu .next').bind("click",function(event){
         event.preventDefault();
@@ -71,7 +75,6 @@ function getSubscriptionList() {
 		   			jQuery.each(resc.unreadcounts, function(i,obj){
 		   				if(obj.id.match(re)){
 		      				updateTotalCounter(obj.count);
-		      				console.log(obj);
 		      			}else{
 							$('li#'+sanitize(obj.id)+' div span').text(obj.count);
 		      				$('li#'+sanitize(obj.id)+' div span').show();
