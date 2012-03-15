@@ -119,6 +119,7 @@ function setFeed(f,u){
 }
 
 function getAllFeeds(){
+	unreadFlag = "t";
 	spinner.stop();
 	$('.article').fadeOut();
 	spinner = new Spinner(opts).spin(target);
