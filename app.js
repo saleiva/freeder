@@ -126,10 +126,10 @@ function getActionToken(req, res, callback) {
     post_req.end();
 }
 
-// Add feed
+// Subscribes to feed
 function addFeed(req, res, actionToken) {
 
-    var post_data = "s=feed/http://www.engadget.com/rss.xml&ac=subscribe&T="+actionToken;
+    var post_data = "s="+req.params.url+"&ac=subscribe&T="+actionToken;
 
     var post_options = { 
         host: 'www.google.com',
