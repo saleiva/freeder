@@ -13,7 +13,6 @@
 * Implement send to readability / instapaper
 * Add some illustrations.
 * Make the sidebar easier to find.
-* Show list with all the unread items.
 * Show tags/folders.
 * Store some user data (configuration, etc.)
 * Check spinners.
