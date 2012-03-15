@@ -17,3 +17,4 @@
 * Show tags/folders.
 * Store some user data (configuration, etc.)
 * Check spinners.
+* Design new favicon.
