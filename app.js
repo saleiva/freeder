@@ -7,8 +7,8 @@
 //http://undoc.in/googlereader.html
 
 /**
- * Module dependencies.
- */
+* Module dependencies.
+*/
 
 var express = require('express')
 , routes = require('./routes')
@@ -29,25 +29,24 @@ var usersByGoogleId = {};
 
 everyauth.everymodule
 .findUserById( function (id, callback) {
-    callback(null, usersById[id]);
+    callback(null, usersByGoogleId[id]);
 });
-
 
 var mode = "development";
 
 // TODO: move appID and appSecret to configuration file
-    everyauth.google
-    .myHostname(config[mode].host)
-    .appId(config[mode].google.appID)
-    .appSecret(config[mode].google.appSecret)
+everyauth.google
+.myHostname(config[mode].host)
+.appId(config[mode].google.appID)
+.appSecret(config[mode].google.appSecret)
 .scope(config[mode].google.scope)
-    .findOrCreateUser( function (sess, accessToken, extra, googleUser) {
-        googleUser.refreshToken = extra.refresh_token;
-        googleUser.expiresIn = extra.expires_in;
-        sess.email = googleUser.email;
-        sess.accessToken = accessToken;
-        return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
-    }).redirectPath('/login');
+.findOrCreateUser( function (sess, accessToken, extra, googleUser) {
+    googleUser.refreshToken = extra.refresh_token;
+    googleUser.expiresIn = extra.expires_in;
+    sess.email = googleUser.email;
+    sess.accessToken = accessToken;
+    return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
+}).redirectPath('/login');
 
 var ourl = new Object();
 ourl.actionToken = '/reader/api/0/token';
@@ -56,39 +55,40 @@ ourl.readingList = '/reader/api/0/stream/contents/user/-/state/com.google/readin
 ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
 ourl.feedContents = '/reader/api/0/stream/contents/';
 ourl.markAsRead =  '/reader/api/0/edit-tag?client=sirope';
+ourl.addFeed =  '/reader/api/0/subscription/edit';
 
-    var app = module.exports = express.createServer(
-            express.bodyParser()
-            , express.static(__dirname + "/public")
-            , express.favicon()
-            , express.cookieParser()
-            , express.session({ secret: 'htuayreve'})
-            , everyauth.middleware()
-            );
+var app = module.exports = express.createServer(
+    express.bodyParser()
+    , express.static(__dirname + "/public")
+    , express.favicon()
+    , express.cookieParser()
+    , express.session({ secret: 'htuayreve'})
+    , everyauth.middleware()
+);
 
 
-    everyauth.helpExpress(app);
+everyauth.helpExpress(app);
 
-    // Configuration
-    app.configure(function(){
-        app.set('views', __dirname + '/views');
-        app.set('view engine', 'html');
-        app.set("view options", {layout: false});
-        app.use(express.bodyParser());
-        app.use(express.methodOverride());
-        app.use(app.router);
-        app.use(express.static(__dirname + '/public'));
+// Configuration
+app.configure(function(){
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'html');
+    app.set("view options", {layout: false});
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
+    app.use(express.static(__dirname + '/public'));
 
-        //Make a custom html template
-        //Be able to render HTML files - No templates
-        app.register('.html', {
-            compile: function(str, options){
-                return function(locals){
-                    return str;
-                };
-            }
-        });
+    //Make a custom html template
+    //Be able to render HTML files - No templates
+    app.register('.html', {
+        compile: function(str, options){
+            return function(locals){
+                return str;
+            };
+        }
     });
+});
 
 app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -123,6 +123,43 @@ function getActionToken(req, res, callback) {
         });
     });
 
+    post_req.end();
+}
+
+// Subscribes to feed
+function addFeed(req, res, actionToken) {
+
+    var post_data = "s="+req.params.url+"&ac=subscribe&T="+actionToken;
+
+    var post_options = { 
+        host: 'www.google.com',
+        port: 443,
+        path: ourl.addFeed,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': post_data.length,
+            'Authorization': 'Bearer '+ req.session.accessToken }
+    };
+
+    var post_req = https.request(post_options, function(resp) {
+
+        data = "";
+
+        resp.on('data', function (chunk) {
+            data += chunk;
+        });
+
+        resp.on('end', function (){
+
+            if (data == "OK") { // the item has been marked as read
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write(data);
+                res.end();
+            }
+        });
+    });
+
+    post_req.write(post_data);
     post_req.end();
 }
 
