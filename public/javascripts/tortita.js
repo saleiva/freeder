@@ -160,8 +160,9 @@ function showArticle(i){
 	$('.title h1 a').text(post.title);
 	$('.title h1 a').attr('href',post.alternate[0].href);
 	$('.title h2 a').attr('href',post.alternate[0].href);
-	$('.title h2 a').text(post.origin.title);
+	$('.title h2 a').html(post.origin.title);
 	$('.content').text("");
+
 	if(post.content){
 		$('.content').append(post.content.content);
 	}else{
