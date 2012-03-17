@@ -168,11 +168,11 @@ function showArticle(i){
     post = arrPosts[i];
 
     if (post) {
-        $('.title h1 a').html(post.title);
-        $('.title h1 a').attr('href', post.alternate[0].href);
-        $('.title h2 a').attr('href', post.alternate[0].href);
-        $('.title h2 a').html(post.origin.title);
-        $('.content').text("");
+        $('.article .title h1 a').html(post.title);
+        $('.article .title h1 a').attr('href', post.alternate[0].href);
+        $('.article .title h2 a').attr('href', post.alternate[0].href);
+        $('.article .title h2 a').html(post.origin.title);
+        $('.article .content').text("");
 
         if (post.content){
             $('.content').append(post.content.content);
