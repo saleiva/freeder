@@ -10,7 +10,8 @@
 * Module dependencies.
 */
 
-var express = require('express')
+var 
+express = require('express')
 , routes = require('./routes')
 , querystring = require('querystring')
 , http = require('http')
@@ -43,8 +44,12 @@ everyauth.google
 .findOrCreateUser( function (sess, accessToken, extra, googleUser) {
     googleUser.refreshToken = extra.refresh_token;
     googleUser.expiresIn = extra.expires_in;
+
+    // Let's store some basic info in the session variable
     sess.email = googleUser.email;
     sess.accessToken = accessToken;
+    sess.refreshToken = extra.refresh_token;
+
     return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
 }).redirectPath('/login');
 
