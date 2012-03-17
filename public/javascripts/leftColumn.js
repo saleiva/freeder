@@ -2,15 +2,9 @@ $(document).ready(function() {
 
     var _selectedSource;
 
-    // binds add feed link
-    $("a[data-toggle='addfeed']").on("click", function(e) {
-        e.preventDefault();
-        $("#addfeed").fadeIn(250);
-    });
-    
     $(".modal .close").on("click", function(e) {
         e.preventDefault();
-        $(this).parents(".modal").fadeOut(250);
+        $("#addFeed").modal("hide");
     });
 
     $('.sources ul').on("mouseenter mouseleave", 'li', function(e){
