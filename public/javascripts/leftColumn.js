@@ -2,14 +2,22 @@ $(document).ready(function() {
 
     var _selectedSource;
 
-    $('.sources ul').on("mouseenter mouseleave", 'li', function(event){
+    // binds add feed link
+    $("a[data-toggle='addfeed']").on("click", function(e) {
+        e.preventDefault();
+
+        console.log('Adds more feeds');
+    });
+
+    $('.sources ul').on("mouseenter mouseleave", 'li', function(e){
         if($(this) != _selectedSource){
             $(this).toggleClass("over");
         }
     });
 
-    $('.sources ul').on("click", 'li', function(event){
-        event.preventDefault();
+    $('.sources ul').on("click", 'li', function(e){
+        e.preventDefault();
+
         if ($(this).attr('id')=='allfeeds'){
             getAllFeeds();
         } else{
@@ -24,7 +32,7 @@ $(document).ready(function() {
         _selectedSource.addClass("selected");
     });
 
-    $('.sources_area').bind("mouseenter", function(event){
+    $('.sources_area').bind("mouseenter", function(e){
         showSources();
         $('.sources_area').css('width','300px');
         //JSCROLLPANE 
@@ -50,7 +58,7 @@ $(document).ready(function() {
         });
     });
 
-    $('.sources').bind("mouseleave", function(event){
+    $('.sources').bind("mouseleave", function(e){
         hideSources();
         $('.sources_area').css('width','170px');
     });
@@ -59,8 +67,8 @@ $(document).ready(function() {
 
 function updateTotalCounter(n){
     p = (n==1000) ? "+" : "";
-    $('.sources ul li#allfeeds div span').text(	p+n);
-    $('.sources ul li#allfeeds div span').show();
+    $('.sources ul li#allfeeds div span').text(p+n);
+    $('.sources ul li#allfeeds div span').fadeIn(350);
     minispinner.stop();
 }
 
@@ -69,7 +77,7 @@ function getTotalCounter(){
 }
 
 function hideSources(){
-    $('.sources').fadeOut(150);
+//    $('.sources').fadeOut(150);
 }
 
 function showSources(){

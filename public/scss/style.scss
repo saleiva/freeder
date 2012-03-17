@@ -283,19 +283,17 @@ div {
                 }
 
                 span {
+                    display: none;
+                    float: right;
+                    padding: 0 5px 0 4px;
+                    margin: 7px 0 0 0;
                     background-color: #FF3333;
                     font-family: "ProximaNovaRegular", sans-serif;
                     color: #B1B1B1;
                     font-size: 13px;
-                    -webkit-border-radius: 2px;
-                    -moz-border-radius: 2px;
-                    border-radius: 2px;
                     color: #333;
                     line-height: 21px;
-                    padding: 0 5px 0 4px;
-                    margin: 7px 0 0 0;
-                    float: right;
-                    display: none;
+                    @include border-radius(2px); 
                 }
             }
         }
