@@ -343,5 +343,41 @@ div {
     }
 } // modal
 
+// Buttons
+.btn {
+    $height:40px;
+
+    height: $height;
+    position:relative;
+    display:block;
+    background:url(../images/bkg_buttons_left.png) no-repeat left top;
+    color:#fff; text-decoration:none;
+    font-size:15px;
+
+    span { 
+        $pT: 7px; 
+        $pR: 20px;
+        $pB: 5px;
+        $pL: 15px; 
+
+        display:block;
+        left:5px;
+        padding: $pT $pR $pB $pL;
+        position:absolute;
+        height:$height - $pT - $pB;
+        background:url(../images/bkg_buttons_right.png) repeat-x right top;
+    }
+    &:hover { 
+        text-decoration:none; 
+    }
+    &:active { 
+        background:url(../images/bkg_buttons_left.png) no-repeat left -1*($height + 1);
+        span { 
+            background:url(../images/bkg_buttons_right.png) repeat-x right -1*($height + 1);
+        }
+    }
+
+} // btn
+
 /*SHAREBUTTONS*/
 /*SOURCES PANEL*/
