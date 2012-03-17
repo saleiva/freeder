@@ -219,7 +219,7 @@ div {
         -webkit-box-shadow: 0px 0 13px #333;
         -moz-box-shadow: 0px 0 13px #333;
         box-shadow: 0px 0 13px #333;
-        //display: none;
+        display: none;
 
         div {
             &.scroll-pane {
@@ -299,6 +299,49 @@ div {
         }
     }
 }
+
+/* Basic modal */
+.modal {
+    $width: 561px;
+    $pT: 29px;
+    $pR: 43px;
+    $pB: 24px;
+    $pL: 43px;
+
+    position:absolute;
+    width: $width;
+
+    top: 100px; 
+    left: 200px;
+    z-index:1000;
+
+    .content {
+        width: $width -  $pL - $pR;
+        padding: $pT $pR $pB $pL; 
+        background:url(../images/bkg_modal.png) repeat-y -1*$width top;
+    } // content
+
+    .t { position:absolute; width:$width; background:url(../images/bkg_modal.png) no-repeat left top;  height:10px; left: 0; top: -10px; }
+    .b { position:absolute; width:$width; background:url(../images/bkg_modal.png) no-repeat right top; height:10px; left: 0; bottom: -10px; }
+} // modal
+
+
+// modal components 
+.modal {
+    .header {
+        text-align:center;
+        border:none;
+        h2 { font: 21px "FjordOne", serif; color: #333333; }
+    } // header
+
+    .close {
+        position:absolute;
+        top: -23px; right: -12px;
+        width:31px; height:31px;
+        background:url(../images/btn_close.png) no-repeat;
+        z-index:10;
+    }
+} // modal
 
 /*SHAREBUTTONS*/
 /*SOURCES PANEL*/

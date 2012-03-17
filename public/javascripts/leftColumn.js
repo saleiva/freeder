@@ -5,8 +5,12 @@ $(document).ready(function() {
     // binds add feed link
     $("a[data-toggle='addfeed']").on("click", function(e) {
         e.preventDefault();
-
-        console.log('Adds more feeds');
+        $("#addfeed").fadeIn(250);
+    });
+    
+    $(".modal .close").on("click", function(e) {
+        e.preventDefault();
+        $(this).parents(".modal").fadeOut(250);
     });
 
     $('.sources ul').on("mouseenter mouseleave", 'li', function(e){
@@ -77,7 +81,7 @@ function getTotalCounter(){
 }
 
 function hideSources(){
-//    $('.sources').fadeOut(150);
+    $('.sources').fadeOut(150);
 }
 
 function showSources(){
