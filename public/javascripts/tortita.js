@@ -36,10 +36,12 @@ $(document).ready(function() {
 });
 
 
+//Ask for all the blogs where the user is subscribed
 function getSubscriptionList() {
-    //Ask for all the blogs where the user is subscribed
-    var sreq = $.ajax({
 
+    $('.sources ul').empty(); // empty the sources list
+
+    var sreq = $.ajax({
         url: "/get/subscription-list",
         type: 'GET',
         beforeSend: function(r) {
@@ -99,15 +101,17 @@ function setFeed(f,u){
     $('.article').fadeOut();
     spinner = new Spinner(spinnerOpts).spin(target);
     arrPosts = new Array();
-    if((parseInt($('li#'+sanitize(arrSources[f])+' div span').text())>0) || (u == 'undefined')){
+
+    if ((parseInt($('li#'+sanitize(arrSources[f])+' div span').text())>0) || (u == 'undefined')){
         unreadFlag = "t";
     } else {
         unreadFlag = "f";
-
     }
-    if($('.noUnread').is(':visible')){
+
+    if ($('.noUnread').is(':visible')){
         $('.noUnread').hide();
     }
+
     $.ajax({
         url: 'get/feed/'+encodeURIComponent(arrSources[f])+"/"+unreadFlag,
         type: 'GET',
@@ -128,10 +132,13 @@ function setFeed(f,u){
 
 function getAllFeeds(){
     unreadFlag = "t";
-    spinner.stop();
     $('.article').fadeOut();
+
+    spinner.stop();
     spinner = new Spinner(spinnerOpts).spin(target);
+
     arrPosts = new Array();
+
     $.ajax({
         url: 'get/feed/all/t',
         type: 'GET',
@@ -159,34 +166,34 @@ function getAllFeeds(){
 function showArticle(i){
     currentArticle = i;
     post = arrPosts[i];
-    $('.title h1 a').html(post.title);
-    $('.title h1 a').attr('href', post.alternate[0].href);
-    $('.title h2 a').attr('href', post.alternate[0].href);
-    $('.title h2 a').html(post.origin.title);
-    $('.content').text("");
 
-    if(post.content){
-        $('.content').append(post.content.content);
-    } else {
-        $('.content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
+    if (post) {
+        $('.title h1 a').html(post.title);
+        $('.title h1 a').attr('href', post.alternate[0].href);
+        $('.title h2 a').attr('href', post.alternate[0].href);
+        $('.title h2 a').html(post.origin.title);
+        $('.content').text("");
+
+        if (post.content){
+            $('.content').append(post.content.content);
+        } else {
+            $('.content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
+        }
+        cleanpost();
     }
-    cleanpost();
 }
 
 function subscribeToFeed() {
 
-    var url = "http://feeds.kottke.org/main";
+    var url = "http://feeds.kottke.org/main"; // TODO: replace this with an user URL
 
     $.ajax({
+        type: 'GET',
         url: 'subscribe/'+encodeURIComponent(url),
         beforeSend: function(r) {
             r.setRequestHeader("Auth_token", sessvars.Auth_token);
         },
-        type: 'GET',
-        success: function(resc) {
-            $('.sources ul').empty();
-            getSubscriptionList();
-        },
+        success: getSubscriptionList,
         error: function(resc) {
             console.log(resc);
         }
@@ -234,6 +241,21 @@ function nextArticle(e){
     window.scroll();
 }
 
+function isEmpty(str) { 
+    return !str.match(/\S/g); 
+}
+
+function goToPermalink(){
+    window.open(arrPosts[currentArticle].alternate[0].href);
+}
+
+// Function for removing shitty characters from the id property
+function sanitize(str){
+    if (isEmpty(str)) return;
+    return str.replace('http://','').replace('www','').replace(/\//g,'-').replace(/\?/g,'_').replace(/\./g,'_');
+}
+
+// Sharing methods
 function shareOnTwitter(){
     if ((arrPosts[currentArticle].title).length > 70){
         _t = (arrPosts[currentArticle].title).substring(0,70)+"..."
@@ -248,14 +270,4 @@ function shareOnFacebook(){
     _url = "http://www.facebook.com/sharer.php?t="+arrPosts[currentArticle].title+"&u="+(arrPosts[currentArticle].alternate[0].href);
     window.open(_url);
 }
-
-function goToPermalink(){
-    window.open(arrPosts[currentArticle].alternate[0].href);
-}
-
-//Function for removing shitty characters from the id property
-function sanitize(str){
-    return str.replace('http://','').replace('www','').replace(/\//g,'-').replace(/\?/g,'_').replace(/\./g,'_');
-}
-
 

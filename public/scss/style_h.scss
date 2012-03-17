@@ -1,0 +1,104 @@
+
+@import "compass/reset";
+body {
+background-color: white; }
+
+p {
+    font-family: "ProximaNovaRegular", sans-serif;
+    font-size: 15px;
+color: #666; }
+
+a {
+    color: #FF3333;
+text-decoration: none; }
+
+div {
+    &.top {
+        height: 536px;
+    text-align: center; }
+    &.wrap {
+        width: 950px;
+        margin: 0 auto 0 auto;
+    text-align: left; }
+    &.top div.wrap {
+        background: url('/images/home_computer.png');
+height: 500px; } }
+
+p.logo {
+    font-family: 'FjordOne';
+    color: #333;
+    font-size: 19px;
+    font-weight: normal;
+    margin: 40px 0 0 0;
+    span {
+        color: #FF3333;
+        font-family: "ProximaNovaRegular", sans-serif;
+        font-size: 11px;
+margin: 0 0 0 6px; } }
+
+div {
+    &.text {
+        width: 305px;
+        margin: 152px 0 0 0;
+        h1 {
+            font-family: 'FjordOne';
+            font-weight: normal;
+            color: #333;
+            font-size: 29px;
+            margin: 0 0 20px 0;
+        width: 296px; }
+        h2 {
+            font-family: "ProximaNovaRegular", sans-serif;
+            font-weight: normal;
+            color: #666;
+            font-size: 15px;
+            margin: 0 0 45px 0;
+            width: 280px;
+        line-height: 19px; }
+        a.bigButton {
+            display: block;
+            width: 214px;
+            height: 18px;
+            padding: 15px 28px 14px 28px;
+            background: url('/images/home_button.png');
+            color: transparent;
+            &:hover {
+    background-position: 0 -47px; } } }
+    &.bottom {
+        background: url('/images/bkg_w.png');
+        border-top: 1px solid #CCC;
+        text-align: center;
+        height: 320px;
+        div.wrap {
+            ul {
+                float: left;
+                margin: 53px 0 0 0;
+                li {
+                    display: inline;
+                    float: left;
+                    width: 280px;
+                    margin: 0 50px 0 0;
+                    &.last {
+                    margin: 0; }
+                    &.first {
+                    margin: 0 58px 0 0; }
+                    p {
+                        &.title {
+                            font-family: 'FjordOne';
+                            font-weight: normal;
+                            color: #333;
+                            font-size: 19px;
+                        margin: 0 0 20px 0; }
+                        font-family: "ProximaNovaRegular", sans-serif;
+                        font-weight: normal;
+                        color: #666;
+                        font-size: 15px;
+            line-height: 21px; } } }
+            div.footer {
+                border-top: 1px solid #CCC;
+                float: right;
+                width: 100%;
+                margin: 50px 0 0 0;
+                p {
+                    margin: 45px 0 0 668px;
+font-size: 13px; } } } } }
