@@ -8,6 +8,8 @@
     <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="/javascripts/jquery-1.7.1.min.js" ></script>
     <script type="text/javascript" src="/javascripts/jquery.truncate.min.js" ></script>
+    <script type="text/javascript" src="/javascripts/bootstrap-transition.js" ></script>
+    <script type="text/javascript" src="/javascripts/bootstrap-modal.js" ></script>
     <script type="text/javascript" src="/javascripts/jquery.mousewheel.js" ></script>
     <script type="text/javascript" src="/javascripts/jquery.jscrollpane.min.js" ></script>
     <script type="text/javascript" src="/javascripts/spin.min.js" ></script>
@@ -33,12 +35,12 @@
   </head>
 
   <body>
-      <div id="addfeed" class="modal">
+      <div id="addFeed" class="modal hide fade">
           <div class="content">
               <div class="header">
                   <h2>Add a new taste to your sirope</h2>
               </div>
-
+              <input type="text" name="" placeholder="Source URL" />
               <a href="#" class="btn"><span>Add feed</span></a>
           </div>
           <a href="#" class="close"></a>
@@ -75,7 +77,7 @@
       <div class="wrap">
         <div class="header">
             <h3>SOURCES</h3>
-            <a href="#" data-toggle="addfeed">Add +</a>
+            <a href="#addFeed" data-toggle="modal">Add +</a>
         </div>
         <ul>
         </ul>
