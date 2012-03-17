@@ -175,9 +175,9 @@ function showArticle(i){
         $('.article .content').text("");
 
         if (post.content){
-            $('.content').append(post.content.content);
+            $('.article .content').append(post.content.content);
         } else {
-            $('.content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
+            $('.article .content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
         }
         cleanpost();
     }
