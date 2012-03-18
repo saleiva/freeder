@@ -48,17 +48,24 @@ $(document).ready(function() {
         $("#addFeed").modal("hide");
     });
 
-    $('#addFeed a').click(function(e) {
-        e.preventDefault();
-        var url = $('#addFeed').find('input[type="text"]').val();
+    // Add feed submission bindings
+    $('#addFeed a').click(addFeed);
 
-        // Tries to discover the RSS of the URL, then tries to subscribe to it
-        google.feeds.lookupFeed(url, subscribeToFeed); 
+    // TODO: add form into the modal window so we don't need the following
+    $('#addFeed input[type="text"]').keypress(function(e){ 
+        if (e.which == 13) addFeed(e);
     });
 
     getSubscriptionList();
 });
 
+function addFeed(e) {
+    e.preventDefault();
+    var url = $('#addFeed').find('input[type="text"]').val();
+
+    // Tries to discover the RSS of the URL, then tries to subscribe to it
+    google.feeds.lookupFeed(url, subscribeToFeed); 
+}
 
 //Ask for all the blogs where the user is subscribed
 function getSubscriptionList() {
@@ -220,6 +227,7 @@ function subscribeToFeed(result) {
             },
             success: function() {
                 $("#addFeed").modal("hide");
+                $('#addFeed').find('input[type="text"]').val("");
                 getSubscriptionList()
             },
             error: function(resc) {
