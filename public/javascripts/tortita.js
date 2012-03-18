@@ -12,7 +12,6 @@ var
   arrPosts       = new Array(),
   arrSources     = new Array(),
   currentArticle = 0,
-  currentSource  = 0,
   unreadFlag     = "f",
   spinner, target,
   spinnerOpts = {lines: 12, length: 5, width: 4, radius: 21, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
@@ -132,8 +131,8 @@ function getSubscriptionList() {
                         }
                     });
 
-                    getAllFeeds();
-                    $('.sources ul li#allfeeds').addClass("selected");
+                    setFeed('all','t');
+                    setSelected('allfeeds');
                 }
             });
 
@@ -150,10 +149,15 @@ function setFeed(f,u){
     spinner = new Spinner(spinnerOpts).spin(target);
     arrPosts = new Array();
 
-    if ((parseInt($('li#'+sanitize(arrSources[f])+' div span').text())>0) || (u == 'undefined')){
-        unreadFlag = "t";
-    } else {
-        unreadFlag = "f";
+    if(f!='all'){
+        if ((parseInt($('li#'+sanitize(arrSources[f])+' div span').text())>0) || (u == 'undefined')){
+            unreadFlag = "t";
+        } else {
+            unreadFlag = "f";
+        }
+        _feed = encodeURIComponent(arrSources[f]);
+    }else{
+        _feed = 'all';
     }
 
     if ($('.noUnread').is(':visible')){
@@ -161,7 +165,7 @@ function setFeed(f,u){
     }
 
     $.ajax({
-        url: 'get/feed/'+encodeURIComponent(arrSources[f])+"/"+unreadFlag,
+        url: 'get/feed/'+_feed+"/"+unreadFlag,
         type: 'GET',
         beforeSend: function(r) {
             r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -170,7 +174,6 @@ function setFeed(f,u){
             jQuery.each(resc.items, function(i,obj){
                 arrPosts[i] = obj;
             });
-            currentSource = f;
             showArticle(0);
             $('.article').fadeIn();
             spinner.stop();
@@ -181,6 +184,10 @@ function setFeed(f,u){
 function getAllFeeds(){
     unreadFlag = "t";
     $('.article').fadeOut();
+
+    if ($('.noUnread').is(':visible')){
+        $('.noUnread').hide();
+    }
 
     spinner.stop();
     spinner = new Spinner(spinnerOpts).spin(target);

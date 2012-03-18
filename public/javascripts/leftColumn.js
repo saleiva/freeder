@@ -1,6 +1,6 @@
-$(document).ready(function() {
+var _selectedSource;
 
-    var _selectedSource;
+$(document).ready(function() {
 
     $('.sources ul').on("mouseenter mouseleave", 'li', function(e){
         if($(this) != _selectedSource){
@@ -12,7 +12,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         if ($(this).attr('id')=='allfeeds'){
-            getAllFeeds();
+            setFeed('all','t');
         } else{
             setFeed($(this).attr('id'));
         }
@@ -75,4 +75,9 @@ function hideSources(){
 
 function showSources(){
     $('.sources').fadeIn(150);
+}
+
+function setSelected(sel){
+    _selectedSource = $('.sources ul li#'+sel);
+    $('.sources '+sel).addClass('selected');
 }
