@@ -306,7 +306,7 @@ a {
 } // modal
 
 
-// modal components 
+// modal components and behaviours
 .modal {
 
     .header {
@@ -322,7 +322,7 @@ a {
         width:31px; height:31px;
         background:url(../images/btn_close.png) no-repeat;
         z-index:10;
-    }
+    } // close
 
     .input { 
         float:left;
@@ -347,8 +347,12 @@ a {
             width:20px; height:20px;
             z-index:100;
         }
-    }
+    } // input
 
+    &.error {
+        .input input[type="text"] { border: 1px solid #FF3333; color:#FF3333; }
+
+    } // error
 } // modal
 
 .modal-backdrop {

@@ -74,6 +74,8 @@ function addFeed(e) {
     var t = document.getElementById('modalSpinner');
     modalSpinner.spin(t);
 
+    $("#addFeed").removeClass('error');
+
     var url = $('#addFeed').find('input[type="text"]').val();
 
     // Tries to discover the RSS of the URL, then tries to subscribe to it
@@ -250,6 +252,7 @@ function subscribeToFeed(result) {
         });
     } else { // on error
         modalSpinner.stop();
+        $("#addFeed").addClass('error');
         console.log(result.error.message);
     }
 }
