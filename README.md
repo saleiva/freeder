@@ -16,3 +16,4 @@
 * Show tags/folders.
 * Store some user data (configuration, etc.)
 * Design new favicon.
+* Do "2 days ago" real
