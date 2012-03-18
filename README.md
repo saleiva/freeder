@@ -16,5 +16,3 @@
 * Show tags/folders.
 * Store some user data (configuration, etc.)
 * Design new favicon.
-* Check encoding on titles.
-* Be able to go to the previous post.
