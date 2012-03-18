@@ -95,7 +95,6 @@ function getSubscriptionList() {
         error: function(e) {
             spinner.stop();
             // TODO: implement error messages
-            //console.log(e.responseText);
         },
         success: function(res) {
             $('.sources ul').append('<li id="allfeeds"><div><a href="#">All unread items</a><span>0</span></div></li>');
@@ -181,41 +180,6 @@ function setFeed(f,u){
     });
 }
 
-function getAllFeeds(){
-    unreadFlag = "t";
-    $('.article').fadeOut();
-
-    if ($('.noUnread').is(':visible')){
-        $('.noUnread').hide();
-    }
-
-    spinner.stop();
-    spinner = new Spinner(spinnerOpts).spin(target);
-
-    arrPosts = new Array();
-
-    $.ajax({
-        url: 'get/feed/all/t',
-        type: 'GET',
-        beforeSend: function(r) {
-            r.setRequestHeader("Auth_token", sessvars.Auth_token);
-        },
-        success: function(resc) {
-            arrPosts = new Array();
-            jQuery.each(resc.items, function(i,obj){
-                arrPosts[i] = obj;
-            });
-            spinner.stop();
-            $('.article').fadeIn();
-            showArticle(0);
-        }, error: function(e) {
-            spinner.stop();
-            // TODO: implement error messages
-            // console.log(e.responseText);
-        }
-    });
-}
-
 //Show an item on the UI
 function showArticle(i){
     currentArticle = i;
@@ -267,7 +231,6 @@ function subscribeToFeed(result) {
 //Show the next item and mark this as unread
 function nextArticle(e){
     e.preventDefault();
-
     f = encodeURIComponent(arrPosts[currentArticle].origin.streamId);
     p = encodeURIComponent(arrPosts[currentArticle].id);
     _id = sanitize(arrPosts[currentArticle].origin.streamId);

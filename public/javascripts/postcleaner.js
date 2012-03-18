@@ -131,7 +131,7 @@ function isImageOk(img) {
     // However, they do have two very useful properties: naturalWidth and
     // naturalHeight. These give the true size of the image. If it failed
     // to load, either of these should be zero.
-    if (typeof img.naturalWidth != "undefined" && img.naturalWidth <= 50) {
+    if (typeof img.naturalWidth != "undefined" && img.naturalWidth <= 150) {
         return false;
     }
 

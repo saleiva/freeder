@@ -63,6 +63,7 @@ function updateTotalCounter(n){
     $('.sources ul li#allfeeds div span').text(p+n);
     $('.sources ul li#allfeeds div span').fadeIn(350);
     minispinner.stop();
+    minispinner = null;
 }
 
 function getTotalCounter(){
