@@ -48,6 +48,10 @@ $(document).ready(function() {
         $("#addFeed").modal("hide");
     });
 
+    $('#addFeed').on('shown', function () {
+       $('#addFeed input[type="text"]').focus();
+    });
+
     // Add feed submission bindings
     $('#addFeed a').click(addFeed);
 

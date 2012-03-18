@@ -289,7 +289,7 @@ a {
 
     position:absolute;
     width: $width;
-    z-index:1000;
+    z-index:2000;
 
     top:30%;
     left:50%;
@@ -337,6 +337,24 @@ a {
         outline:none;
     }
 } // modal
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #fff;
+}
+.modal-backdrop.fade {
+  opacity: 0;
+}
+.modal-backdrop,
+.modal-backdrop.fade.in {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
 
 // Buttons
 .btn {
