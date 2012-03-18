@@ -11,6 +11,7 @@
 var 
   arrPosts       = new Array(),
   arrSources     = new Array(),
+  lastFaviconURL = "",
   currentArticle = 0,
   readArticleMark = 0,
   unreadFlag     = "f",
@@ -194,6 +195,11 @@ function showArticle(i){
         $('.article .title h1 a').html(post.title);
         $('.article .title h1 a').attr('href', post.alternate[0].href);
         $('.article .title h2 a').attr('href', post.alternate[0].href);
+
+        var faviconURL = post.origin.htmlUrl.replace("http://", "");
+
+                $('.article .title h2 img').attr("src", 'http://getfavicon.org/?url='+encodeURIComponent(faviconURL));
+
         $('.article .title h2 a').html(post.origin.title);
         $('.article .content').text("");
 
