@@ -38,7 +38,7 @@ $(document).ready(function() {
     // Hides the sources pane after 2000 ms
     var hideSourcesTimeOut = setTimeout(function(self){
         hideSources();
-    }, 2000, this);
+    }, 5000, this);
 
     // if the mouse is inside the sources pane, cancel the hiding
     $(".sources").on("mouseover", function() {
