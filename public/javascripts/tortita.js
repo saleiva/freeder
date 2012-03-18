@@ -1,11 +1,11 @@
 /*
-______               __        __               
+ ______               __        __               
 /\__  _\             /\ \__  __/\ \__            
 \/_/\ \/   ___   _ __\ \ ,_\/\_\ \ ,_\    __     
-\ \ \  / __`\/\`'__\ \ \/\/\ \ \ \/  /'__`\   
-\ \ \/\ \L\ \ \ \/ \ \ \_\ \ \ \ \_/\ \L\.\_ 
-\ \_\ \____/\ \_\  \ \__\\ \_\ \__\ \__/.\_\
-\/_/\/___/  \/_/   \/__/ \/_/\/__/\/__/\/_/ 
+   \ \ \  / __`\/\`'__\ \ \/\/\ \ \ \/  /'__`\   
+    \ \ \/\ \L\ \ \ \/ \ \ \_\ \ \ \ \_/\ \L\.\_ 
+     \ \_\ \____/\ \_\  \ \__\\ \_\ \__\ \__/.\_\
+      \/_/\/___/  \/_/   \/__/ \/_/\/__/\/__/\/_/ 
 */
 
 var 
@@ -32,6 +32,15 @@ $(document).ready(function() {
     // Button binding
     $('.menu .next').bind("click", nextArticle);
 
+    // Hides the sources pane after 2000 ms
+    var hideSourcesTimeOut = setTimeout(function(self){
+        hideSources();
+    }, 2000, this);
+
+    // if the mouse is inside the sources pane, cancel the hiding
+    $(".sources").on("mouseover", function() {
+        clearTimeout(hideSourcesTimeOut);
+    });
 
     // Add feed modal binding
     $('#addFeed .close').on("click", function(e) {
@@ -76,6 +85,7 @@ function getSubscriptionList() {
                 $('.sources ul').append('<li id="'+sanitize(obj.id)+'"><div><a href="#">'+name+'</a><span>0</span></div></li>');
                 $('li#'+sanitize(obj.id)+' div a').truncate({width:200});
             });
+
             showSources();
 
             //Get the counters for the unread articles
@@ -104,6 +114,7 @@ function getSubscriptionList() {
                     $('.sources ul li#allfeeds').addClass("selected");
                 }
             });
+
             $('.sources div.wrap').addClass("scroll-pane");
             $('.scroll-pane').jScrollPane();
         }
@@ -168,7 +179,6 @@ function getAllFeeds(){
             spinner.stop();
             $('.article').fadeIn();
             showArticle(0);
-            hideSources();
         }, error: function(e) {
             spinner.stop();
             // TODO: implement error messages
@@ -208,7 +218,10 @@ function subscribeToFeed(result) {
             beforeSend: function(r) {
                 r.setRequestHeader("Auth_token", sessvars.Auth_token);
             },
-            success: getSubscriptionList,
+            success: function() {
+                $("#addFeed").modal("hide");
+                getSubscriptionList()
+            },
             error: function(resc) {
                 console.log(resc);
             }
