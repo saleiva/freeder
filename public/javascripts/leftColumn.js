@@ -2,11 +2,6 @@ $(document).ready(function() {
 
     var _selectedSource;
 
-    $(".modal .close").on("click", function(e) {
-        e.preventDefault();
-        $("#addFeed").modal("hide");
-    });
-
     $('.sources ul').on("mouseenter mouseleave", 'li', function(e){
         if($(this) != _selectedSource){
             $(this).toggleClass("over");

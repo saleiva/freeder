@@ -32,6 +32,21 @@ $(document).ready(function() {
     // Button binding
     $('.menu .next').bind("click", nextArticle);
 
+
+    // Add feed modal binding
+    $('#addFeed .close').on("click", function(e) {
+        e.preventDefault();
+        $("#addFeed").modal("hide");
+    });
+
+    $('#addFeed a').click(function(e) {
+        e.preventDefault();
+        var url = $('#addFeed').find('input[type="text"]').val();
+
+        // Tries to discover the RSS of the URL, then tries to subscribe to it
+        google.feeds.lookupFeed(url, subscribeToFeed); 
+    });
+
     getSubscriptionList();
 });
 
@@ -183,21 +198,24 @@ function showArticle(i){
     }
 }
 
-function subscribeToFeed() {
+function subscribeToFeed(result) {
+    if (!result.error && result.url != null) {
+        var url = result.url;
 
-    var url = "http://feeds.kottke.org/main"; // TODO: replace this with an user URL
-
-    $.ajax({
-        type: 'GET',
-        url: 'subscribe/'+encodeURIComponent(url),
-        beforeSend: function(r) {
-            r.setRequestHeader("Auth_token", sessvars.Auth_token);
-        },
-        success: getSubscriptionList,
-        error: function(resc) {
-            console.log(resc);
-        }
-    });
+        $.ajax({
+            type: 'GET',
+            url: 'subscribe/'+encodeURIComponent(url),
+            beforeSend: function(r) {
+                r.setRequestHeader("Auth_token", sessvars.Auth_token);
+            },
+            success: getSubscriptionList,
+            error: function(resc) {
+                console.log(resc);
+            }
+        });
+    } else { // on error
+        console.log(result.error.message);
+    }
 }
 
 //Show the next item and mark this as unread
