@@ -324,18 +324,31 @@ a {
         z-index:10;
     }
 
-    input[type="text"] {
+    .input { 
         float:left;
+        position:relative;
         margin-right:9px;
-        @include border-radius(4px); 
-        border: 1px solid #ADADAD;
-        width:339px;
-        height:41px;
-        color: #ADADAD;
-        font-size:15px;
-        padding: 14px 12px;
-        outline:none;
+
+        input[type="text"] {
+            @include border-radius(4px); 
+            border: 1px solid #ADADAD;
+            width:339px;
+            height:41px;
+            color: #ADADAD;
+            font-size:15px;
+            padding: 14px 12px;
+            outline:none;
+        }
+
+        .spinner { 
+            display:block;
+            position:absolute;
+            top: 10px; right: 10px; 
+            width:20px; height:20px;
+            z-index:100;
+        }
     }
+
 } // modal
 
 .modal-backdrop {
@@ -392,18 +405,19 @@ a {
 } // btn
 
 .fade {
-    -webkit-transition: opacity 0.15s linear;
-    -moz-transition: opacity 0.15s linear;
-    -ms-transition: opacity 0.15s linear;
-    -o-transition: opacity 0.15s linear;
-    transition: opacity 0.15s linear;
+    @include transition(opacity 0.2s linear);
     opacity: 0;
 }
 
-.fade.in {
-    opacity: 1;
+.modal.fade {
+    @include transition(opacity .2s linear, top .2s ease-out);
+    top: -25%;
 }
 
+.modal.fade.in {
+    top: 30%;
+    opacity: 1;
+}
 
 /*SHAREBUTTONS*/
 /*SOURCES PANEL*/

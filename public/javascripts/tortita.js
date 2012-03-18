@@ -17,6 +17,9 @@ var
   spinner, target,
   spinnerOpts = {lines: 12, length: 5, width: 4, radius: 21, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
   
+  var modalSpinner,
+  modalSpinnerOpts = {lines: 8, length: 2, width: 2, radius: 4, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
+
 $(document).ready(function() {
 
     target = document.getElementById('spinner');
@@ -25,9 +28,10 @@ $(document).ready(function() {
     $('.article').hide();
     $('.noUnread').hide();
 
-    // Key bindings
+    // Keyboard bindings
     $(document).bind('keydown', 'right', nextArticle);
     $(document).bind('keydown', 'j', nextArticle);
+    $(document).bind('keydown', 'a', function(e) { e.preventDefault(); $("#addFeed").modal("toggle"); });
 
     // Button binding
     $('.menu .next').bind("click", nextArticle);
@@ -49,7 +53,8 @@ $(document).ready(function() {
     });
 
     $('#addFeed').on('shown', function () {
-       $('#addFeed input[type="text"]').focus();
+        modalSpinner = new Spinner(modalSpinnerOpts);
+        $('#addFeed input[type="text"]').focus();
     });
 
     // Add feed submission bindings
@@ -65,6 +70,10 @@ $(document).ready(function() {
 
 function addFeed(e) {
     e.preventDefault();
+
+    var t = document.getElementById('modalSpinner');
+    modalSpinner.spin(t);
+
     var url = $('#addFeed').find('input[type="text"]').val();
 
     // Tries to discover the RSS of the URL, then tries to subscribe to it
@@ -232,6 +241,7 @@ function subscribeToFeed(result) {
             success: function() {
                 $("#addFeed").modal("hide");
                 $('#addFeed').find('input[type="text"]').val("");
+                modalSpinner.stop();
                 getSubscriptionList()
             },
             error: function(resc) {
@@ -239,6 +249,7 @@ function subscribeToFeed(result) {
             }
         });
     } else { // on error
+        modalSpinner.stop();
         console.log(result.error.message);
     }
 }
