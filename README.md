@@ -13,7 +13,6 @@
 * Review issues with small images
 * Implement send to readability / instapaper
 * Add some illustrations.
-* Make the sidebar easier to find.
 * Show tags/folders.
 * Store some user data (configuration, etc.)
 * Design new favicon.

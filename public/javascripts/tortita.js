@@ -12,6 +12,7 @@ var
   arrPosts       = new Array(),
   arrSources     = new Array(),
   currentArticle = 0,
+  readArticleMark = 0,
   unreadFlag     = "f",
   spinner, target,
   spinnerOpts = {lines: 12, length: 5, width: 4, radius: 21, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
@@ -28,7 +29,9 @@ $(document).ready(function() {
     $('.noUnread').hide();
 
     // Keyboard bindings
+    $(document).bind('keydown', 'left', prevArticle);
     $(document).bind('keydown', 'right', nextArticle);
+    $(document).bind('keydown', 'h', prevArticle);
     $(document).bind('keydown', 'j', nextArticle);
     $(document).bind('keydown', 'a', function(e) { e.preventDefault(); $("#addFeed").modal("toggle"); });
 
@@ -157,6 +160,7 @@ function setFeed(f,u){
         _feed = encodeURIComponent(arrSources[f]);
     }else{
         _feed = 'all';
+        unreadFlag = "t";
     }
 
     if ($('.noUnread').is(':visible')){
@@ -174,6 +178,7 @@ function setFeed(f,u){
                 arrPosts[i] = obj;
             });
             showArticle(0);
+            readArticleMark = 0;
             $('.article').fadeIn();
             spinner.stop();
         }
@@ -236,7 +241,8 @@ function nextArticle(e){
     _id = sanitize(arrPosts[currentArticle].origin.streamId);
     _c = parseInt($('li#'+_id+' div span').text());
     _t = getTotalCounter();
-    if(unreadFlag=='t'){
+    console.log('current: '+currentArticle+'- readArticleMark: '+readArticleMark);
+    if((unreadFlag=='t') && (currentArticle >= readArticleMark)){
         viewminispinner();
         $.ajax({
             url: '/markasread/'+f+'/'+p,
@@ -260,12 +266,20 @@ function nextArticle(e){
     }
     if (currentArticle < arrPosts.length-1){
         showArticle(currentArticle+1);
+        readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
     } else {
         $('.article').fadeOut('slow', function(){
             $('.noUnread').fadeIn();
         });
     }
     window.scroll();
+}
+
+function prevArticle(e){
+    e.preventDefault();
+    if(currentArticle>0){
+        showArticle(currentArticle-1);
+    }
 }
 
 function isEmpty(str) { 
