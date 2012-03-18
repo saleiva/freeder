@@ -98,6 +98,7 @@ function getSubscriptionList() {
         },
         error: function(e) {
             spinner.stop();
+            if (e.status == 401) window.location.href = "/login"; 
             // TODO: implement error messages
         },
         success: function(res) {
