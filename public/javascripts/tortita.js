@@ -194,7 +194,7 @@ function showArticle(i){
     if (post) {
         $('.article .title h1 a').html(post.title);
         $('.article .title h1 a').attr('href', post.alternate[0].href);
-        $('.article .title h2 a').attr('href', post.alternate[0].href);
+        $('.article .title h2 a').attr('href', post.origin.htmlUrl);
 
         var faviconURL = post.origin.htmlUrl.replace("http://", "");
 
