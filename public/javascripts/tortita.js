@@ -29,10 +29,10 @@ $(document).ready(function() {
     $('.article').hide();
     $('.noUnread').hide();
 
-    // Keyboard bindings
+    // Keyboard bindings for humans and nerds
     $(document).bind('keydown', 'left', prevArticle);
     $(document).bind('keydown', 'right', nextArticle);
-    $(document).bind('keydown', 'h', prevArticle);
+    $(document).bind('keydown', 'k', prevArticle);
     $(document).bind('keydown', 'j', nextArticle);
     $(document).bind('keydown', 'a', function(e) { e.preventDefault(); $("#addFeed").modal("toggle"); });
 
@@ -242,6 +242,9 @@ function subscribeToFeed(result) {
 //Show the next item and mark this as unread
 function nextArticle(e){
     e.preventDefault();
+
+    if (!arrPosts[currentArticle]) return; 
+
     f = encodeURIComponent(arrPosts[currentArticle].origin.streamId);
     p = encodeURIComponent(arrPosts[currentArticle].id);
     _id = sanitize(arrPosts[currentArticle].origin.streamId);
