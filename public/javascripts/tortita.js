@@ -132,7 +132,6 @@ function getSubscriptionList() {
                             $('li#'+sanitize(obj.id)+' div span').show();
                         }
                     });
-
                     setFeed('all','t');
                     setSelected('allfeeds');
                 }
@@ -181,6 +180,22 @@ function setFeed(f,u){
             readArticleMark = 0;
             $('.article').fadeIn();
             spinner.stop();
+        }
+    });
+}
+
+function getMorePosts(f){
+    //TODO: FOLLOW WITH THIS!
+    $.ajax({
+        url: 'get/feed/'+f+"/"+unreadFlag,
+        type: 'GET',
+        beforeSend: function(r) {
+            r.setRequestHeader("Auth_token", sessvars.Auth_token);
+        },
+        success: function(resc) {
+            jQuery.each(resc.items, function(i,obj){
+                arrPosts.push = obj;
+            });
         }
     });
 }
@@ -267,6 +282,9 @@ function nextArticle(e){
     if (currentArticle < arrPosts.length-1){
         showArticle(currentArticle+1);
         readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
+        if(currentArticle == arrPosts.length - 5){
+            //getMorePosts(f);
+        }
     } else {
         $('.article').fadeOut('slow', function(){
             $('.noUnread').fadeIn();
