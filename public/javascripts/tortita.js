@@ -216,7 +216,11 @@ function showArticle(i){
         $('.article .title h2 a').attr('href', post.origin.htmlUrl);
 
         var faviconURL = post.origin.htmlUrl.replace("http://", "");
-        $('.article .title h2 a').css("background", 'url(http://getfavicon.org/?url='+encodeURIComponent(faviconURL)+') 0 0 no-repeat');
+
+            if (faviconURL != lastFaviconURL) {
+                $('.article .title h2 a').css("background", 'url(http://getfavicon.org/?url='+encodeURIComponent(faviconURL)+') 0 0 no-repeat');
+                    lastFaviconURL = faviconURL;
+            } 
 
         $('.article .title h2 a').html(post.origin.title);
         $('.article .content').text("");
