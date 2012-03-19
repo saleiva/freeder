@@ -11,6 +11,7 @@
 var 
   arrPosts       = new Array(),
   arrSources     = new Array(),
+  lastFaviconURL = "",
   currentArticle = 0,
   readArticleMark = 0,
   unreadFlag     = "f",
@@ -28,10 +29,10 @@ $(document).ready(function() {
     $('.article').hide();
     $('.noUnread').hide();
 
-    // Keyboard bindings
+    // Keyboard bindings for humans and nerds
     $(document).bind('keydown', 'left', prevArticle);
     $(document).bind('keydown', 'right', nextArticle);
-    $(document).bind('keydown', 'h', prevArticle);
+    $(document).bind('keydown', 'k', prevArticle);
     $(document).bind('keydown', 'j', nextArticle);
     $(document).bind('keydown', 'a', function(e) { e.preventDefault(); $("#addFeed").modal("toggle"); });
 
@@ -97,6 +98,7 @@ function getSubscriptionList() {
         },
         error: function(e) {
             spinner.stop();
+            if (e.status == 401) window.location.href = "/login"; 
             // TODO: implement error messages
         },
         success: function(res) {
@@ -208,7 +210,12 @@ function showArticle(i){
     if (post) {
         $('.article .title h1 a').html(post.title);
         $('.article .title h1 a').attr('href', post.alternate[0].href);
-        $('.article .title h2 a').attr('href', post.alternate[0].href);
+        $('.article .title h2 a').attr('href', post.origin.htmlUrl);
+
+        var faviconURL = post.origin.htmlUrl.replace("http://", "");
+
+                $('.article .title h2 img').attr("src", 'http://getfavicon.org/?url='+encodeURIComponent(faviconURL));
+
         $('.article .title h2 a').html(post.origin.title);
         $('.article .content').text("");
 
@@ -251,6 +258,9 @@ function subscribeToFeed(result) {
 //Show the next item and mark this as unread
 function nextArticle(e){
     e.preventDefault();
+
+    if (!arrPosts[currentArticle]) return; 
+
     f = encodeURIComponent(arrPosts[currentArticle].origin.streamId);
     p = encodeURIComponent(arrPosts[currentArticle].id);
     _id = sanitize(arrPosts[currentArticle].origin.streamId);

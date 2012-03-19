@@ -35,7 +35,6 @@ everyauth.everymodule
 
 var mode = "development";
 
-// TODO: move appID and appSecret to configuration file
 everyauth.google
 .myHostname(config[mode].host)
 .appId(config[mode].google.appID)
@@ -44,6 +43,7 @@ everyauth.google
 .findOrCreateUser( function (sess, accessToken, extra, googleUser) {
     googleUser.refreshToken = extra.refresh_token;
     googleUser.expiresIn = extra.expires_in;
+    console.log(extra);
 
     // Let's store some basic info in the session variable
     sess.email = googleUser.email;
@@ -134,7 +134,6 @@ function getActionToken(req, res, callback) {
 // Subscribes to feed
 function addFeed(req, res, actionToken) {
     var post_data = "s=feed/"+req.params.url+"&ac=subscribe&T="+actionToken;
-    console.log(post_data);
 
     var post_options = { 
         host: 'www.google.com',
@@ -156,7 +155,6 @@ function addFeed(req, res, actionToken) {
 
         resp.on('end', function (){
 
-console.log(data);
             if (data == "OK") { // the item has been marked as read
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
                 res.write(data);
@@ -219,13 +217,14 @@ function request(res, accessToken, url) {
         });
 
         resp.on('end', function () {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+        console.log(resp.statusCode);
+            res.writeHead(resp.statusCode, { 'Content-Type': 'application/json' });
             res.write(data);
             res.end();
         });
 
         resp.on('error', function(e) {
-            sendError(res);
+            console.log(e);
         });
     });
 }
@@ -258,7 +257,7 @@ app.get('/get/:query', function(req, res){
 });
 
 app.get('/get/feed/:url/:unread', function(req, res){
-    
+
     if(req.params.url == "all"){
         var url = ourl.readingList+"?&r=n&n=100";
     }else{

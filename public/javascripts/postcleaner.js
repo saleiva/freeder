@@ -112,12 +112,9 @@ function cleanpost(){
 }
 
 function checkImages(){
-    for (var i = 0; i < document.images.length; i++) {
-        if (!isImageOk(document.images[i])) {
-            //document.images[i].style.display = "none";
-            $(document.images[i]).fadeOut();
-        }
-    }
+    $(".content img").each(function(i, img) {
+        if (!isImageOk(img)) $(img).fadeOut();
+    });
 }
 
 function isImageOk(img) {
