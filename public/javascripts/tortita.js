@@ -187,17 +187,20 @@ function setFeed(f,u){
 }
 
 function getMorePosts(f){
-    //TODO: FOLLOW WITH THIS!
+    _a = new Array();
     $.ajax({
         url: 'get/feed/'+f+"/"+unreadFlag,
         type: 'GET',
         beforeSend: function(r) {
+            console.log('get/feed/'+f+"/"+unreadFlag);
             r.setRequestHeader("Auth_token", sessvars.Auth_token);
         },
         success: function(resc) {
             jQuery.each(resc.items, function(i,obj){
-                arrPosts.push = obj;
+                _a[i] = obj;
             });
+            _a.splice(0,5);
+            arrPosts = arrPosts.concat(_a);
         }
     });
 }
@@ -293,7 +296,8 @@ function nextArticle(e){
         showArticle(currentArticle+1);
         readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
         if(currentArticle == arrPosts.length - 5){
-            //getMorePosts(f);
+            console.log('get more posts!!')
+            getMorePosts(f);
         }
     } else {
         $('.article').fadeOut('slow', function(){
