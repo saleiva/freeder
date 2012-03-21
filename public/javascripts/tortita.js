@@ -106,9 +106,10 @@ function getSubscriptionList() {
             jQuery.each(res.subscriptions, function(i,obj){
                 var url = obj.htmlUrl;
                 var name = obj.title;
-                arrSources[sanitize(obj.id)] = obj.id;
-                $('.sources ul').append('<li id="'+sanitize(obj.id)+'"><div><a href="#">'+name+'</a><span>0</span></div></li>');
-                $('li#'+sanitize(obj.id)+' div a').truncate({width:200});
+                var id = sanitize(obj.id);
+                arrSources[id] = obj.id;
+                $('.sources ul').append('<li id="'+id+'"><div><a href="#">'+name+'</a><span>0</span></div></li>');
+                $('li#'+id+' div a').truncate({width:200});
             });
 
             showSources();
@@ -328,7 +329,7 @@ function goToPermalink(){
 // Function for removing shitty characters from the id property
 function sanitize(str){
     if (isEmpty(str)) return;
-    return str.replace('http://','').replace('www','').replace(/\//g,'-').replace(/\?/g,'_').replace(/\./g,'_');
+    return str.replace(/[^a-z0-9]+/g,'-');
 }
 
 // Sharing methods
