@@ -49,7 +49,9 @@ a {
 
 .text {
   width: 305px;
-  margin: 152px 0 0 0;
+  top: 152px;
+  position:relative;
+
   h1 {
     font-family: 'FjordOne';
     font-weight: normal;
@@ -85,16 +87,19 @@ a {
   background: url('/images/bkg_w.png');
   border-top: 1px solid #CCC;
   text-align: center;
-  height: 320px;
-  div.wrap {
+  padding: 53px 0 50px 0;
+
+  .wrap {
     ul {
-      margin: 53px 0 0 0;
       li {
+        vertical-align:top;
         display: inline-block;
         width: 280px;
         margin: 0 44px 0 0;
+
         &.first { margin: 0 58px 0 0; }
         &.last { margin: 0; }
+
         h3 {
           font-family: 'FjordOne';
           font-weight: normal;
@@ -110,14 +115,13 @@ a {
           font-size: 15px;
           line-height: 21px;
         }
-
       }
-
     }
-    div.footer {
+    .footer {
       border-top: 1px solid #CCC;
       margin: 50px 0 0 0;
       padding: 45px 37px 0 0;
+
       p {
         margin: 0;
         text-align:right;
@@ -127,3 +131,15 @@ a {
   }
 }
 
+
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+  .wrap { width:auto; padding: 20px 30px;}
+.top .wrap .text { top: 122px; }
+  .bottom .wrap ul li { width:215px; margin:0 20px 0 0; }
+  .bottom .wrap ul li.first { margin:0 30px 0 0; }
+  .bottom .wrap .footer { margin: 40px 0 0 0; padding:40px 30px 0 0; } 
+}
