@@ -34,6 +34,7 @@ $(document).ready(function() {
     $(document).bind('keydown', 'right', nextArticle);
     $(document).bind('keydown', 'k', prevArticle);
     $(document).bind('keydown', 'j', nextArticle);
+    $(document).bind('keydown', 'return', goToPermalink);
     $(document).bind('keydown', 'a', function(e) { e.preventDefault(); $("#addFeed").modal("toggle"); });
 
     // Button binding
