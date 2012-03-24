@@ -3,7 +3,7 @@
 @import "fonts";
 
 body {
-  background-color: white;
+  background: url('/images/bkg_w.png');
 }
 
 p {
@@ -25,11 +25,12 @@ a {
 
 .top {
   text-align: center;
-  margin: 0 0 36px 0;
+  padding: 40px 0px 36px 0px;
+  background-color: #FFFFFF;
 
   .wrap {
     background: url('/images/home_computer.png');
-    height: 500px;
+    height: 424px;
   }
 
   .logo {
@@ -37,7 +38,7 @@ a {
     color: #333;
     font-size: 19px;
     font-weight: normal;
-    margin: 40px 0 0 0;
+    margin: 0;
     span {
       color: #FF3333;
       font-family: "ProximaNovaRegular", sans-serif;
