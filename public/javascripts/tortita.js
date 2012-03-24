@@ -216,6 +216,10 @@ function showArticle(i){
         $('.article .title h1 a').html(post.title);
         $('.article .title h1 a').attr('href', post.alternate[0].href);
         $('.article .title h2 a').attr('href', post.origin.htmlUrl);
+        // Show human date
+        var date = new Date(0); 
+        date.setUTCSeconds(post.published);
+        $('.article .title h2 .date').html(humaneDate(date));
 
         var faviconURL = post.origin.htmlUrl.replace("http://", "");
 
