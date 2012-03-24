@@ -278,7 +278,7 @@ function nextArticle(e){
     _id = sanitize(arrPosts[currentArticle].origin.streamId);
     _c = parseInt($('li#'+_id+' div span').text());
     _t = getTotalCounter();
-    if((unreadFlag=='t') && (currentArticle >= readArticleMark) && (currentArticle<arrPosts.length-1)){
+    if((unreadFlag=='t') && (currentArticle >= readArticleMark) && (!$('.noUnread').is(':visible'))){
         viewminispinner();
         $.ajax({
             url: '/markasread/'+f+'/'+p,
