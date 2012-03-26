@@ -291,10 +291,6 @@ a {
   }
 } // sources
 
-.scrollable {
-  -webkit-overflow-scrolling: touch;
-}
-
 /* Basic modal */
 .modal {
   $width: 561px;
@@ -439,3 +435,20 @@ a {
   opacity: 1;
 }
 
+
+@media (max-device-width: 768px) and (orientation: portrait) {
+  ul#sources {
+    height: 890px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+
+@media (max-device-width: 1024px) and (orientation: landscape) {
+  ul#sources {
+    height: 700px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}

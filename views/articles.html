@@ -1,18 +1,13 @@
-
 <html>
-
   <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title>Sirope</title>
     <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" />
-
-      <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
-
-    google.load("feeds", "1");
-
-</script>
+      google.load("feeds", "1");
+    </script>
 
     <script type="text/javascript" src="/javascripts/jquery-1.7.1.min.js" ></script>
     <script type="text/javascript" src="/javascripts/jquery.truncate.min.js" ></script>
@@ -35,30 +30,30 @@
       _gaq.push(['_trackPageview']);
 
       (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
 
     </script>
   </head>
 
   <body>
-      <div id="addFeed" class="modal hide fade">
-          <div class="content">
-              <div class="header">
-                  <h2>Add a new taste to your sirope</h2>
-              </div>
-              <div class="input">
-                  <input type="text" name="" placeholder="Source URL" />
-                  <span id="modalSpinner" class="spinner"></span>
-              </div>
-              <a href="#" class="btn"><span>Add feed</span></a>
-          </div>
-          <a href="#" class="close"></a>
-          <div class="t"></div>
-          <div class="b"></div>
+    <div id="addFeed" class="modal hide fade">
+      <div class="content">
+        <div class="header">
+          <h2>Add a new taste to your sirope</h2>
+        </div>
+        <div class="input">
+          <input type="text" name="" placeholder="Source URL" />
+          <span id="modalSpinner" class="spinner"></span>
+        </div>
+        <a href="#" class="btn"><span>Add feed</span></a>
       </div>
+      <a href="#" class="close"></a>
+      <div class="t"></div>
+      <div class="b"></div>
+    </div>
 
     <div class="header">
       <p>SIROPE <span></span></p>
@@ -85,14 +80,13 @@
       </div>
     </div>
     <div class="sources_area"></div>
-    <div class="sources scrollable">
+    <div class="sources">
       <div class="wrap">
         <div class="header">
-            <h3>SOURCES</h3>
-            <a href="#addFeed" data-toggle="modal">Add +</a>
+          <h3>SOURCES</h3>
+          <a href="#addFeed" data-toggle="modal">Add +</a>
         </div>
-        <ul>
-        </ul>
+        <ul id="sources"></ul>
       </div>
     </div>
     <div id="spinner"></div>
@@ -101,5 +95,4 @@
       <p>It’s time to select a different source or <a href="#" onClick="setFeed(currentSource,'f');">load already read items</a></p>
     </div>
   </body>
-
 </html>

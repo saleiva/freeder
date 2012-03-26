@@ -1,4 +1,5 @@
 var _selectedSource;
+var isiPad = navigator.userAgent.match(/iPad/i) != null;
 
 $(document).ready(function() {
 
@@ -11,28 +12,32 @@ $(document).ready(function() {
     $('.sources ul').on("click", 'li', function(e){
         e.preventDefault();
 
-        if ($(this).attr('id')=='allfeeds'){
+          if ($(this).attr('id') == 'allfeeds'){
             setFeed('all','t');
-        } else{
+          } else{
             setFeed($(this).attr('id'));
-        }
+          }
 
-        if (_selectedSource){
+          if (_selectedSource){
             _selectedSource.removeClass("selected");
-        }
+          }
 
-        _selectedSource = $(this);
-        _selectedSource.addClass("selected");
+          _selectedSource = $(this);
+          _selectedSource.addClass("selected");
+          if (isiPad) hideSources();
     });
 
     $('.sources_area').bind("mouseenter", function(e){
         showSources();
         $('.sources_area').css('width','300px');
-        //JSCROLLPANE 
-        if ($('.scroll-pane').length > 0) {
+
+        if (!isiPad) { //JSCROLLPANE 
+          if ($('.scroll-pane').length > 0) {
             var api = $('.scroll-pane').data('jsp');
             api.reinitialise();
+          }
         }
+
         var throttleTimeout;
         $(window).bind('resize',function(){
             if ($.browser.msie) {
@@ -71,7 +76,7 @@ function getTotalCounter(){
 }
 
 function hideSources(){
-    $('.sources').fadeOut(150);
+    $('.sources').fadeOut(150); 
 }
 
 function showSources(){
