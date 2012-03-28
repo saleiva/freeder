@@ -1,11 +1,15 @@
 {
-    "name": "application-name"
-  , "version": "0.0.1"
+  "name": "sirope"
+  , "version": "0.2.0"
   , "private": true
-  , "dependencies": {
-      "express": "2.5.8"
+  , "engines":{
+     "node": "0.6.12", 
+    "npm":  "1.1.4"
+  },
+   "dependencies": {
+    "express": "2.5.8"
     , "jade": ">= 0.0.1"
     , "everyauth": "0.2.31"
     , "connect": ">=1 <2"
-  }
+}
 }
