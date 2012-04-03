@@ -108,7 +108,10 @@ function cleanpost(){
 		$(this).remove();
 	});
 
-	timer = setTimeout("checkImages()", 2000);
+	var timer;
+	clearTimeout(timer);
+	timer = setTimeout("checkImages()", 3000);
+	
 }
 
 function checkImages(){
