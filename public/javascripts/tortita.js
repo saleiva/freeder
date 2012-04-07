@@ -79,7 +79,6 @@ function addFeed(e) {
     modalSpinner.spin(t);
 
     $("#addFeed").removeClass('error');
-
     var url = $('#addFeed').find('input[type="text"]').val();
 
     // Tries to discover the RSS of the URL, then tries to subscribe to it
