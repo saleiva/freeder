@@ -148,7 +148,6 @@ function getSubscriptionList() {
 
 function showAlreadyRead(){
     _e = $('.sources ul li.selected').attr('id');
-    console.log(_e);
     setFeed(_e,f);
 }
 
@@ -162,8 +161,10 @@ function setFeed(f,u){
     if(f!='all'){
         if ((parseInt($('li#'+sanitize(arrSources[f])+' div span').text())>0) || (u == 'undefined')){
             unreadFlag = "t";
+            $('.article .next').text('Keep as unread'); 
         } else {
             unreadFlag = "f";
+            $('.article .next').text('Mark as unread');
         }
         _feed = encodeURIComponent(arrSources[f]);
     }else{
@@ -369,7 +370,7 @@ function shareOnTwitter(){
     if ((arrPosts[currentArticle].title).length > 70){
         _t = (arrPosts[currentArticle].title).substring(0,70)+"..."
     } else {
-        _t = arrPosts[currentArticle].title
+        _t = arrPosts[currentArticle].title;
     }
     _url = "http://twitter.com/home?status="+_t+ " - " +(arrPosts[currentArticle].alternate[0].href) + " - As read on @Siropeapp";
     window.open(_url);
