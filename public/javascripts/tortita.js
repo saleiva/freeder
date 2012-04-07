@@ -314,6 +314,7 @@ function nextArticle(e){
     window.scroll();
 }
 
+//TODO: test this well
 function keepAsUnread(e){
 
  e.preventDefault();
@@ -334,7 +335,6 @@ function keepAsUnread(e){
         });
     }
     window.scroll();
-
 }
 
 function prevArticle(e){
