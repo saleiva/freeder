@@ -445,6 +445,18 @@ a {
   display: none;
 }
 
+pre {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap;
+  display: block;
+  border: none;
+  width: 590px;
+  margin: 15px 0 15px 0;
+  font-size: 14px;
+  color: #397DBA;
+}
+
 
 @media (max-device-width: 768px) and (orientation: portrait) {
   ul#sources {
