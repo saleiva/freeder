@@ -110,7 +110,7 @@ a {
     &.next {
       font: 16px "ProximaNovaRegular", sans-serif;
       background: url('/images/nextBtn_w.png') 0 0 no-repeat;
-      padding: 22px 43px 21px 48px;
+      padding: 22px 38px 21px 32px;
       &:hover { background-position: 0 -61px; color: #FFF; }
     }
   }
@@ -254,6 +254,7 @@ a {
       width: 300px;
       border-bottom: #414141 solid 1px;
       background-color: #333;
+      cursor: pointer;
       &.over, &.selected {
         background-color: #414141;
       }

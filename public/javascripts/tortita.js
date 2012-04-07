@@ -38,7 +38,7 @@ $(document).ready(function() {
     $(document).bind('keydown', 'a', function(e) { e.preventDefault(); $("#addFeed").modal("toggle"); });
 
     // Button binding
-    $('.menu .next').bind("click", nextArticle);
+    $('.menu .next').bind("click", keepAsUnread);
 
     // Hides the sources pane after 2000 ms
     var hideSourcesTimeOut = setTimeout(function(self){
@@ -313,6 +313,29 @@ function nextArticle(e){
         });
     }
     window.scroll();
+}
+
+function keepAsUnread(e){
+
+ e.preventDefault();
+
+    if (!arrPosts[currentArticle]) return; 
+
+    f = encodeURIComponent(arrPosts[currentArticle].origin.streamId);
+    if (currentArticle < arrPosts.length-1){
+        showArticle(currentArticle+1);
+        readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
+        if(currentArticle == arrPosts.length - 5){
+            console.log('get more posts!!')
+            getMorePosts(f);
+        }
+    } else {
+        $('.article').fadeOut('slow', function(){
+            $('.noUnread').fadeIn();
+        });
+    }
+    window.scroll();
+
 }
 
 function prevArticle(e){
