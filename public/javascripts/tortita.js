@@ -146,6 +146,12 @@ function getSubscriptionList() {
     });
 }
 
+function showAlreadyRead(){
+    _e = $('.sources ul li.selected').attr('id');
+    console.log(_e);
+    setFeed(_e,f);
+}
+
 //Function for changing the source for viewing
 function setFeed(f,u){
     spinner.stop();
@@ -345,7 +351,7 @@ function prevArticle(e){
 }
 
 function isEmpty(str) { 
-    return !str.match(/\S/g); 
+    return !str.match(/\S/g);
 }
 
 function goToPermalink(){

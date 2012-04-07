@@ -84,6 +84,7 @@ function showSources(){
 }
 
 function setSelected(sel){
+    console.log(sel);
     _selectedSource = $('.sources ul li#'+sel);
-    $('.sources '+sel).addClass('selected');
+    $('.sources ul li#'+sel).addClass('selected');
 }
