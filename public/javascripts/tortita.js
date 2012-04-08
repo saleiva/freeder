@@ -328,7 +328,33 @@ function keepAsUnread(e){
 
     if (!arrPosts[currentArticle]) return; 
 
+    p = encodeURIComponent(arrPosts[currentArticle].id);
     f = encodeURIComponent(arrPosts[currentArticle].origin.streamId);
+    _id = sanitize(arrPosts[currentArticle].origin.streamId);
+    _c = parseInt($('li#'+_id+' div span').text());
+    _t = getTotalCounter();
+
+    if((unreadFlag=='f') || (currentArticle<readArticleMark)){
+        viewminispinner();
+        $.ajax({
+            url: '/markasunread/'+f+'/'+p,
+            type: 'GET',
+            beforeSend: function(r) {
+                r.setRequestHeader("Auth_token", sessvars.Auth_token);
+                r.setRequestHeader("Action_token", sessvars.Action_token);
+            },
+            success: function(resc) {
+                _c += 1;
+                _t += 1;
+                $('li#'+_id+' div span').text(_c);
+                updateTotalCounter(_t);
+                if(_c==1){
+                    $('li#'+_id+' div span').show();
+                }
+            }
+        });
+    }
+
     if (currentArticle < arrPosts.length-1){
         showArticle(currentArticle+1);
         readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;

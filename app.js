@@ -170,7 +170,7 @@ function addFeed(req, res, actionToken) {
 // Marks an item as read
 function markAsRead(req, res, actionToken) {
 
-    var post_data = "i="+req.params.pid+"&a=user/-/state/com.google/read&s="+req.params.url+"&T="+actionToken;
+    var post_data = "i="+req.params.pid+"&a=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s="+req.params.url+"&T="+actionToken;
 
     var post_options = { 
         host: 'www.google.com',
@@ -193,6 +193,42 @@ function markAsRead(req, res, actionToken) {
         resp.on('end', function (){
 
             if (data == "OK") { // the item has been marked as read
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.write(data);
+                res.end();
+            }
+        });
+    });
+
+    post_req.write(post_data);
+    post_req.end();
+}
+
+// Marks an item as unread
+function markAsUnread(req, res, actionToken) {
+
+    var post_data = "i="+req.params.pid+"&a=user/-/state/com.google/kept-unread&r=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s="+req.params.url+"&T="+actionToken;
+
+    var post_options = { 
+        host: 'www.google.com',
+        port: 443,
+        path: ourl.markAsRead,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': post_data.length,
+            'Authorization': 'Bearer '+ req.session.accessToken }
+    };
+
+    var post_req = https.request(post_options, function(resp) {
+
+        data = "";
+
+        resp.on('data', function (chunk) {
+            data += chunk;
+        });
+
+        resp.on('end', function (){
+            if (data == "OK") { // the item has been marked as unread
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
                 res.write(data);
                 res.end();
@@ -278,6 +314,11 @@ app.get('/subscribe/:url', function(req, res){
 // Mark as read service
 app.get('/markasread/:url/:pid', function(req, res){
     getActionToken(req, res, markAsRead);
+});
+
+// Mark as read service
+app.get('/markasunread/:url/:pid', function(req, res){
+    getActionToken(req, res, markAsUnread);
 });
 
 
