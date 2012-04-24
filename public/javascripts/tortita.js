@@ -25,14 +25,14 @@ function isEmpty(str) {
   return !str.match(/\S/g);
 }
 
-function sanitize(str){
+function sanitize(str) {
   if (isEmpty(str)) {
     return str;
   }
   return str.replace(/[^a-z0-9]+/g,'-'); // TODO:^ is insecure, try this instead: /\bhttps?:\/\/[-\w+&@#/%?=~|$!:,.;]*[\w+&@#/%=~|$]/g
 }
 //Show an item on the UI
-function showArticle(i){
+function showArticle(i) {
   currentArticle = i;
   var post = posts[i];
 
@@ -55,7 +55,7 @@ function showArticle(i){
     $('.article .title h2 a').html(post.origin.title);
     $('.article .content').text("");
 
-    if (post.content){
+    if (post.content) {
       $('.article .content').append(post.content.content);
     } else if (post.summary) {
       $('.article .content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
@@ -65,7 +65,7 @@ function showArticle(i){
 }
 
 //Function for changing the source for viewing
-function setFeed(f,u){
+function setFeed(f, u) {
   var _feed = null;
 
   spinner.stop();
@@ -73,8 +73,8 @@ function setFeed(f,u){
   spinner = new Spinner(spinnerOpts).spin(target);
   posts = [];
 
-  if(f!=='all'){
-    if ((parseInt($('li#'+sanitize(sources[f])+' div span').text(), 10) > 0) || u === 'undefined'){
+  if (f!=='all') {
+    if ((parseInt($('li#' + sanitize(sources[f])+' div span').text(), 10) > 0) || u === 'undefined') {
       unreadFlag = "t";
       $('.article .next').text('Keep as unread');
     } else {
@@ -87,7 +87,7 @@ function setFeed(f,u){
     unreadFlag = "t";
   }
 
-  if ($('.noUnread').is(':visible')){
+  if ($('.noUnread').is(':visible')) {
     $('.noUnread').hide();
   }
 
@@ -98,7 +98,7 @@ function setFeed(f,u){
       r.setRequestHeader("Auth_token", sessvars.Auth_token);
     },
     success: function(resc) {
-      jQuery.each(resc.items, function(i,obj){
+      jQuery.each(resc.items, function(i,obj) {
         posts[i] = obj;
       });
       showArticle(0);
@@ -130,7 +130,7 @@ function getSubscriptionList() {
     },
     success: function(res) {
       $('.sources ul').append('<li id="allfeeds"><div><a href="#">All unread items</a><span>0</span></div></li>');
-      jQuery.each(res.subscriptions, function(i,obj){
+      jQuery.each(res.subscriptions, function(i,obj) {
         var url = obj.htmlUrl;
         var name = obj.title;
         var id = sanitize(obj.id);
@@ -153,8 +153,8 @@ function getSubscriptionList() {
           var fe = null;
           var re = new RegExp(/\/state\/com\.google\/reading-list/);
 
-          jQuery.each(resc.unreadcounts, function(i,obj){
-            if(obj.id.match(re)){
+          jQuery.each(resc.unreadcounts, function(i,obj) {
+            if (obj.id.match(re)) {
               updateTotalCounter(obj.count);
             } else {
               $('li#'+sanitize(obj.id)+' div span').text(obj.count);
@@ -212,85 +212,96 @@ function addFeed(e) {
   google.feeds.lookupFeed(url, subscribeToFeed);
 }
 
-function showAlreadyRead(){
+function showAlreadyRead() {
   var _e = $('.sources ul li.selected').attr('id');
   setFeed(_e);
 }
 
-function getMorePosts(f){
-  var _a = [];
+function getMorePosts(streamID) {
+  var extraPosts = [];
+
   $.ajax({
-    url: 'get/feed/'+f+"/"+unreadFlag,
+    url: 'get/feed/' + encodeURIComponent(streamID) + "/" + unreadFlag,
     type: 'GET',
     beforeSend: function(r) {
-      console.log('get/feed/'+f+"/"+unreadFlag);
+      console.log('get/feed/' + encodeURIComponent(streamID) + "/" + unreadFlag);
       r.setRequestHeader("Auth_token", sessvars.Auth_token);
     },
     success: function(resc) {
-      jQuery.each(resc.items, function(i,obj){
-        _a[i] = obj;
+
+      jQuery.each(resc.items, function(i, obj) {
+        extraPosts[i] = obj;
       });
-      _a.splice(0,5);
-      posts = posts.concat(_a);
+
+      extraPosts.splice(0, 5);
+      posts = posts.concat(extraPosts);
     }
   });
 }
 
-
-
 //Show the next item and mark this as unread
-function nextArticle(e){
+function nextArticle(e) {
   e.preventDefault();
 
   if (!posts[currentArticle]) {
     return;
   }
 
-  var f = encodeURIComponent(posts[currentArticle].origin.streamId);
-  var p = encodeURIComponent(posts[currentArticle].id);
-  var _id = sanitize(posts[currentArticle].origin.streamId);
-  var _c = parseInt($('li#'+_id+' div span').text(), 10);
+  var streamID  = posts[currentArticle].origin.streamId;
+  var articleID = posts[currentArticle].id;
+  var sanitizedStreamID = sanitize(streamID);
+
+  var _c = parseInt($('li#' + sanitizedStreamID + ' div span').text(), 10);
   var _t = getTotalCounter();
 
-  if((unreadFlag==='t') && (currentArticle >= readArticleMark) && (!$('.noUnread').is(':visible'))){
+  if ((unreadFlag === 't') && (currentArticle >= readArticleMark) && (!$('.noUnread').is(':visible'))) {
     viewminispinner();
     $.ajax({
-      url: '/markasread/'+f+'/'+p,
+      url: '/markasread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID),
       type: 'GET',
       beforeSend: function(r) {
         r.setRequestHeader("Auth_token", sessvars.Auth_token);
         r.setRequestHeader("Action_token", sessvars.Action_token);
       },
       success: function(resc) {
-        if(_c>0){
+
+        if (_c > 0) {
           _c -= 1;
           _t -= 1;
         }
-        $('li#'+_id+' div span').text(_c);
+
+        $('li#' + sanitizedStreamID + ' div span').text(_c);
         updateTotalCounter(_t);
-        if(_c===0){
-          $('li#'+_id+' div span').hide();
+
+        if ( _c === 0 ) {
+          $('li#' + sanitizedStreamID + ' div span').hide();
         }
+
       }
     });
   }
-  if (currentArticle < posts.length-1){
-    showArticle(currentArticle+1);
+
+  if (currentArticle < posts.length-1) {
+    showArticle(currentArticle + 1);
     readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
-    if(currentArticle === posts.length - 5){
+
+    if (currentArticle === posts.length - 5) {
       console.log('get more posts!!');
-      getMorePosts(f);
+      getMorePosts(streamID);
     }
+
   } else {
-    $('.article').fadeOut('slow', function(){
+
+    $('.article').fadeOut('slow', function() {
       $('.noUnread').fadeIn();
     });
+
   }
   window.scroll();
 }
 
 //TODO: test this well
-function keepAsUnread(e){
+function keepAsUnread(e) {
 
   e.preventDefault();
 
@@ -298,16 +309,17 @@ function keepAsUnread(e){
     return;
   }
 
-  var p = encodeURIComponent(posts[currentArticle].id);
-  var f = encodeURIComponent(posts[currentArticle].origin.streamId);
-  var _id = sanitize(posts[currentArticle].origin.streamId);
-  var _c = parseInt($('li#'+_id+' div span').text(), 10);
+  var streamID  = posts[currentArticle].origin.streamId;
+  var articleID = posts[currentArticle].id;
+  var sanitizedStreamID = sanitize(streamID);
+
+  var _c = parseInt($('li#' + sanitizedStreamID + ' div span').text(), 10);
   var _t = getTotalCounter();
 
-  if((unreadFlag==='f') || (currentArticle<readArticleMark)){
+  if ((unreadFlag === 'f') || (currentArticle<readArticleMark)) {
     viewminispinner();
     $.ajax({
-      url: '/markasunread/'+f+'/'+p,
+      url: '/markasunread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID),
       type: 'GET',
       beforeSend: function(r) {
         r.setRequestHeader("Auth_token", sessvars.Auth_token);
@@ -316,44 +328,50 @@ function keepAsUnread(e){
       success: function(resc) {
         _c += 1;
         _t += 1;
-        $('li#'+_id+' div span').text(_c);
+
+        $('li#' + sanitizedStreamID + ' div span').text(_c);
         updateTotalCounter(_t);
-        if(_c===1){
-          $('li#'+_id+' div span').show();
+
+        if ( _c === 1 ) {
+          $('li#' + sanitizedStreamID + ' div span').show();
         }
       }
     });
   }
 
-  if (currentArticle < posts.length-1){
-    showArticle(currentArticle+1);
+  if (currentArticle < posts.length-1) {
+
+    showArticle(currentArticle + 1);
     readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
-    if(currentArticle === posts.length - 5){
+
+    if (currentArticle === posts.length - 5) {
       console.log('get more posts!!');
-      getMorePosts(f);
+      getMorePosts(streamID);
     }
   } else {
-    $('.article').fadeOut('slow', function(){
+
+    $('.article').fadeOut('slow', function() {
       $('.noUnread').fadeIn();
     });
+
   }
+
   window.scroll();
 }
 
-function prevArticle(e){
+function prevArticle(e) {
   e.preventDefault();
-  if(currentArticle>0){
+  if (currentArticle>0) {
     showArticle(currentArticle-1);
   }
 }
 
-
-function goToPermalink(){
+function goToPermalink() {
   window.open(posts[currentArticle].alternate[0].href);
 }
 
 // Sharing methods
-function shareOnTwitter(){
+function shareOnTwitter() {
   var _t = null;
   if ((posts[currentArticle].title).length > 70) {
     _t = (posts[currentArticle].title).substring(0, 70) + "...";
@@ -365,7 +383,7 @@ function shareOnTwitter(){
   window.open(_url);
 }
 
-function shareOnFacebook(){
+function shareOnFacebook() {
   var _url = "http://www.facebook.com/sharer.php?t="+posts[currentArticle].title+"&u="+(posts[currentArticle].alternate[0].href);
   window.open(_url);
 }
@@ -390,7 +408,7 @@ $(function() {
   $('.menu .next').bind("click", keepAsUnread);
 
   // Hides the sources pane after 2000 ms
-  var hideSourcesTimeOut = setTimeout(function(self){
+  var hideSourcesTimeOut = setTimeout(function(self) {
     hideSources();
   }, 5000, this);
 
@@ -414,7 +432,7 @@ $(function() {
   $('#addFeed a').click(addFeed);
 
   // TODO: add form into the modal window so we don't need the following
-  $('#addFeed input[type="text"]').keypress(function(e){
+  $('#addFeed input[type="text"]').keypress(function(e) {
     if (e.which === 13) {
       addFeed(e);
     }
