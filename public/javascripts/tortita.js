@@ -247,15 +247,17 @@ function nextArticle(e) {
     return;
   }
 
-  var streamID  = posts[currentArticle].origin.streamId;
-  var articleID = posts[currentArticle].id;
-  var sanitizedStreamID = sanitize(streamID);
+  var
+    streamID          = posts[currentArticle].origin.streamId,
+    articleID         = posts[currentArticle].id,
+    sanitizedStreamID = sanitize(streamID);
 
-  var _c = parseInt($('li#' + sanitizedStreamID + ' div span').text(), 10);
-  var _t = getTotalCounter();
+  var unreadCount = getUnreadCount(streamID);
+  var totalCount = getTotalCounter();
 
   if ((unreadFlag === 't') && (currentArticle >= readArticleMark) && (!$('.noUnread').is(':visible'))) {
     viewminispinner();
+
     $.ajax({
       url: '/markasread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID),
       type: 'GET',
@@ -265,15 +267,15 @@ function nextArticle(e) {
       },
       success: function(resc) {
 
-        if (_c > 0) {
-          _c -= 1;
-          _t -= 1;
+        if (unreadCount > 0) {
+          unreadCount -= 1;
+          totalCount -= 1;
         }
 
-        $('li#' + sanitizedStreamID + ' div span').text(_c);
-        updateTotalCounter(_t);
+        $('li#' + sanitizedStreamID + ' div span').text(unreadCount);
+        updateTotalCounter(totalCount);
 
-        if ( _c === 0 ) {
+        if ( unreadCount === 0 ) {
           $('li#' + sanitizedStreamID + ' div span').hide();
         }
 
@@ -300,6 +302,10 @@ function nextArticle(e) {
   window.scroll();
 }
 
+function getUnreadCount(streamID) {
+  return parseInt($('li#' + sanitize(streamID) + ' div span').text(), 10);
+}
+
 //TODO: test this well
 function keepAsUnread(e) {
 
@@ -313,7 +319,7 @@ function keepAsUnread(e) {
   var articleID = posts[currentArticle].id;
   var sanitizedStreamID = sanitize(streamID);
 
-  var _c = parseInt($('li#' + sanitizedStreamID + ' div span').text(), 10);
+  var unreadCount = getUnreadCount(streamID);
   var _t = getTotalCounter();
 
   if ((unreadFlag === 'f') || (currentArticle<readArticleMark)) {
@@ -326,13 +332,13 @@ function keepAsUnread(e) {
         r.setRequestHeader("Action_token", sessvars.Action_token);
       },
       success: function(resc) {
-        _c += 1;
+        unreadCount += 1;
         _t += 1;
 
-        $('li#' + sanitizedStreamID + ' div span').text(_c);
+        $('li#' + sanitizedStreamID + ' div span').text(unreadCount);
         updateTotalCounter(_t);
 
-        if ( _c === 1 ) {
+        if ( unreadCount === 1 ) {
           $('li#' + sanitizedStreamID + ' div span').show();
         }
       }
