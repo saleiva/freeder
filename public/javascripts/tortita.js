@@ -9,7 +9,7 @@
 */
 
 var
-    posts             = [],
+    articles          = [],
     sources           = [],
     lastFaviconURL    = "",
     currentArticle    = 0,
@@ -44,34 +44,34 @@ function getUnreadCount(streamID) {
 function showArticle(i) {
 
   currentArticle = i;
-  var post = posts[i];
+  var article = articles[i];
 
-  if (post) {
-    $('.article .title h1 a').html(post.title);
-    $('.article .title h1 a').attr('href', post.alternate[0].href);
-    $('.article .title h2 a').attr('href', post.origin.htmlUrl);
+  if (article) {
+    $('.article .title h1 a').html(article.title);
+    $('.article .title h1 a').attr('href', article.alternate[0].href);
+    $('.article .title h2 a').attr('href', article.origin.htmlUrl);
 
     // Show human date
     var date = new Date(0);
-    date.setUTCSeconds(post.published);
+    date.setUTCSeconds(article.published);
     $('.article .title h2 .date').html(humaneDate(date));
 
-    var faviconURL = post.origin.htmlUrl.replace("http://", "");
+    var faviconURL = article.origin.htmlUrl.replace("http://", "");
 
     if (faviconURL !== lastFaviconURL) {
       $('.article .title h2 a').css("background", 'url(http://getfavicon.org/?url='+encodeURIComponent(faviconURL)+') 0 0 no-repeat');
       lastFaviconURL = faviconURL;
     }
 
-    $('.article .title h2 a').html(post.origin.title);
+    $('.article .title h2 a').html(article.origin.title);
     $('.article .content').text("");
 
-    if (post.content) {
-      $('.article .content').append(post.content.content);
-    } else if (post.summary) {
-      $('.article .content').append('<p>'+post.summary.content+'</p><p><a href="'+post.alternate[0].href+'">Read more</a></p>');
+    if (article.content) {
+      $('.article .content').append(article.content.content);
+    } else if (article.summary) {
+      $('.article .content').append('<p>'+article.summary.content+'</p><p><a href="'+article.alternate[0].href+'">Read more</a></p>');
     }
-    cleanpost();
+    cleanArticle();
   }
 }
 
@@ -83,7 +83,7 @@ function setFeed(feedSource, u) {
   spinner = new Spinner(spinnerOpts).spin(target);
   $('.article').fadeOut();
 
-  posts = []; // empty post list
+  articles = []; // empty article list
 
   if (feedSource !== 'all') {
 
@@ -117,7 +117,7 @@ function setFeed(feedSource, u) {
     success: function(resc) {
 
       $.each(resc.items, function(i, obj) {
-        posts[i] = obj;
+        articles[i] = obj;
       });
 
       showArticle(0);
@@ -246,8 +246,8 @@ function showAlreadyRead() {
   setFeed(feedSource);
 }
 
-function getMorePosts(streamID) {
-  var extraPosts = [];
+function getMoreArticles(streamID) {
+  var extraArticles = [];
 
   $.ajax({
     url: 'get/feed/' + encodeURIComponent(streamID) + "/" + unreadFlag,
@@ -259,11 +259,11 @@ function getMorePosts(streamID) {
     success: function(resc) {
 
       $.each(resc.items, function(i, obj) {
-        extraPosts[i] = obj;
+        extraarticles[i] = obj;
       });
 
-      extraPosts.splice(0, 5);
-      posts = posts.concat(extraPosts);
+      extraArticles.splice(0, 5);
+      articles = articles.concat(extraArticles);
     }
   });
 }
@@ -272,15 +272,15 @@ function getMorePosts(streamID) {
 function nextArticle(e) {
   e.preventDefault();
 
-  if (!posts[currentArticle]) {
+  if (!articles[currentArticle]) {
     return;
   }
 
   var
-    streamID          = posts[currentArticle].origin.streamId,
-    articleID         = posts[currentArticle].id,
-    unreadCount       = getUnreadCount(streamID);
-    totalCount        = getTotalCounter();
+    streamID    = articles[currentArticle].origin.streamId,
+    articleID   = articles[currentArticle].id,
+    unreadCount = getUnreadCount(streamID);
+    totalCount  = getTotalCounter();
 
   if ((unreadFlag === 't') && (currentArticle >= readArticleMark) && (!$('.noUnread').is(':visible'))) {
     viewminispinner();
@@ -309,13 +309,13 @@ function nextArticle(e) {
     });
   }
 
-  if (currentArticle < posts.length-1) {
+  if (currentArticle < articles.length-1) {
     showArticle(currentArticle + 1);
     readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
 
-    if (currentArticle === posts.length - 5) {
-      console.log('get more posts!!');
-      getMorePosts(streamID);
+    if (currentArticle === articles.length - 5) {
+      console.log('get more articles!!');
+      getMoreArticles(streamID);
     }
 
   } else {
@@ -333,13 +333,13 @@ function keepAsUnread(e) {
 
   e.preventDefault();
 
-  if (!posts[currentArticle]) {
+  if (!articles[currentArticle]) {
     return;
   }
 
   var
-  streamID    = posts[currentArticle].origin.streamId,
-  articleID   = posts[currentArticle].id,
+  streamID    = articles[currentArticle].origin.streamId,
+  articleID   = articles[currentArticle].id,
   unreadCount = getUnreadCount(streamID),
   totalCount  = getTotalCounter();
 
@@ -366,14 +366,14 @@ function keepAsUnread(e) {
     });
   }
 
-  if (currentArticle < posts.length-1) {
+  if (currentArticle < articles.length-1) {
 
     showArticle(currentArticle + 1);
     readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
 
-    if (currentArticle === posts.length - 5) {
-      //console.log('Get more posts!!');
-      getMorePosts(streamID);
+    if (currentArticle === articles.length - 5) {
+      //console.log('Get more articles!!');
+      getMoreArticles(streamID);
     }
 
   } else {
@@ -395,19 +395,19 @@ function prevArticle(e) {
 }
 
 function goToPermalink() {
-  window.open(posts[currentArticle].alternate[0].href);
+  window.open(articles[currentArticle].alternate[0].href);
 }
 
 // Sharing methods
 function shareOnTwitter() {
   var
-    title      = posts[currentArticle].title,
-    articleURL = posts[currentArticle].alternate[0].href;
+    title      = articles[currentArticle].title,
+    articleURL = articles[currentArticle].alternate[0].href;
 
   if (title.length > 70) {
-    title = (posts[currentArticle].title).substring(0, 70) + "...";
+    title = (articles[currentArticle].title).substring(0, 70) + "...";
   } else {
-    title = posts[currentArticle].title;
+    title = articles[currentArticle].title;
   }
 
   var url = "http://twitter.com/home?status=" + title + " - " + articleURL + " - As read on @Siropeapp";
@@ -416,8 +416,8 @@ function shareOnTwitter() {
 
 function shareOnFacebook() {
   var
-    title      = posts[currentArticle].title,
-    articleURL = posts[currentArticle].alternate[0].href,
+    title      = articles[currentArticle].title,
+    articleURL = articles[currentArticle].alternate[0].href,
     url        = "http://www.facebook.com/sharer.php?t=" + title + "&u="+ articleURL;
 
   window.open(url);
