@@ -10,7 +10,7 @@
 * Module dependencies.
 */
 
-var 
+var
 express = require('express')
 , routes = require('./routes')
 , querystring = require('querystring')
@@ -54,13 +54,13 @@ everyauth.google
 }).redirectPath('/login');
 
 var ourl = new Object();
-ourl.actionToken = '/reader/api/0/token';
-ourl.unreadCount = '/reader/api/0/unread-count?output=json';
-ourl.readingList = '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?';
+ourl.actionToken      = '/reader/api/0/token';
+ourl.unreadCount      = '/reader/api/0/unread-count?output=json';
+ourl.readingList      = '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?';
 ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
-ourl.feedContents = '/reader/api/0/stream/contents/';
-ourl.markAsRead =  '/reader/api/0/edit-tag?client=sirope';
-ourl.addFeed =  '/reader/api/0/subscription/edit';
+ourl.feedContents     = '/reader/api/0/stream/contents/';
+ourl.markAsRead       =  '/reader/api/0/edit-tag?client=sirope';
+ourl.addFeed          =  '/reader/api/0/subscription/edit';
 
 var app = module.exports = express.createServer(
     express.bodyParser()
@@ -70,7 +70,6 @@ var app = module.exports = express.createServer(
     , express.session({ secret: 'htuayreve'})
     , everyauth.middleware()
 );
-
 
 everyauth.helpExpress(app);
 
@@ -135,7 +134,7 @@ function getActionToken(req, res, callback) {
 function addFeed(req, res, actionToken) {
     var post_data = "s=feed/"+req.params.url+"&ac=subscribe&T="+actionToken;
 
-    var post_options = { 
+    var post_options = {
         host: 'www.google.com',
         port: 443,
         path: ourl.addFeed,
@@ -172,7 +171,7 @@ function markAsRead(req, res, actionToken) {
 
     var post_data = "i="+req.params.pid+"&a=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s="+req.params.url+"&T="+actionToken;
 
-    var post_options = { 
+    var post_options = {
         host: 'www.google.com',
         port: 443,
         path: ourl.markAsRead,
@@ -209,7 +208,7 @@ function markAsUnread(req, res, actionToken) {
 
     var post_data = "i="+req.params.pid+"&a=user/-/state/com.google/kept-unread&r=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s="+req.params.url+"&T="+actionToken;
 
-    var post_options = { 
+    var post_options = {
         host: 'www.google.com',
         port: 443,
         path: ourl.markAsRead,
@@ -279,7 +278,6 @@ app.get('/login', function(req, res){
     }
 });
 
-
 app.get('/get/:query', function(req, res){
     var url;
 
@@ -306,7 +304,7 @@ app.get('/get/feed/:url/:unread', function(req, res){
     request(res, req.session.accessToken, url);
 });
 
-// Subscbribe to feed service 
+// Subscbribe to feed service
 app.get('/subscribe/:url', function(req, res){
     getActionToken(req, res, addFeed);
 });

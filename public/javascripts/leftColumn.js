@@ -31,7 +31,7 @@ $(document).ready(function() {
         showSources();
         $('.sources_area').css('width','300px');
 
-        if (!isiPad) { //JSCROLLPANE 
+        if (!isiPad) { //JSCROLLPANE
           if ($('.scroll-pane').length > 0) {
             var api = $('.scroll-pane').data('jsp');
             api.reinitialise();
@@ -41,7 +41,7 @@ $(document).ready(function() {
         var throttleTimeout;
         $(window).bind('resize',function(){
             if ($.browser.msie) {
-                // IE 
+                // IE
                 if (!throttleTimeout) {
                     throttleTimeout = setTimeout(
                         function(){
@@ -64,6 +64,7 @@ $(document).ready(function() {
 });
 
 function updateTotalCounter(n){
+  console.log(n);
     p = (n==1000) ? "+" : "";
     $('.sources ul li#allfeeds div span').text(p+n);
     $('.sources ul li#allfeeds div span').fadeIn(350);
@@ -72,11 +73,11 @@ function updateTotalCounter(n){
 }
 
 function getTotalCounter(){
-    return parseInt($('.sources ul li#allfeeds div span').text());
+  return parseInt($('.sources ul li#allfeeds div span').text());
 }
 
 function hideSources(){
-    $('.sources').fadeOut(150); 
+    $('.sources').fadeOut(150);
 }
 
 function showSources(){
