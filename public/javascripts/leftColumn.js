@@ -64,7 +64,7 @@ $(document).ready(function() {
 });
 
 function updateTotalCounter(n){
-  console.log(n);
+  //console.log(n);
     p = (n==1000) ? "+" : "";
     $('.sources ul li#allfeeds div span').text(p+n);
     $('.sources ul li#allfeeds div span').fadeIn(350);

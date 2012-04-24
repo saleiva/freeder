@@ -116,7 +116,7 @@ function setFeed(feedSource, u) {
     },
     success: function(resc) {
 
-      jQuery.each(resc.items, function(i, obj) {
+      $.each(resc.items, function(i, obj) {
         posts[i] = obj;
       });
 
@@ -143,7 +143,9 @@ function getSubscriptionList() {
       r.setRequestHeader("Auth_token", sessvars.Auth_token);
     },
     error: function(e) {
+
       spinner.stop();
+
       if (e.status === 401) {
         window.location.href = "/auth/google"; // TODO: refresh token
       }
@@ -152,7 +154,7 @@ function getSubscriptionList() {
     },
     success: function(res) {
       $('.sources ul').append('<li id="allfeeds"><div><a href="#">All unread items</a><span>0</span></div></li>');
-      jQuery.each(res.subscriptions, function(i,obj) {
+      $.each(res.subscriptions, function(i,obj) {
 
         var
         url  = obj.htmlUrl,
@@ -178,7 +180,7 @@ function getSubscriptionList() {
         success: function(resc) {
           var re = new RegExp(/\/state\/com\.google\/reading-list/);
 
-          jQuery.each(resc.unreadcounts, function(i, obj) {
+          $.each(resc.unreadcounts, function(i, obj) {
 
             if (obj.id.match(re)) {
               updateTotalCounter(obj.count);
@@ -256,7 +258,7 @@ function getMorePosts(streamID) {
     },
     success: function(resc) {
 
-      jQuery.each(resc.items, function(i, obj) {
+      $.each(resc.items, function(i, obj) {
         extraPosts[i] = obj;
       });
 
@@ -341,7 +343,7 @@ function keepAsUnread(e) {
   unreadCount = getUnreadCount(streamID),
   totalCount  = getTotalCounter();
 
-  if ((unreadFlag === 'f') || (currentArticle<readArticleMark)) {
+  if ((unreadFlag === 'f') || (currentArticle < readArticleMark)) {
     viewminispinner();
     $.ajax({
       url: '/markasunread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID),
@@ -370,9 +372,10 @@ function keepAsUnread(e) {
     readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
 
     if (currentArticle === posts.length - 5) {
-      console.log('get more posts!!');
+      //console.log('Get more posts!!');
       getMorePosts(streamID);
     }
+
   } else {
 
     $('.article').fadeOut('slow', function() {
@@ -398,7 +401,7 @@ function goToPermalink() {
 // Sharing methods
 function shareOnTwitter() {
   var
-    title = posts[currentArticle].title,
+    title      = posts[currentArticle].title,
     articleURL = posts[currentArticle].alternate[0].href;
 
   if (title.length > 70) {
@@ -415,7 +418,7 @@ function shareOnFacebook() {
   var
     title      = posts[currentArticle].title,
     articleURL = posts[currentArticle].alternate[0].href,
-    url = "http://www.facebook.com/sharer.php?t=" + title + "&u="+ articleURL;
+    url        = "http://www.facebook.com/sharer.php?t=" + title + "&u="+ articleURL;
 
   window.open(url);
 }
