@@ -83,15 +83,11 @@ function setFeed(feedSource, u) {
     var unreadCount = getUnreadCount(streamID);
 
     if (unreadCount > 0 || u === undefined) {
-
       unreadFlag = "t";
       $('.article .next').text('Keep as unread');
-
     } else {
-
       unreadFlag = "f";
       $('.article .next').text('Mark as unread');
-
     }
 
   } else{
@@ -171,16 +167,17 @@ function getSubscriptionList() {
           viewminispinner();
         },
         success: function(resc) {
-          var fe = null;
           var re = new RegExp(/\/state\/com\.google\/reading-list/);
 
           jQuery.each(resc.unreadcounts, function(i,obj) {
+
             if (obj.id.match(re)) {
               updateTotalCounter(obj.count);
             } else {
               $('li#'+sanitize(obj.id)+' div span').text(obj.count);
               $('li#'+sanitize(obj.id)+' div span').show();
             }
+
           });
 
           setFeed('all', 't');
