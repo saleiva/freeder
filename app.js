@@ -62,16 +62,6 @@ everyauth.google
   return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
 }).redirectPath('/login');
 
-var ourl = new Object();
-ourl.actionToken      = '/reader/api/0/token';
-ourl.unreadCount      = '/reader/api/0/unread-count?output=json';
-ourl.readingList      = '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?';
-ourl.subscriptionList = '/reader/api/0/subscription/list?output=json';
-ourl.feedContents     = '/reader/api/0/stream/contents/';
-ourl.markAsRead       =  '/reader/api/0/edit-tag?client=sirope';
-ourl.markAsUnread     =  '/reader/api/0/edit-tag?client=sirope';
-ourl.addFeed          =  '/reader/api/0/subscription/edit';
-
 var app = module.exports = express.createServer(
   express.bodyParser()
   , express.static(__dirname + "/public")
@@ -114,6 +104,17 @@ app.configure('production', function() {
 
 
 var Sirope = (function() {
+
+  var ourl = {
+    actionToken:      '/reader/api/0/token';
+    unreadCount:      '/reader/api/0/unread-count?output=json';
+    readingList:      '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?';
+    subscriptionList: '/reader/api/0/subscription/list?output=json';
+    feedContents:     '/reader/api/0/stream/contents/';
+    markAsRead:       '/reader/api/0/edit-tag?client=sirope';
+    markAsUnread:     '/reader/api/0/edit-tag?client=sirope';
+    addFeed:          '/reader/api/0/subscription/edit';
+  };
 
   // Generate a hash with request options
   _getRequestOptions = function(host, port, path, method, headers) {
@@ -176,8 +177,8 @@ var Sirope = (function() {
     }
 
     var
-      headers = { 'Authorization': 'Bearer ' + req.session.accessToken },
-      options = Sirope.getRequestOptions(conf.HOST, conf.HTTP_PORT, ourl.actionToken, "GET", headers);
+    headers = { 'Authorization': 'Bearer ' + req.session.accessToken },
+    options = Sirope.getRequestOptions(conf.HOST, conf.HTTP_PORT, ourl.actionToken, "GET", headers);
 
     var post_req = http.request(options, function(response) {
 
@@ -208,18 +209,18 @@ var Sirope = (function() {
 
   _addFeed = function(req, res) {
     var
-      data     = "s=feed/" + req.params.url + "&ac=subscribe&T=" + req.session.actionToken,
-      headers = { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': data.length, 'Authorization': 'Bearer ' + req.session.accessToken },
-      options  = Sirope.getRequestOptions(conf.HOST, conf.HTTPS_PORT, ourl.addFeed, "POST", headers);
+    data     = "s=feed/" + req.params.url + "&ac=subscribe&T=" + req.session.actionToken,
+    headers = { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': data.length, 'Authorization': 'Bearer ' + req.session.accessToken },
+    options  = Sirope.getRequestOptions(conf.HOST, conf.HTTPS_PORT, ourl.addFeed, "POST", headers);
 
     Sirope.post(res, options, data);
   };
 
   _markAsRead = function(req, res) {
     var
-      data     = "i=" + req.params.pid + "&a=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s=" + req.params.url + "&T=" + req.session.actionToken,
-      headers  = { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': data.length, 'Authorization': 'Bearer '+ req.session.accessToken },
-      options  = Sirope.getRequestOptions(conf.HOST, conf.HTTPS_PORT, ourl.markAsRead, "POST", headers);
+    data     = "i=" + req.params.pid + "&a=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s=" + req.params.url + "&T=" + req.session.actionToken,
+    headers  = { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': data.length, 'Authorization': 'Bearer '+ req.session.accessToken },
+    options  = Sirope.getRequestOptions(conf.HOST, conf.HTTPS_PORT, ourl.markAsRead, "POST", headers);
 
     Sirope.post(res, options, data);
   };
@@ -233,20 +234,51 @@ var Sirope = (function() {
     Sirope.post(res, options, data);
   };
 
+  _getFeed = function(req, res) {
+    var url = null;
+
+    if (req.params.url === "all") {
+      url = ourl.readingList + "?&r=n&n=100";
+    } else {
+      url = ourl.feedContents+decodeURIComponent(req.params.url) + "?&r=n&n=100";
+    }
+
+    if (req.params.unread === "t") {
+      url += "&xt=user/-/state/com.google/read";
+    }
+
+    Sirope.get(res, req.session.accessToken, url);
+
+  };
+
+  _getSubscriptionList = function(res, req) {
+    Sirope.get(res, req.session.accessToken, ourl.subscriptionList);
+  };
+
+  _getUnreadCount = function(res, req) {
+    Sirope.get(res, req.session.accessToken, ourl.unreadCount);
+  };
+
   return {
-    getRequestOptions: _getRequestOptions,
-    getActionToken:    _getActionToken,
-    addFeed:           _addFeed,
-    markAsRead:        _markAsRead,
-    markAsUnRead:      _markAsUnRead,
-    get:               _get,
-    post:              _post
+    getRequestOptions:   _getRequestOptions,
+    getActionToken:      _getActionToken,
+    addFeed:             _addFeed,
+    getFeed:             _getFeed,
+    markAsRead:          _markAsRead,
+    markAsUnRead:        _markAsUnRead,
+    getUnreadCount:      _getUnreadCount,
+    getSubscriptionList: _getSubscriptionList,
+    get:                 _get,
+    post:                _post
   };
 
 }());
 
 
-// Routes
+/**
+ * ROUTES
+ */
+
 app.get('/', function(req, res) {
   res.render('index');
 });
@@ -261,50 +293,26 @@ app.get('/login', function(req, res) {
   }
 });
 
-app.get('/get/:query', function(req, res) {
-  var url = null;
+app.get('/get/unread-count', function(req, res) {
+  Sirope.getUnreadCount(req, res);
+});
 
-  if (req.params.query === "unread-count") {
-    url = ourl.unreadCount;
-  } else if (req.params.query === "subscription-list") {
-    url = ourl.subscriptionList;
-  }
-
-  Sirope.get(res, req.session.accessToken, url);
+app.get('/get/subscription-list', function(req, res) {
+  Sirope.getSubscriptionList(req, res);
 });
 
 app.get('/get/feed/:url/:unread', function(req, res) {
-  var url = null;
-
-  if (req.params.url === "all") {
-    url = ourl.readingList + "?&r=n&n=100";
-  } else {
-    url = ourl.feedContents+decodeURIComponent(req.params.url) + "?&r=n&n=100";
-  }
-
-  if (req.params.unread === "t") {
-    url += "&xt=user/-/state/com.google/read";
-  }
-
-  Sirope.get(res, req.session.accessToken, url);
+  Sirope.getFeed(req, res);
 });
 
-
-/**
-* ROUTES
-*/
-
-// Subscribe to feed service
 app.get('/subscribe/:url', function(req, res) {
   Sirope.getActionToken(req, res, Sirope.addFeed);
 });
 
-// Mark as read service
 app.get('/markasread/:url/:pid', function(req, res) {
   Sirope.getActionToken(req, res, Sirope.markAsRead);
 });
 
-// Mark as unread service
 app.get('/markasunread/:url/:pid', function(req, res) {
   Sirope.getActionToken(req, res, Sirope.markAsUnread);
 });
@@ -326,7 +334,6 @@ app.get('/refresh', function(req, res) {
   }
 });
 
-// Custom URL for user
 app.get('/:username', function(req, res) {
   res.render('articles');
 });
