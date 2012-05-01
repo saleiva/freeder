@@ -136,6 +136,13 @@ function setFeed(feedSource, u) {
 
       if (data.items.length > 0) {
 
+        if (streamID != 'all') {
+          unreadCounters[streamID] = data.items.length;
+          totalCount += data.items.length;
+          updateCount(streamID);
+          updateTotalCounter(totalCount);
+        }
+
         $.each(data.items, function(i, obj) {
           articles[i] = obj;
         });
@@ -145,6 +152,11 @@ function setFeed(feedSource, u) {
         $('.article').fadeIn();
       } else {
         console.log("Nothing else to read!");
+
+        $('.article').fadeOut('slow', function() {
+          $('.noUnread').fadeIn();
+        });
+
       }
     },
     error: function(r) {
