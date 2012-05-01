@@ -8,18 +8,32 @@
       \/_/\/___/  \/_/   \/__/ \/_/\/__/\/__/\/_/
 */
 
+var debug = true;
+
 var
-    articles          = [],
-    sources           = [],
-    lastFaviconURL    = "",
-    currentArticle    = 0,
-    readArticleMark   = 0,
-    unreadFlag        = "f",
-    spinner,
-    target,
-    modalSpinner,
-    spinnerOpts       = {lines: 12, length: 5, width: 4, radius: 21, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
-    modalSpinnerOpts  = {lines: 8, length: 2, width: 2, radius: 4, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false};
+  totalCount        = 0,
+  unreadCounters    = [],
+  articles          = [],
+  sources           = [],
+  lastFaviconURL    = "",
+  currentArticle    = 0,
+  readArticleMark   = 0,
+  unreadFlag        = "f",
+  spinner,
+  miniSpinner,
+  target,
+  miniTarget,
+  modalSpinner,
+  spinnerOpts       = { lines: 12, length: 5, width: 4, radius: 21, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false },
+  modalSpinnerOpts  = { lines: 8, length: 2, width: 2, radius: 4, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false },
+  miniSpinnerOpts   = { lines: 8, length: 2, width: 2, radius: 4, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false };
+
+
+  function _debug(str) {
+    if (debug) {
+      console.log(str);
+    }
+  }
 
 function isEmpty(str) {
   return !str.match(/\S/g);
@@ -30,14 +44,6 @@ function sanitize(str) {
     return str;
   }
   return str.replace(/[^a-z0-9]+/g,'-'); // TODO:^ is insecure, try this instead: /\bhttps?:\/\/[-\w+&@#/%?=~|$!:,.;]*[\w+&@#/%=~|$]/g
-}
-
-function updateUnreadCount(streamID, count) {
-  $('li#' + sanitize(streamID) + ' div span').text(count);
-}
-
-function getUnreadCount(streamID) {
-  return parseInt($('li#' + sanitize(streamID) + ' div span').text(), 10);
 }
 
 //Show an item on the UI
@@ -77,19 +83,28 @@ function showArticle(i) {
 
 //Function for changing the source for viewing
 function setFeed(feedSource, u) {
+  _debug('Loading source');
+
   var streamID = null;
 
   spinner.stop();
   spinner = new Spinner(spinnerOpts).spin(target);
+
+  miniSpinner.stop();
+
   $('.article').fadeOut();
 
   articles = []; // empty article list
 
   if (feedSource !== 'all') {
+  _debug('Loading single source');
 
     streamID    = sources[feedSource];
 
-    var unreadCount = getUnreadCount(streamID);
+    var unreadCount = unreadCounters[streamID];
+
+    _debug('Unread count: ' + unreadCount);
+    _debug(articles);
 
     if (unreadCount > 0 || u === undefined) {
       unreadFlag = "t";
@@ -100,6 +115,7 @@ function setFeed(feedSource, u) {
     }
 
   } else{
+    _debug('Loading all sources');
     streamID = 'all';
     unreadFlag = "t";
   }
@@ -114,16 +130,34 @@ function setFeed(feedSource, u) {
     beforeSend: function(r) {
       r.setRequestHeader("Auth_token", sessvars.Auth_token);
     },
-    success: function(resc) {
-
-      $.each(resc.items, function(i, obj) {
-        articles[i] = obj;
-      });
-
-      showArticle(0);
-      readArticleMark = 0;
-      $('.article').fadeIn();
+    success: function(data) {
       spinner.stop();
+      miniSpinner.stop();
+
+      if (data.items.length > 0) {
+
+        if (streamID != 'all') {
+          unreadCounters[streamID] = data.items.length;
+          totalCount += data.items.length;
+          updateCount(streamID);
+          updateTotalCounter(totalCount);
+        }
+
+        $.each(data.items, function(i, obj) {
+          articles[i] = obj;
+        });
+
+        showArticle(0);
+        readArticleMark = 0;
+        $('.article').fadeIn();
+      } else {
+        console.log("Nothing else to read!");
+
+        $('.article').fadeOut('slow', function() {
+          $('.noUnread').fadeIn();
+        });
+
+      }
     },
     error: function(r) {
       console.log("Error: ", r);
@@ -133,6 +167,7 @@ function setFeed(feedSource, u) {
 
 //Ask for all the blogs where the user is subscribed
 function getSubscriptionList() {
+  _debug("Getting subscription list");
 
   $('.sources ul').empty(); // empty the sources list
 
@@ -143,16 +178,18 @@ function getSubscriptionList() {
       r.setRequestHeader("Auth_token", sessvars.Auth_token);
     },
     error: function(e) {
-
       spinner.stop();
+      miniSpinner.stop();
 
       if (e.status === 401) {
-        window.location.href = "/auth/google"; // TODO: refresh token
+        window.location.href = "/refresh"; // TODO: refresh token
       }
 
       throw new Error('Error ' + e.status + ":" + e);
     },
     success: function(res) {
+
+      miniSpinner.stop();
       $('.sources ul').append('<li id="allfeeds"><div><a href="#">All unread items</a><span>0</span></div></li>');
       $.each(res.subscriptions, function(i,obj) {
 
@@ -164,7 +201,7 @@ function getSubscriptionList() {
         sources[id] = obj.id;
 
         $('.sources ul').append('<li id="'+id+'"><div><a href="#">'+name+'</a><span>0</span></div></li>');
-        $('li#'+id+' div a').truncate({width:200});
+        $('li#'+id+' div a').truncate({ width: 200 });
       });
 
       showSources();
@@ -175,18 +212,21 @@ function getSubscriptionList() {
         type: 'GET',
         beforeSend: function(r) {
           r.setRequestHeader("Auth_token", sessvars.Auth_token);
-          viewminispinner();
+          miniSpinner.spin(miniTarget);
         },
         success: function(resc) {
+          miniSpinner.stop();
+
           var re = new RegExp(/\/state\/com\.google\/reading-list/);
 
           $.each(resc.unreadcounts, function(i, obj) {
 
             if (obj.id.match(re)) {
-              updateTotalCounter(obj.count);
+              totalCount = obj.count;
+              updateTotalCounter(totalCount);
             } else {
-              $('li#'+sanitize(obj.id)+' div span').text(obj.count);
-              $('li#'+sanitize(obj.id)+' div span').show();
+              unreadCounters[obj.id] = obj.count;
+              updateCount(obj.id);
             }
 
           });
@@ -247,6 +287,8 @@ function showAlreadyRead() {
 }
 
 function getMoreArticles(streamID) {
+  _debug("[GET] Getting more articles");
+
   var extraArticles = [];
 
   $.ajax({
@@ -257,9 +299,10 @@ function getMoreArticles(streamID) {
       r.setRequestHeader("Auth_token", sessvars.Auth_token);
     },
     success: function(resc) {
+      miniSpinner.stop();
 
       $.each(resc.items, function(i, obj) {
-        extraarticles[i] = obj;
+        extraArticles[i] = obj;
       });
 
       extraArticles.splice(0, 5);
@@ -270,20 +313,24 @@ function getMoreArticles(streamID) {
 
 //Show the next item and mark this as unread
 function nextArticle(e) {
+  _debug("Next article");
+
   e.preventDefault();
 
   if (!articles[currentArticle]) {
+    miniSpinner.stop();
     return;
   }
 
   var
-    streamID    = articles[currentArticle].origin.streamId,
-    articleID   = articles[currentArticle].id,
-    unreadCount = getUnreadCount(streamID);
-    totalCount  = getTotalCounter();
+  streamID    = articles[currentArticle].origin.streamId,
+  articleID   = articles[currentArticle].id;
 
   if ((unreadFlag === 't') && (currentArticle >= readArticleMark) && (!$('.noUnread').is(':visible'))) {
-    viewminispinner();
+    miniSpinner.spin(miniTarget);
+
+  _debug("Mark as read");
+  _debug('/markasread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID));
 
     $.ajax({
       url: '/markasread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID),
@@ -292,28 +339,35 @@ function nextArticle(e) {
         r.setRequestHeader("Auth_token", sessvars.Auth_token);
         r.setRequestHeader("Action_token", sessvars.Action_token);
       },
+      error: function(error) {
+        spinner.stop();
+        miniSpinner.stop();
+        _debug("Error marking as read");
+        _debug(error);
+      },
       success: function(resc) {
+        spinner.stop();
+        miniSpinner.stop();
+        _debug("Success");
+        _debug(unreadCounters[streamID]);
 
-        if (unreadCount > 0) {
-          unreadCount -= 1;
-          totalCount  -= 1;
+        if (unreadCounters[streamID] > 0) {
+          unreadCounters[streamID] -= 1;
+          totalCount               -= 1;
         }
 
-        updateUnreadCount(streamID, unreadCount);
-        updateTotalCounter(totalCount);
-
-        if (unreadCount === 0) {
-          $('li#' + sanitize(streamID) + ' div span').hide();
-        }
+        updateCounters(streamID, totalCount);
       }
     });
   }
 
   if (currentArticle < articles.length-1) {
+    miniSpinner.stop();
     showArticle(currentArticle + 1);
     readArticleMark = (currentArticle > readArticleMark) ? currentArticle : readArticleMark;
 
     if (currentArticle === articles.length - 5) {
+      miniSpinner.stop();
       console.log('get more articles!!');
       getMoreArticles(streamID);
     }
@@ -339,12 +393,10 @@ function keepAsUnread(e) {
 
   var
   streamID    = articles[currentArticle].origin.streamId,
-  articleID   = articles[currentArticle].id,
-  unreadCount = getUnreadCount(streamID),
-  totalCount  = getTotalCounter();
+  articleID   = articles[currentArticle].id;
 
   if ((unreadFlag === 'f') || (currentArticle < readArticleMark)) {
-    viewminispinner();
+    miniSpinner.spin(miniTarget);
     $.ajax({
       url: '/markasunread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID),
       type: 'GET',
@@ -353,13 +405,13 @@ function keepAsUnread(e) {
         r.setRequestHeader("Action_token", sessvars.Action_token);
       },
       success: function(resc) {
-        unreadCount += 1;
+        miniSpinner.stop();
+        unreadCounters[streamID] += 1;
         totalCount += 1;
 
-        updateUnreadCount(streamID, unreadCount);
-        updateTotalCounter(totalCount);
+        updateCounters(streamID, totalCount);
 
-        if (unreadCount === 1) { // TODO: check this
+        if (unreadCounters[streamID] === 1) { // TODO: check this
           $('li#' + sanitize(streamID) + ' div span').show();
         }
       }
@@ -401,8 +453,8 @@ function goToPermalink() {
 // Sharing methods
 function shareOnTwitter() {
   var
-    title      = articles[currentArticle].title,
-    articleURL = articles[currentArticle].alternate[0].href;
+  title      = articles[currentArticle].title,
+  articleURL = articles[currentArticle].alternate[0].href;
 
   if (title.length > 70) {
     title = (articles[currentArticle].title).substring(0, 70) + "...";
@@ -416,17 +468,21 @@ function shareOnTwitter() {
 
 function shareOnFacebook() {
   var
-    title      = articles[currentArticle].title,
-    articleURL = articles[currentArticle].alternate[0].href,
-    url        = "http://www.facebook.com/sharer.php?t=" + title + "&u="+ articleURL;
+  title      = articles[currentArticle].title,
+  articleURL = articles[currentArticle].alternate[0].href,
+  url        = "http://www.facebook.com/sharer.php?t=" + title + "&u="+ articleURL;
 
   window.open(url);
 }
 
 $(function() {
 
-  target  = document.getElementById('spinner');
-  spinner = new Spinner(spinnerOpts).spin(target);
+  // Spinners configuration
+  target      = document.getElementById('spinner');
+  spinner     = new Spinner(spinnerOpts).spin(target);
+
+  miniTarget  = document.getElementById('minispinner');
+  miniSpinner = new Spinner(miniSpinnerOpts).spin(miniTarget);
 
   $('.article').hide();
   $('.noUnread').hide();
@@ -475,4 +531,3 @@ $(function() {
 
   getSubscriptionList();
 });
-
