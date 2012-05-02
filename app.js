@@ -51,15 +51,13 @@ everyauth.google
   googleUser.refreshToken = extra.refresh_token;
   googleUser.expiresIn = extra.expires_in;
 
-  console.log(extra);
-
   // Let's store some basic info in the session variable
   sess.email        = googleUser.email;
   sess.accessToken  = accessToken;
-  sess.refreshToken = null;
-  //sess.refreshToken = extra.refresh_token;
+  sess.refreshToken = false;
 
   return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = googleUser);
+
 }).redirectPath('/login');
 
 var app = module.exports = express.createServer(
@@ -102,7 +100,6 @@ app.configure('production', function() {
   app.use(express.errorHandler());
 });
 
-
 var Sirope = (function() {
 
   var ourl = {
@@ -140,9 +137,7 @@ var Sirope = (function() {
       resp.on('error', function(e) {
         console.log(e);
       });
-
     });
-
   };
 
   _post = function(res, options, data) {
@@ -177,8 +172,8 @@ var Sirope = (function() {
     }
 
     var
-    headers = { 'Authorization': 'Bearer ' + req.session.accessToken },
-    options = Sirope.getRequestOptions(conf.HOST, conf.HTTP_PORT, ourl.actionToken, "GET", headers);
+      headers = { 'Authorization': 'Bearer ' + req.session.accessToken },
+      options = Sirope.getRequestOptions(conf.HOST, conf.HTTP_PORT, ourl.actionToken, "GET", headers);
 
     var post_req = http.request(options, function(response) {
 
@@ -251,6 +246,33 @@ var Sirope = (function() {
 
   };
 
+  _login = function(req, res) {
+    if (req.session.accessToken) {
+      var name = req.session.email.split('@')[0].replace(/\./g, '');
+      req.session.userName = name;
+      res.redirect('/' + req.session.userName);
+    } else {
+      res.redirect('/auth/google');
+    }
+  };
+
+  _refresh = function(req, res) {
+    console.log("Time to refresh the token");
+
+    if (req.session && req.session.userName) {
+
+      Sirope.getActionToken(req, res, function() {
+        console.log("Refreshed. Rendering", req.session.userName);
+
+        req.session.refreshToken = true;
+        res.redirect('/' + req.session.userName);
+      });
+
+    } else {
+      res.redirect("/auth/google");
+    }
+  };
+
   _getSubscriptionList = function(res, req) {
     Sirope.get(res, req.session.accessToken, ourl.subscriptionList);
   };
@@ -268,6 +290,8 @@ var Sirope = (function() {
     markAsUnRead:        _markAsUnRead,
     getUnreadCount:      _getUnreadCount,
     getSubscriptionList: _getSubscriptionList,
+    login:               _login,
+    refresh:             _refresh,
     get:                 _get,
     post:                _post
   };
@@ -284,13 +308,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/login', function(req, res) {
-  if (req.session.accessToken) {
-    var name = req.session.email.split('@')[0].replace(/\./g, '');
-    req.session.userName = name;
-    res.redirect('/' + req.session.userName);
-  } else {
-    res.redirect('/auth/google');
-  }
+  Sirope.login(req, res);
 });
 
 app.get('/get/unread-count', function(req, res) {
@@ -318,20 +336,7 @@ app.get('/markasunread/:url/:pid', function(req, res) {
 });
 
 app.get('/refresh', function(req, res) {
-  console.log("Time to refresh the token");
-
-  if (req.session && req.session.userName) {
-
-    Sirope.getActionToken(req, res, function() {
-      console.log("Refreshed. Rendering", req.session.userName);
-
-      req.session.refreshToken = true;
-      res.redirect('/' + req.session.userName);
-    });
-
-  } else {
-    res.redirect("/auth/google");
-  }
+  Sirope.refresh(req, res);
 });
 
 app.get('/:username', function(req, res) {
