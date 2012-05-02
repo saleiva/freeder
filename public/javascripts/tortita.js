@@ -40,9 +40,6 @@ function isEmpty(str) {
 }
 
 function sanitize(str) {
-  if (isEmpty(str)) {
-    return str;
-  }
   return str.replace(/[^a-z0-9]+/g,'-'); // TODO:^ is insecure, try this instead: /\bhttps?:\/\/[-\w+&@#/%?=~|$!:,.;]*[\w+&@#/%=~|$]/g
 }
 
@@ -137,8 +134,12 @@ function setFeed(feedSource, u) {
       if (data.items.length > 0) {
 
         if (streamID != 'all') {
+          if (unreadCounters[streamID]) {
+            totalCount = totalCount - unreadCounters[streamID] + data.items.length;
+          } else {
+            totalCount += data.items.length;
+          }
           unreadCounters[streamID] = data.items.length;
-          totalCount += data.items.length;
           updateCount(streamID);
           updateTotalCounter(totalCount);
         }
@@ -182,7 +183,9 @@ function getSubscriptionList() {
       miniSpinner.stop();
 
       if (e.status === 401) {
-        window.location.href = "/refresh"; // TODO: refresh token
+        window.location.href = "/auth/google"; // TODO: refresh token
+      } else if (e.status === 400) {
+        console.log('We should refresh token');
       }
 
       throw new Error('Error ' + e.status + ":" + e);
@@ -194,14 +197,14 @@ function getSubscriptionList() {
       $.each(res.subscriptions, function(i,obj) {
 
         var
-        url  = obj.htmlUrl,
-        name = obj.title,
-        id   = sanitize(obj.id);
+          url  = obj.htmlUrl,
+          name = obj.title,
+          id   = sanitize(obj.id);
 
         sources[id] = obj.id;
 
-        $('.sources ul').append('<li id="'+id+'"><div><a href="#">'+name+'</a><span>0</span></div></li>');
-        $('li#'+id+' div a').truncate({ width: 200 });
+        $('.sources ul').append('<li id="' + id + '"><div><a href="#">' + name + '</a><span>0</span></div></li>');
+        $('li#' + id + ' div a').truncate({ width: 200 });
       });
 
       showSources();
@@ -264,7 +267,6 @@ function subscribeToFeed(result) {
   } else { // on error
     modalSpinner.stop();
     $("#addFeed").addClass('error');
-    console.log(result.error.message);
   }
 }
 
@@ -295,7 +297,6 @@ function getMoreArticles(streamID) {
     url: 'get/feed/' + encodeURIComponent(streamID) + "/" + unreadFlag,
     type: 'GET',
     beforeSend: function(r) {
-      console.log('get/feed/' + encodeURIComponent(streamID) + "/" + unreadFlag);
       r.setRequestHeader("Auth_token", sessvars.Auth_token);
     },
     success: function(resc) {
@@ -407,13 +408,9 @@ function keepAsUnread(e) {
       success: function(resc) {
         miniSpinner.stop();
         unreadCounters[streamID] += 1;
-        totalCount += 1;
+        totalCount               += 1;
 
         updateCounters(streamID, totalCount);
-
-        if (unreadCounters[streamID] === 1) { // TODO: check this
-          $('li#' + sanitize(streamID) + ' div span').show();
-        }
       }
     });
   }
