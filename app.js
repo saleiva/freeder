@@ -118,8 +118,8 @@ var Sirope = (function() {
     return { host: host, port: port, path: path, method: method, headers: headers };
   }
 
-  _get = function(res, accessToken, url) {
-    var options = { host: conf.HOST, port: conf.HTTP_PORT, path: url, method: 'GET', headers: { 'Authorization': 'Bearer ' + accessToken } };
+  _get = function(res, url) {
+    var options = { host: conf.HOST, port: conf.HTTP_PORT, path: url, method: 'GET', headers: { 'Authorization': 'Bearer ' + req.session.accessToken } };
 
     http.get(options, function(resp) {
       var data = "";
@@ -242,7 +242,7 @@ var Sirope = (function() {
       url += "&xt=user/-/state/com.google/read";
     }
 
-    Sirope.get(res, req.session.accessToken, url);
+    Sirope.get(res, url);
 
   };
 
@@ -274,11 +274,11 @@ var Sirope = (function() {
   };
 
   _getSubscriptionList = function(res, req) {
-    Sirope.get(res, req.session.accessToken, ourl.subscriptionList);
+    Sirope.get(res, ourl.subscriptionList);
   };
 
   _getUnreadCount = function(res, req) {
-    Sirope.get(res, req.session.accessToken, ourl.unreadCount);
+    Sirope.get(res, ourl.unreadCount);
   };
 
   return {
