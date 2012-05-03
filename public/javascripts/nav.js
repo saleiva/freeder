@@ -10,7 +10,11 @@ $(document).ready(function() {
     if(e.pageX > window.innerWidth/2){
       $("body").css("cursor","e-resize");
     }else if((e.pageX < window.innerWidth/2)){
-      $("body").css("cursor","w-resize");
+      if(currentArticle != 0){
+        $("body").css("cursor","w-resize");
+      }else{
+        $("body").css("cursor","default");
+      }
     }
   });
 

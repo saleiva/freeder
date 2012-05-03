@@ -29,11 +29,11 @@ var
   miniSpinnerOpts   = { lines: 8, length: 2, width: 2, radius: 4, color: '#000', speed: 1, trail: 64, shadow: false, hwaccel: false };
 
 
-  function _debug(str) {
-    if (debug) {
-      console.log(str);
-    }
+function _debug(str) {
+  if (debug) {
+    console.log(str);
   }
+}
 
 function isEmpty(str) {
   return !str.match(/\S/g);
