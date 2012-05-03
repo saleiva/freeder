@@ -273,11 +273,11 @@ var Sirope = (function() {
     }
   };
 
-  _getSubscriptionList = function(res, req) {
+  _getSubscriptionList = function(req, res) {
     Sirope.get(req, res, ourl.subscriptionList);
   };
 
-  _getUnreadCount = function(res, req) {
+  _getUnreadCount = function(req, res) {
     Sirope.get(req, res, ourl.unreadCount);
   };
 
