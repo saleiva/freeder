@@ -275,7 +275,7 @@ function addFeed(e) {
 
 function showAlreadyRead() {
   var feedSource = $('.sources ul li.selected').attr('id');
-  setFeed(feedSource);
+  setFeed(feedSource,'f');
 }
 
 function getMoreArticles(streamID) {
@@ -364,11 +364,9 @@ function nextArticle(e) {
     }
 
   } else {
-
     $('.article').fadeOut('slow', function() {
       $('.noUnread').fadeIn();
     });
-
   }
   window.scroll();
 }
