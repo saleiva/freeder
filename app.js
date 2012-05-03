@@ -103,22 +103,22 @@ app.configure('production', function() {
 var Sirope = (function() {
 
   var ourl = {
-    actionToken:      '/reader/api/0/token';
-    unreadCount:      '/reader/api/0/unread-count?output=json';
-    readingList:      '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?';
-    subscriptionList: '/reader/api/0/subscription/list?output=json';
-    feedContents:     '/reader/api/0/stream/contents/';
-    markAsRead:       '/reader/api/0/edit-tag?client=sirope';
-    markAsUnread:     '/reader/api/0/edit-tag?client=sirope';
-    addFeed:          '/reader/api/0/subscription/edit';
+    actionToken:      '/reader/api/0/token',
+    unreadCount:      '/reader/api/0/unread-count?output=json',
+    readingList:      '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?',
+    subscriptionList: '/reader/api/0/subscription/list?output=json',
+    feedContents:     '/reader/api/0/stream/contents/',
+    markAsRead:       '/reader/api/0/edit-tag?client=sirope',
+    markAsUnread:     '/reader/api/0/edit-tag?client=sirope',
+    addFeed:          '/reader/api/0/subscription/edit'
   };
 
   // Generate a hash with request options
   _getRequestOptions = function(host, port, path, method, headers) {
     return { host: host, port: port, path: path, method: method, headers: headers };
-  }
+  };
 
-  _get = function(res, url) {
+  _get = function(req, res, url) {
     var options = { host: conf.HOST, port: conf.HTTP_PORT, path: url, method: 'GET', headers: { 'Authorization': 'Bearer ' + req.session.accessToken } };
 
     http.get(options, function(resp) {
@@ -242,7 +242,7 @@ var Sirope = (function() {
       url += "&xt=user/-/state/com.google/read";
     }
 
-    Sirope.get(res, url);
+    Sirope.get(req, res, url);
 
   };
 
@@ -274,11 +274,11 @@ var Sirope = (function() {
   };
 
   _getSubscriptionList = function(res, req) {
-    Sirope.get(res, ourl.subscriptionList);
+    Sirope.get(req, res, ourl.subscriptionList);
   };
 
   _getUnreadCount = function(res, req) {
-    Sirope.get(res, ourl.unreadCount);
+    Sirope.get(req, res, ourl.unreadCount);
   };
 
   return {
