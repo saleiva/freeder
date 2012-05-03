@@ -109,7 +109,7 @@ var Sirope = (function() {
     subscriptionList: '/reader/api/0/subscription/list?output=json',
     feedContents:     '/reader/api/0/stream/contents/',
     markAsRead:       '/reader/api/0/edit-tag?client=sirope',
-    markAsUnread:     '/reader/api/0/edit-tag?client=sirope',
+    markAsUnRead:     '/reader/api/0/edit-tag?client=sirope',
     addFeed:          '/reader/api/0/subscription/edit'
   };
 
@@ -188,7 +188,6 @@ var Sirope = (function() {
       });
 
       response.on('end', function() {
-        console.log("Action token", actionToken);
 
         req.session.refreshToken = false;
         req.session.actionToken  = actionToken;
@@ -222,9 +221,9 @@ var Sirope = (function() {
 
   _markAsUnRead = function(req, res) {
     var
-    data    = "i=" + req.params.pid + "&a=user/-/state/com.google/kept-unread&r=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s=" + req.params.url + "&T=" + req.session.actionToken,
-    headers = { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': data.length, 'Authorization': 'Bearer '+ req.session.accessToken },
-    options = Sirope.getRequestOptions(conf.HOST, conf.HTTPS_PORT, ourl.markAsUnRead, "POST", headers);
+      data    = "i=" + req.params.pid + "&a=user/-/state/com.google/kept-unread&r=user/-/state/com.google/read&a=user/-/state/com.google/tracking-kept-unread&s=" + req.params.url + "&T=" + req.session.actionToken,
+      headers = { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': data.length, 'Authorization': 'Bearer '+ req.session.accessToken },
+      options = Sirope.getRequestOptions(conf.HOST, conf.HTTPS_PORT, ourl.markAsUnRead, "POST", headers);
 
     Sirope.post(res, options, data);
   };
@@ -332,7 +331,7 @@ app.get('/markasread/:url/:pid', function(req, res) {
 });
 
 app.get('/markasunread/:url/:pid', function(req, res) {
-  Sirope.getActionToken(req, res, Sirope.markAsUnread);
+  Sirope.getActionToken(req, res, Sirope.markAsUnRead);
 });
 
 app.get('/refresh', function(req, res) {
