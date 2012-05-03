@@ -133,17 +133,6 @@ function setFeed(feedSource, u) {
 
       if (data.items.length > 0) {
 
-        if (streamID != 'all') {
-          if (unreadCounters[streamID]) {
-            totalCount = totalCount - unreadCounters[streamID] + data.items.length;
-          } else {
-            totalCount += data.items.length;
-          }
-          unreadCounters[streamID] = data.items.length;
-          updateCount(streamID);
-          updateTotalCounter(totalCount);
-        }
-
         $.each(data.items, function(i, obj) {
           articles[i] = obj;
         });
