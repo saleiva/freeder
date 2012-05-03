@@ -133,6 +133,8 @@ function setFeed(feedSource, u) {
 
       if (data.items.length > 0) {
 
+        console.log(data.items);
+
         $.each(data.items, function(i, obj) {
           articles[i] = obj;
         });
@@ -382,7 +384,9 @@ function keepAsUnread(e) {
   streamID    = articles[currentArticle].origin.streamId,
   articleID   = articles[currentArticle].id;
 
-  if ((unreadFlag === 'f') || (currentArticle < readArticleMark)) {
+  console.log(unreadFlag, currentArticle, readArticleMark);
+
+  if ((unreadFlag === 'f') || (currentArticle <= readArticleMark)) {
     miniSpinner.spin(miniTarget);
     $.ajax({
       url: '/markasunread/' + encodeURIComponent(streamID) + '/' + encodeURIComponent(articleID),
@@ -479,7 +483,7 @@ $(function() {
   $(document).bind('keydown', 'a', function(e) { e.preventDefault(); $("#addFeed").modal("toggle"); });
 
   // Button binding
-  $('.menu .next').bind("click", keepAsUnread);
+  $(document).on("click", '.menu .next', keepAsUnread);
 
   // Hides the sources pane after 2000 ms
   var hideSourcesTimeOut = setTimeout(function(self) {
