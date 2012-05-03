@@ -14,8 +14,12 @@ $(document).ready(function() {
 
     if ($(this).attr('id') == 'allfeeds'){
       setFeed('all','t');
-    } else{
-      setFeed($(this).attr('id'));
+    } else {
+      if($(this).find('div span').text() == '0'){
+        setFeed($(this).attr('id'),'f');  
+      }else{
+        setFeed($(this).attr('id'));
+      }
     }
 
     if (_selectedSource){
