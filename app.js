@@ -103,14 +103,14 @@ app.configure('production', function() {
 var Sirope = (function() {
 
   var ourl = {
-    actionToken:      '/reader/api/0/token';
-    unreadCount:      '/reader/api/0/unread-count?output=json';
-    readingList:      '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?';
-    subscriptionList: '/reader/api/0/subscription/list?output=json';
-    feedContents:     '/reader/api/0/stream/contents/';
-    markAsRead:       '/reader/api/0/edit-tag?client=sirope';
-    markAsUnread:     '/reader/api/0/edit-tag?client=sirope';
-    addFeed:          '/reader/api/0/subscription/edit';
+    actionToken:      '/reader/api/0/token',
+    unreadCount:      '/reader/api/0/unread-count?output=json',
+    readingList:      '/reader/api/0/stream/contents/user/-/state/com.google/reading-list?',
+    subscriptionList: '/reader/api/0/subscription/list?output=json',
+    feedContents:     '/reader/api/0/stream/contents/',
+    markAsRead:       '/reader/api/0/edit-tag?client=sirope',
+    markAsUnread:     '/reader/api/0/edit-tag?client=sirope',
+    addFeed:          '/reader/api/0/subscription/edit'
   };
 
   // Generate a hash with request options
